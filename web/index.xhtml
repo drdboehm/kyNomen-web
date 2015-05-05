@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>kynomics Eingangsseite</title>
+    </h:head>
+    <h:body>
+        <h2>Halter-Suche und Auswahl</h2>
+        <h:form id="halterForm">
+            <h:messages styleClass="errorMsg"></h:messages>
+            <h:panelGrid columns="2" columnClasses="rightAlign, leftAlignleftAlign">
+                <h:outputLabel for="inHalterName" value="Name des Halters:" />   
+                <h:inputText label="Halter Name" 
+                             id="inHalterName" 
+                             value="#{halterController.halter.halterName}" 
+                             required="true" 
+                             p:placeholder="Halter-Name"
+                             validator="#{halterController.validateAlpha}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:outputLabel for="inHalterBemerkung" value="Bemerkung: " />   
+                <h:inputText label="Halter Bemerkung" 
+                             id="inHalterBemerkung" 
+                             value="#{halterController.halter.halterBemerkung}" 
+                             required="true" 
+                             p:placeholder="Bemerkung"
+                             validator="#{halterController.validateAlpha}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:outputText  value="Haltertyp:"/>
+                <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
+                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
+                </h:selectOneMenu>         
+                <h:panelGroup></h:panelGroup> <h:panelGroup></h:panelGroup>  
+                <h:outputLabel for="inPatientRufName" value="Rufname des Patienten:" />   
+                <h:inputText label="Patienten-Rufname" 
+                             id="inPatientRufName" 
+                             value="#{halterController.patient.patientRuf}" 
+                             required="true" 
+                             p:placeholder="Patienten-Rufname"
+                             validator="#{halterController.validateAlpha}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:outputText  value="Spezies"/>
+                <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
+                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
+                    <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
+                            render="inRasse"/>
+                </h:selectOneMenu>         
+                <h:outputText  value="Rasse"/>
+                <h:selectOneMenu id="inRasse" value="#{halterController.rassePK.rasseId}" >
+                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
+                     <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
+                            render="inSpezies"/>
+                </h:selectOneMenu>         
+                <h:panelGroup></h:panelGroup>  
+                <h:commandButton id="sucheButton" action="#{halterController.sucheHalter()}" value="Suchen" immediate="true"/>
+                <h:commandButton id="saveButton" action="#{halterController.saveHalter()}" value="Speichern"/>
+            </h:panelGrid>
+        </h:form> 
+    </h:body>
+</html>
+
