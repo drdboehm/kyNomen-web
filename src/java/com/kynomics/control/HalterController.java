@@ -5,7 +5,9 @@
  */
 package com.kynomics.control;
 
+import com.kynomics.daten.Adresstyp;
 import com.kynomics.daten.Halter;
+import com.kynomics.daten.Halteradresse;
 import com.kynomics.daten.Haltertyp;
 import com.kynomics.daten.Patient;
 import com.kynomics.daten.Rasse;
@@ -48,6 +50,8 @@ public class HalterController implements Serializable {
     private Rasse rasse;
     private RassePK rassePK;
     private Haltertyp haltertyp;
+    private Halteradresse halteradresse;
+    private Adresstyp adressTyp;
 
     /**
      * the default constructor
@@ -58,12 +62,19 @@ public class HalterController implements Serializable {
         haltertyp = new Haltertyp();
         spezies = new Spezies();
         rassePK = new RassePK();
+        halteradresse = new Halteradresse();
+        adressTyp = new Adresstyp();
     }
 
     /* 
      the HalterTypen - Map for the  <h:selectOneMenu ... 
      */
     private final Map<String, Integer> alleHalterTypenMap = new HashMap();
+
+    /* 
+     the HalterAdressTypen - Map for the  <h:selectOneMenu ... 
+     */
+    private final Map<String, Integer> alleAdressTypenMap = new HashMap();
 
     /* 
      the SpeziesTypen - Map for the  <h:selectOneMenu ... 
@@ -76,7 +87,7 @@ public class HalterController implements Serializable {
     private final Map<String, Integer> alleRasseTypenMap = new HashMap();
 
     /*
-    Getters and setters
+     Getters and setters
      */
     public Patient getPatient() {
         return patient;
@@ -125,13 +136,28 @@ public class HalterController implements Serializable {
     public void setHaltertyp(Haltertyp haltertyp) {
         this.haltertyp = haltertyp;
     }
-    
+
+    public Halteradresse getHalteradresse() {
+        return halteradresse;
+    }
+
+    public void setHalteradresse(Halteradresse halteradresse) {
+        this.halteradresse = halteradresse;
+    }
+
+    public Adresstyp getAdressTyp() {
+        return adressTyp;
+    }
+
+    public void setAdressTyp(Adresstyp adressTyp) {
+        this.adressTyp = adressTyp;
+    }
+
     
     
     /*
-    Own Logic
+     Own Logic
      */
-
     public String saveHalter() {
         System.out.println("**********************************");
         System.out.println("HalterName: " + halter.getHalterName());
@@ -147,12 +173,19 @@ public class HalterController implements Serializable {
         return "index";
     }
 
+    public String resetSpeziesRasse() {
+        spezies.setSpeziesId(0);
+
+        return "index";
+    }
+
     public String sucheHalter() {
         List<Halter> allHalter = transmitterSessionBeanRemote.halterGet();
         List<Patient> allPatient = transmitterSessionBeanRemote.patientGet();
-        
+
         return "index";
     }
+
     /**
      * create and returns a Map with String of all Halter -Objects to show in
      * the <h:selectOneMenu ...>
@@ -171,10 +204,10 @@ public class HalterController implements Serializable {
     public Map<String, Integer> getAlleRasseTypenMap() {
         List<Rasse> list = transmitterSessionBeanRemote.initializeRasseTypen();
         /*
-        filter the list by selected speziesId
-        1. empty the Map
-        2. avoid NullPointerException when SpeziesId is null, -> then add all Rassen
-        3. Filter the Rasse List by Spezies.Id
+         filter the list by selected speziesId
+         1. empty the Map
+         2. avoid NullPointerException when SpeziesId is null, -> then add all Rassen
+         3. Filter the Rasse List by Spezies.Id
          */
         alleRasseTypenMap.clear();
         for (Rasse r : list) {
@@ -193,27 +226,32 @@ public class HalterController implements Serializable {
     public Map<String, Integer> getAlleSpeziesTypenMap() {
         List<Spezies> list = transmitterSessionBeanRemote.initializeSpeziesTypen();
         /*
-        filter the list by selected rasseId
-        1. empty the Map
-        2. avoid NullPointerException when rasseId is null, -> then add all Spezies
-        3. Filter the Spezies List by RasseId
-        4. If we do that, we need a system to RESET selection !!!! this is a "goldener Henkel" 
-        => concentrate on business logic implementation 
+         filter the list by selected rasseId
+         1. empty the Map
+         2. avoid NullPointerException when rasseId is null, -> then add all Spezies
+         3. Filter the Spezies List by RasseId
+         4. If we do that, we need a system to RESET selection !!!! this is a "goldener Henkel" 
+         => concentrate on business logic implementation 
          */
         alleSpeziesTypenMap.clear();
         for (Spezies s : list) {
 //            if (s.getSpeziesId() == rassePK.getRasseId()) {
 //                System.out.println("" + s.getSpeziesName() + "for Rasse " + rassePK.getRasseId());
             alleSpeziesTypenMap.put(s.getSpeziesName(), s.getSpeziesId());
-
-//            }
         }
         return alleSpeziesTypenMap;
     }
 
+    public Map<String, Integer> getAlleAdressTypenMap() {
+        List<Adresstyp> list = transmitterSessionBeanRemote.initializeAdressTypen();
+        for (Adresstyp a: list) {
+            alleAdressTypenMap.put(a.getAdresstypName(), a.getAdresstypId());
+        }
+        return alleAdressTypenMap;
+    }
     /*
-    Own validators
-    */
+     Own validators
+     */
     public void validateAlpha(FacesContext context, UIComponent uiComponent, Object value) throws ValidatorException {
         if (!StringUtils.isAlphaSpace((String) value)) {
             HtmlInputText htmlInputText = (HtmlInputText) uiComponent;

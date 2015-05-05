@@ -11,16 +11,19 @@
         <h2>Halter-Suche und Auswahl</h2>
         <h:form id="halterForm">
             <h:messages styleClass="errorMsg"></h:messages>
-            <h:panelGrid columns="2" columnClasses="rightAlign, leftAlignleftAlign">
-                <h:outputLabel for="inHalterName" value="Name des Halters:" />   
+            <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, rightAlign">
+                <h3>Halter-Information</h3><h:panelGroup></h:panelGroup><h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inHalterName" value="HalterName: " />   
                 <h:inputText label="Halter Name" 
                              id="inHalterName" 
                              value="#{halterController.halter.halterName}" 
-                             required="true" 
                              p:placeholder="Halter-Name"
                              validator="#{halterController.validateAlpha}">
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
                 <h:outputLabel for="inHalterBemerkung" value="Bemerkung: " />   
                 <h:inputText label="Halter Bemerkung" 
                              id="inHalterBemerkung" 
@@ -30,12 +33,92 @@
                              validator="#{halterController.validateAlpha}">
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
+                <h:panelGroup></h:panelGroup>  
+
                 <h:outputText  value="Haltertyp:"/>
                 <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
-                </h:selectOneMenu>         
-                <h:panelGroup></h:panelGroup> <h:panelGroup></h:panelGroup>  
+                </h:selectOneMenu>
+                <h:panelGroup></h:panelGroup> 
+
+                <h:commandButton id="sucheHalterButton" action="#{halterController.sucheHalter()}" value="Suche Halter" immediate="true"/>
+                <h:commandButton id="neuHalterButton" action="#{halterController.neuHalter()}" value="Neuer Halter"/>
+                <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" value="Halter speichern"/>
+            </h:panelGrid>
+        </h:form>
+
+        <h:form id="adressForm">
+            <h:messages styleClass="errorMsg"></h:messages>
+            <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, rightAlign">
+                <h3>Adress-Information</h3> <h:panelGroup></h:panelGroup>  <h:panelGroup></h:panelGroup> 
+                <h:outputText  value="Adresstyp:"/>
+                <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
+                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
+                </h:selectOneMenu>
+                <h:panelGroup></h:panelGroup> 
+                <h:outputLabel for="inHalterAdresseStrasse" value="Strasse + Haus-Nr.: " />   
+                <h:inputText label="Halter Adresse-Strasse" 
+                             id="inHalterAdresseStrasse" 
+                             value="#{halterController.halteradresse.halterStrasse}" 
+                             p:placeholder="Strasse + Haus-Nr"
+                             validator="#{halterController.validateAlphaNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inHalterAdressePlz" value="Plz.: " />   
+                <h:inputText label="Halter Adresse-Plz." 
+                             id="inHalterAdressePlz" 
+                             value="#{halterController.halteradresse.halterPlz}" 
+                             p:placeholder="Postleitzahl"
+                             validator="#{halterController.validateAlphaNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inHalterAdresseOrt" value="Ort: " />   
+                <h:inputText label="Halter Adresse-Ort" 
+                             id="inHalterAdresseOrt" 
+                             value="#{halterController.halteradresse.halterOrt}" 
+                             p:placeholder="Ort"
+                             validator="#{halterController.validateAlpha}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inHalterAdresseTel" value="Tel: " />   
+                <h:inputText label="Halter Adresse-Tel" 
+                             id="inHalterAdresseTel" 
+                             value="#{halterController.halteradresse.halterTel }" 
+                             p:placeholder="Vorwahl / Telefon-Nr."
+                             validator="#{halterController.validateAlphaNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inHalterAdresseEMail" value="EMail: " />   
+                <h:inputText label="Halter Adresse-EMail" 
+                             id="inHalterAdresseEMail" 
+                             value="#{halterController.halteradresse.halterEmail }" 
+                             p:placeholder="EMail-Adresse" >
+                <f:validateLength minimum="2" maximum="30"/>
+                <f:validator validatorId="emailValidator" />
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse" immediate="true"/>
+                <h:commandButton id="neuAdressButton" action="#{halterController.neuAdresse()}" value="Neue Adresse"/>
+                <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
+            </h:panelGrid>
+        </h:form>
+
+
+        <h3>Patienten-Information</h3> <h:panelGroup></h:panelGroup>  <h:panelGroup></h:panelGroup> 
+        <h:form id="patientForm">
+            <h:messages styleClass="errorMsg"></h:messages>
+            <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, rightAlign">
                 <h:outputLabel for="inPatientRufName" value="Rufname des Patienten:" />   
                 <h:inputText label="Patienten-Rufname" 
                              id="inPatientRufName" 
@@ -45,23 +128,83 @@
                              validator="#{halterController.validateAlpha}">
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
+                <h:panelGroup></h:panelGroup>  
+
+                <h:outputLabel for="inPatientName" value="vollständiger Name:" />   
+                <h:inputText label="Patienten-Name" 
+                             id="inPatientName" 
+                             value="#{halterController.patient.patientName}" 
+                             required="true" 
+                             p:placeholder="vollständiger Name"
+                             validator="#{halterController.validateAlpha}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inPatientChipNr" value="Chip-Nr:" />   
+                <h:inputText label="Chip-Nr" 
+                             id="inPatientChipNr" 
+                             value="#{halterController.patient.patientChip}" 
+                             required="true" 
+                             p:placeholder="Chip-Nr."
+                             validator="#{halterController.validateNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inPatientTatooNr" value="Tatoo-Nr:" />   
+                <h:inputText label="Tatoo-Nr" 
+                             id="inPatientTatooNr" 
+                             value="#{halterController.patient.patientTatoonr}" 
+                             required="true" 
+                             p:placeholder="Tatoo-Nr."
+                             validator="#{halterController.validateNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inPatientZuchtBuchNr" value="Zuchtbuch-Nr:" />   
+                <h:inputText label="Zuchtbuch-Nr" 
+                             id="inPatientZuchtBuchNr" 
+                             value="#{halterController.patient.patientZuchtbuchnr}" 
+                             required="true" 
+                             p:placeholder="Zuchtbuch-Nr."
+                             validator="#{halterController.validateNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
+                <h:outputLabel for="inPatientGebDat" value="Geburtstag:" />   
+                <h:inputText label="Geburtstag" 
+                             id="inPatientZuchtGebDat" 
+                             value="#{halterController.patient.patientGeb}" 
+                             required="true" 
+                             p:placeholder="dd.mm.yyyy"
+                             validator="#{halterController.validateNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
+
                 <h:outputText  value="Spezies"/>
                 <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
                     <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
                             render="inRasse"/>
-                </h:selectOneMenu>         
+                </h:selectOneMenu>   
+                <h:panelGroup></h:panelGroup>  
+
                 <h:outputText  value="Rasse"/>
                 <h:selectOneMenu id="inRasse" value="#{halterController.rassePK.rasseId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
-                     <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
+                    <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
                             render="inSpezies"/>
-                </h:selectOneMenu>         
+                </h:selectOneMenu>  
                 <h:panelGroup></h:panelGroup>  
-                <h:commandButton id="sucheButton" action="#{halterController.sucheHalter()}" value="Suchen" immediate="true"/>
-                <h:commandButton id="saveButton" action="#{halterController.saveHalter()}" value="Speichern"/>
+                <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient" immediate="true"/>
+                <h:commandButton id="neuPatientButton" action="#{halterController.neuPatient()}" value="Neuer Patient"/>
+                <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" value="Patient speichern"/>
             </h:panelGrid>
         </h:form> 
     </h:body>
