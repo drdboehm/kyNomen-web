@@ -18,6 +18,7 @@
                 <h:inputText label="Halter Name" 
                              id="inHalterName" 
                              value="#{halterController.halter.halterName}" 
+                              required="true" 
                              p:placeholder="Halter-Name"
                              validator="#{halterController.validateAlpha}">
                     <f:validateLength minimum="2" maximum="30"/>
@@ -30,7 +31,7 @@
                              value="#{halterController.halter.halterBemerkung}" 
                              required="true" 
                              p:placeholder="Bemerkung"
-                             validator="#{halterController.validateAlpha}">
+                             validator="#{halterController.validateAlphaNumeric}">
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>  
@@ -42,7 +43,7 @@
                 </h:selectOneMenu>
                 <h:panelGroup></h:panelGroup> 
 
-                <h:commandButton id="sucheHalterButton" action="#{halterController.sucheHalter()}" value="Suche Halter" immediate="true"/>
+                <h:commandButton id="sucheHalterButton" action="#{halterController.sucheHalter()}" value="Suche Halter"/>
                 <h:commandButton id="neuHalterButton" action="#{halterController.neuHalter()}" value="Neuer Halter"/>
                 <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" value="Halter speichern"/>
             </h:panelGrid>
@@ -103,8 +104,8 @@
                              id="inHalterAdresseEMail" 
                              value="#{halterController.halteradresse.halterEmail }" 
                              p:placeholder="EMail-Adresse" >
-                <f:validateLength minimum="2" maximum="30"/>
-                <f:validator validatorId="emailValidator" />
+                    <f:validateLength minimum="2" maximum="30"/>
+                    <f:validator validatorId="emailValidator" />
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 

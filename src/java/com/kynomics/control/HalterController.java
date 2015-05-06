@@ -14,6 +14,8 @@ import com.kynomics.daten.Patient;
 import com.kynomics.daten.Rasse;
 import com.kynomics.daten.RassePK;
 import com.kynomics.daten.Spezies;
+import com.kynomics.daten.finder.Haltertreffer;
+import com.kynomics.daten.finder.Suchkriterien;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -172,22 +174,26 @@ public class HalterController implements Serializable {
     }
 
     public String sucheHalter() {
-        logAttributes();
-        List<Halter> allHalter = transmitterSessionBeanRemote.halterGet();
-        List<Patient> allPatient = transmitterSessionBeanRemote.patientGet();
-
+        Suchkriterien suchKr = new Suchkriterien(halter.getHalterId(), halter.getHalterName(),
+                halter.getHalterBemerkung());
+        System.out.println("Suchstring: " + suchKr);
+        List<Haltertreffer> treffer = transmitterSessionBeanRemote.suchen(suchKr);
+        for (Haltertreffer ht : treffer) {
+            System.out.println(ht.toString());
+        }
         return "index";
     }
 
     public void logAttributes() {
         /*
-        first collect, what we have from the JSF page
+         first collect, what we have from the JSF page
          */
         System.out.println("**********  Halter related Attributes ***** ");
         System.out.println("halter.getHalterId() = " + halter.getHalterId());
         System.out.println("halter.getHalterName() = " + halter.getHalterName());
         System.out.println("halter.getHalterBemerkung() = " + halter.getHalterBemerkung());
         System.out.println("halter.getHaltertypId() = " + halter.getHaltertypId());
+        System.out.println("haltertyp = " + haltertyp);
         System.out.println("haltertyp.getHaltertypId() = " + haltertyp.getHaltertypId());
         System.out.println("haltertyp.getHaltertypName() = " + haltertyp.getHaltertypName());
         System.out.println("**********  Patient related Attributes ***** ");
