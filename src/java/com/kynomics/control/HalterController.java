@@ -7,6 +7,7 @@ package com.kynomics.control;
 
 import com.kynomics.daten.Adresstyp;
 import com.kynomics.daten.Halter;
+import com.kynomics.daten.HalterAdresssenPatientWrapper;
 import com.kynomics.daten.Halteradresse;
 import com.kynomics.daten.Haltertyp;
 import com.kynomics.daten.Patient;
@@ -153,23 +154,14 @@ public class HalterController implements Serializable {
         this.adressTyp = adressTyp;
     }
 
-    
-    
     /*
      Own Logic
      */
     public String saveHalter() {
-        System.out.println("**********************************");
-        System.out.println("HalterName: " + halter.getHalterName());
-        System.out.println("Halterbemwerkung: " + halter.getHalterBemerkung());
-        System.out.println("Haltertyp selected: " + haltertyp.getHaltertypId());
-        System.out.println("HaltertypName selected: " + haltertyp.getHaltertypName());
-        System.out.println("Rufname Patient: " + patient.getPatientRuf());
-        System.out.println("SpeziesId: " + spezies.getSpeziesId());
-        System.out.println("SpeziesName: " + spezies.getSpeziesName());
-        System.out.println("RasseId: " + rassePK.getRasseId());
-        System.out.println("SpeziesId from RassePK: " + rassePK.getSpeziesId());
-        System.out.println("**********************************");
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper();
+        halter.setHaltertypId(haltertyp);
+        wrapper.setHalter(halter);
+        transmitterSessionBeanRemote.storeEjb(wrapper);
         return "index";
     }
 
@@ -180,10 +172,31 @@ public class HalterController implements Serializable {
     }
 
     public String sucheHalter() {
+        logAttributes();
         List<Halter> allHalter = transmitterSessionBeanRemote.halterGet();
         List<Patient> allPatient = transmitterSessionBeanRemote.patientGet();
 
         return "index";
+    }
+
+    public void logAttributes() {
+        /*
+        first collect, what we have from the JSF page
+         */
+        System.out.println("**********  Halter related Attributes ***** ");
+        System.out.println("halter.getHalterId() = " + halter.getHalterId());
+        System.out.println("halter.getHalterName() = " + halter.getHalterName());
+        System.out.println("halter.getHalterBemerkung() = " + halter.getHalterBemerkung());
+        System.out.println("halter.getHaltertypId() = " + halter.getHaltertypId());
+        System.out.println("haltertyp.getHaltertypId() = " + haltertyp.getHaltertypId());
+        System.out.println("haltertyp.getHaltertypName() = " + haltertyp.getHaltertypName());
+        System.out.println("**********  Patient related Attributes ***** ");
+        System.out.println("patient.getPatientRuf() = " + patient.getPatientRuf());
+        System.out.println("spezies.getSpeziesId() = " + spezies.getSpeziesId());
+        System.out.println("spezies.getSpeziesName() = " + spezies.getSpeziesName());
+        System.out.println("rassePK.getRasseId() = " + rassePK.getRasseId());
+        System.out.println("rassePK.getSpeziesId() = " + rassePK.getSpeziesId());
+        System.out.println("**********************************");
     }
 
     /**
@@ -244,7 +257,7 @@ public class HalterController implements Serializable {
 
     public Map<String, Integer> getAlleAdressTypenMap() {
         List<Adresstyp> list = transmitterSessionBeanRemote.initializeAdressTypen();
-        for (Adresstyp a: list) {
+        for (Adresstyp a : list) {
             alleAdressTypenMap.put(a.getAdresstypName(), a.getAdresstypId());
         }
         return alleAdressTypenMap;
@@ -252,6 +265,7 @@ public class HalterController implements Serializable {
     /*
      Own validators
      */
+
     public void validateAlpha(FacesContext context, UIComponent uiComponent, Object value) throws ValidatorException {
         if (!StringUtils.isAlphaSpace((String) value)) {
             HtmlInputText htmlInputText = (HtmlInputText) uiComponent;
