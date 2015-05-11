@@ -3,22 +3,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ky="http://com.kynomics/kynomen">
     <h:head>
         <title>kynomics Eingangsseite</title>
     </h:head>
     <h:body>
-        <h2>Halter-Suche und Auswahl</h2>
+        <ui:include src="/WEB-INF/includes/header.xhtml">
+            <ui:param name="pageTitle"
+                      value="kyNomen"/>
+        </ui:include>
         <h:form id="halterForm">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, rightAlign">
                 <h3>Halter-Information</h3><h:panelGroup></h:panelGroup><h:panelGroup></h:panelGroup>
+                <h:outputLabel for="inHalterId" value="HalterId: " />   
+                <h:inputText label="Halter Id" 
+                             id="inHalterId" 
+                             value="#{halterController.halter.halterId}" 
+                             p:placeholder="Halter-Id"
+                             validator="#{halterController.validateNumeric}">
+                    <f:validateLength minimum="2" maximum="30"/>
+                </h:inputText>
+                <h:panelGroup></h:panelGroup>
 
                 <h:outputLabel for="inHalterName" value="HalterName: " />   
                 <h:inputText label="Halter Name" 
                              id="inHalterName" 
                              value="#{halterController.halter.halterName}" 
-                              required="true" 
+                             required="true"
                              p:placeholder="Halter-Name"
                              validator="#{halterController.validateAlpha}">
                     <f:validateLength minimum="2" maximum="30"/>
@@ -29,7 +43,7 @@
                 <h:inputText label="Halter Bemerkung" 
                              id="inHalterBemerkung" 
                              value="#{halterController.halter.halterBemerkung}" 
-                             required="true" 
+                             required="true"
                              p:placeholder="Bemerkung"
                              validator="#{halterController.validateAlphaNumeric}">
                     <f:validateLength minimum="2" maximum="30"/>
@@ -40,10 +54,15 @@
                 <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
+                    <f:ajax listener="#{halterController.sucheHalter}" event="click" 
+                            execute="inHalterTyp"  />
                 </h:selectOneMenu>
                 <h:panelGroup></h:panelGroup> 
 
-                <h:commandButton id="sucheHalterButton" action="#{halterController.sucheHalter()}" value="Suche Halter"/>
+                <h:commandButton id="sucheHalterButton" value="Suche Halter">
+                    <f:ajax listener="#{halterController.sucheHalter}" event="click" 
+                            execute="inHalterId inHalterName inHalterBemerkung"  />
+                </h:commandButton>
                 <h:commandButton id="neuHalterButton" action="#{halterController.neuHalter()}" value="Neuer Halter"/>
                 <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" value="Halter speichern"/>
             </h:panelGrid>
@@ -75,6 +94,7 @@
                              value="#{halterController.halteradresse.halterPlz}" 
                              p:placeholder="Postleitzahl"
                              validator="#{halterController.validateAlphaNumeric}">
+                    <f:converter converterId="com.kynomics.ZipCodeConverter"/>
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
@@ -180,12 +200,11 @@
                              id="inPatientGebDat" 
                              value="#{halterController.patient.patientGeb}" 
                              required="true" 
-                             p:placeholder="dd.mm.yyyy"
-                             validator="#{halterController.validateNumeric}">
+                             p:placeholder="dd.mm.yyyy">
+                    <f:convertDateTime pattern="dd.MM.yyyy" />
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
-                <h:panelGroup></h:panelGroup>
-
+                <h:outputText value="#{ky:getAge(halterController.patient.patientGeb)} Jahre"/>
                 <h:outputText  value="Spezies"/>
                 <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />

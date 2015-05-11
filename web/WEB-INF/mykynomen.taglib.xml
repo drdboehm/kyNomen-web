@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib version="2.2"
+                xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://com.kynomics/kynomen</namespace>
+    <function>
+        <function-name>getAge</function-name>
+        <function-class>
+            com.kynomics.gui.util.KynomicsUtil
+        </function-class>
+        <function-signature>
+            int getAge(java.util.Date)
+        </function-signature>
+    </function>
+    <tag>
+        <tag-name>convertZipCode</tag-name>
+        <converter>
+            <converter-id>com.kynomics.ZipCodeConverter</converter-id>
+        </converter>
+    </tag>
+</facelet-taglib>

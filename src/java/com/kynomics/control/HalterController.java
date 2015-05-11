@@ -23,10 +23,14 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
@@ -173,7 +177,16 @@ public class HalterController implements Serializable {
         return "index";
     }
 
-    public String sucheHalter() {
+    public void sucheHalter(AjaxBehaviorEvent ev) {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Application a = fc.getApplication();
+        if (a.getProjectStage() == ProjectStage.Development)
+            System.out.println("ProjectStage = " + a.getProjectStage().name());
+        System.out.println("******************");
+        System.out.println("halter.getHalterId()= " + halter.getHalterId());
+        System.out.println("halter.getHalterName()= " + halter.getHalterName());
+        System.out.println("halter.getHalterBemerkung()= " + halter.getHalterBemerkung());
+         System.out.println(" haltertyp.getHaltertypId()= " + haltertyp.getHaltertypId());
         Suchkriterien suchKr = new Suchkriterien(halter.getHalterId(), halter.getHalterName(),
                 halter.getHalterBemerkung());
         System.out.println("Suchstring: " + suchKr);
@@ -181,7 +194,6 @@ public class HalterController implements Serializable {
         for (Haltertreffer ht : treffer) {
             System.out.println(ht.toString());
         }
-        return "index";
     }
 
     public void logAttributes() {

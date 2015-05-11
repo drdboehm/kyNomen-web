@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="tableLayout.css" />
+        <title>Debitoren</title>
+    </h:head>
+
+    <h:body styleClass="body">
+        <h:graphicImage library="images" name="logo.png" height="120px" />
+
+        <div id="top" class="top">
+            <ui:insert name="top">Verwaltung</ui:insert>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">
+                <h:form>
+                    <table>
+                        <tr><td><h:outputText value="Neuer Kunde"/></td></tr>
+                        <tr><td align="left">
+                                <h:outputText value="Name" />
+                            </td>
+                            <td align="right">
+                                <h:inputText id="name" value="">
+                                    <f:validateLength minimum ="3" maximum="15" />
+                                </h:inputText>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="Strasse" />
+                            </td>
+                            <td align="right">
+                                <h:inputText id="strasse" value="">
+                                    <f:validateLength minimum ="0" maximum="15" />
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr><td></td><td></td><td></td><td>
+                                <h:commandButton 
+                                    type="submit"
+                                    value="Speichern"
+                                    />
+                            </td></tr>
+                    </table>
+                </h:form>
+            </ui:insert>
+            <h:form>
+                <table border="5" cellspacing="5">
+                    <tr> 
+                        <!--  <td><h:commandLink value="zur Kundenseite" action="kunden"/></td>
+                        <td><h:commandLink value="zur Rechnungsseite  " action="rechnung"/></td> 
+                        Auslagern der Navigation in eine Navigation Bean -->
+                        <td><h:commandLink value="zu den Kunden" action="#{navigationBean.showPage('0')}"/></td> 
+                        <td><h:commandLink value="zu den Rechnungen" action="#{navigationBean.showPage('1')}"/></td>
+                        <td><h:commandLink value="zu den Zahlungen" action="#{navigationBean.showPage('2')}"/></td>
+                        <td><h:commandLink value="neue Rechnung" action="#{navigationBean.showPage('4')}"/></td>
+
+                    </tr>
+                </table>
+            </h:form>
+            <h:dataTable value="#{kundenBean.allKunden}" var="k"
+                         styleClass="order-table"
+                         headerClass="order-table-header"
+                         rowClasses="order-table-odd-row, order-table-even-row" >
+                <h:column>
+                    <!--SpaltenÜberschrift-->
+                    <f:facet name="header">
+                        Kundennummer
+                    </f:facet>
+                    <!--Zeilenaufbau Record-->
+                    #{k.kundeId}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Name
+                    </f:facet>
+                    #{k.kundeName}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Adresse
+                    </f:facet>
+                    #{k.kundeStrasse}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        PLZ
+                    </f:facet>
+                    #{k.kundePlz}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Ort
+                    </f:facet>
+                    #{k.kundeOrt}
+                </h:column>
+
+
+
+            </h:dataTable>
+        </div>
+
+    </h:body>
+</html>

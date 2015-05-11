@@ -1,0 +1,96 @@
+body {
+    margin: 0px;
+}
+
+#top {
+    background-color: #036fab;
+    color: white;
+    padding: 10px;
+    margin: 0px 0px 10px 0px;
+}
+
+#bottom {
+    background-color: #c2dfef;
+    padding: 10px;
+}
+
+#left {
+    background-color: #ece3a5;
+    padding: 10px;
+    width: 150px;
+    vertical-align: top;
+}
+
+#right {
+    background-color: #ece3a5;
+    padding: 10px;
+    width: 150px;
+    vertical-align: top;
+}
+
+#content {
+    background-color: #dddddd;
+    padding: 10px;
+    vertical-align: top;
+}
+
+#top a:link, #top a:visited {
+    color: white;
+    font-weight : bold;
+    text-decoration: none;
+}
+
+#top a:link:hover, #top a:visited:hover  {
+    color: black;
+    font-weight : bold;
+    text-decoration : underline;
+}
+
+.body{
+    background:  #004a79; 
+    text-decoration:  #FFFFFF;
+}
+h1{
+    color:  #FFFFFF;
+}
+
+.order-table{
+    border-collapse: collapse;    
+}
+.order-table-odd-row{
+    text-align: center;
+    background: none repeat scroll 0 0 #ffffff;
+    border-bottom: 1px solid #f9f9f9;
+    padding: 16px;    
+}
+.order-table-header{
+    text-align: center;
+    background: none repeat scroll 0 0 #F97800;
+    border-bottom: 1px solid #004a79;
+    padding: 16px;    
+
+}
+.order-table-even-row{
+    text-align: center;
+    background: none repeat scroll 0 0 #f9f9f9;
+    border-top: 1px solid #004a79;
+}
+
+
+.artikelerfassentabelle-header{
+    text-align: center;
+    background: none repeat scroll 0 0 #F97800;
+    border-bottom: 1px solid #004a79;
+    font-style:  #FFFFFF;  
+    border-collapse: collapse;  
+}
+
+form{
+    text-align: center;
+    background: none repeat scroll 0 0 #F97800;
+    border-bottom: 3px solid #004a79;
+    font-style:  #FFFFFF;  
+    border-collapse: collapse;  
+    text-decoration: bold;
+}
+
