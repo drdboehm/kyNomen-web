@@ -10,4 +10,19 @@
             com.kynomics.converter.ReplaceConverter
         </converter-class>
     </converter>
+    <!-- Settings for application -->
+    <application>
+        <locale-config>
+            <default-locale>de</default-locale>
+            <supported-locale>en</supported-locale>
+        </locale-config>
+        <message-bundle>com.kynomics.bundles.messages</message-bundle>
+        <resource-bundle>
+            <base-name>com.kynomics.bundles.messages</base-name>
+            <var>msgs</var>
+        </resource-bundle>
+    </application>
+    
+    
+    
 </faces-config>

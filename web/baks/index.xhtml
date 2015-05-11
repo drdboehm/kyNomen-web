@@ -1,24 +1,29 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition template="/META-INF/templates/halterTemplate.xhtml" 
-                xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                xmlns:ky="http://com.kynomics/kynomen">
-    <!--<h:outputStylesheet library="css" name="styles.css" />-->
-    <!--    <ui:include src="/WEB-INF/includes/header.xhtml">
+<html 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:ky="http://com.kynomics/kynomen">
+
+
+    <h:head>
+        <title>kynomics Eingangsseite</title>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet library="css" name="styles.css" />
+        <ui:include src="/WEB-INF/includes/header.xhtml">
             <ui:param name="pageTitle"
                       value=""/>
-        </ui:include>-->
-    <ui:define name="left_content">
+        </ui:include>
         <h:form id="halterForm">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, leftAlign">
                 <h3>Halter-Information</h3><h:panelGroup></h:panelGroup><h:panelGroup></h:panelGroup>
-                <h:outputLabel for="inHalterId" value="#{msgs.halter_id}" />   
-                <h:inputText label="#{msgs.halter_id}" 
+                <h:outputLabel for="inHalterId" value="HalterId: " />   
+                <h:inputText label="Halter Id" 
                              id="inHalterId" 
                              value="#{halterController.halter.halterId}" 
                              p:placeholder="Halter-Id"
@@ -27,8 +32,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inHalterName" value="#{msgs.halter_name}" />   
-                <h:inputText label="#{msgs.halter_name}" 
+                <h:outputLabel for="inHalterName" value="HalterName: " />   
+                <h:inputText label="Halter Name" 
                              id="inHalterName" 
                              value="#{halterController.halter.halterName}" 
                              required="true"
@@ -38,8 +43,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inHalterBemerkung" value="#{msgs.halter_bemerkung}" />   
-                <h:inputText label="#{msgs.halter_bemerkung}" 
+                <h:outputLabel for="inHalterBemerkung" value="Bemerkung: " />   
+                <h:inputText label="Halter Bemerkung" 
                              id="inHalterBemerkung" 
                              value="#{halterController.halter.halterBemerkung}" 
                              required="true"
@@ -49,7 +54,7 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>  
 
-                <h:outputText  value="#{msgs.halter_haltertyp}"/>
+                <h:outputText  value="Haltertyp:"/>
                 <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
@@ -66,18 +71,19 @@
                 <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" value="Halter speichern"/>
             </h:panelGrid>
         </h:form>
+
         <h:form id="adressForm">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, leftAlign">
                 <h3>Adress-Information</h3> <h:panelGroup></h:panelGroup>  <h:panelGroup></h:panelGroup> 
-                <h:outputText  value="#{msgs.adress_adresstyp}"/>
+                <h:outputText  value="Adresstyp:"/>
                 <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
                 </h:selectOneMenu>
                 <h:panelGroup></h:panelGroup> 
-                <h:outputLabel for="inHalterAdresseStrasse" value="#{msgs.adress_strasse_hausnr}" />   
-                <h:inputText label="#{msgs.adress_strasse_hausnr}" 
+                <h:outputLabel for="inHalterAdresseStrasse" value="Strasse + Haus-Nr.: " />   
+                <h:inputText label="Halter Adresse-Strasse" 
                              id="inHalterAdresseStrasse" 
                              value="#{halterController.halteradresse.halterStrasse}" 
                              p:placeholder="Strasse + Haus-Nr"
@@ -86,8 +92,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inHalterAdressePlz" value="#{msgs.adress_plz}" />   
-                <h:inputText label="#{msgs.adress_plz}" 
+                <h:outputLabel for="inHalterAdressePlz" value="Plz.: " />   
+                <h:inputText label="Halter Adresse-Plz." 
                              id="inHalterAdressePlz" 
                              value="#{halterController.halteradresse.halterPlz}" 
                              p:placeholder="Postleitzahl"
@@ -98,8 +104,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inHalterAdresseOrt" value="#{msgs.adress_ort}" />   
-                <h:inputText label="#{msgs.adress_ort}" 
+                <h:outputLabel for="inHalterAdresseOrt" value="Ort: " />   
+                <h:inputText label="Halter Adresse-Ort" 
                              id="inHalterAdresseOrt" 
                              value="#{halterController.halteradresse.halterOrt}" 
                              p:placeholder="Ort"
@@ -108,18 +114,18 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inHalterAdresseTel" value="#{msgs.adress_tel}" />   
-                <h:inputText label="#{msgs.adress_tel}" 
+                <h:outputLabel for="inHalterAdresseTel" value="Tel: " />   
+                <h:inputText label="Halter Adresse-Tel" 
                              id="inHalterAdresseTel" 
-                             value="#{halterController.halteradresse.halterTel}" 
+                             value="#{halterController.halteradresse.halterTel }" 
                              p:placeholder="Vorwahl / Telefon-Nr."
                              validator="#{halterController.validateAlphaNumeric}">
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inHalterAdresseEMail" value="#{msgs.adress_email}" />   
-                <h:inputText label="#{msgs.adress_email}" 
+                <h:outputLabel for="inHalterAdresseEMail" value="EMail: " />   
+                <h:inputText label="Halter Adresse-EMail" 
                              id="inHalterAdresseEMail" 
                              value="#{halterController.halteradresse.halterEmail }" 
                              p:placeholder="EMail-Adresse" >
@@ -133,12 +139,14 @@
                 <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
             </h:panelGrid>
         </h:form>
+
+
         <h3>Patienten-Information</h3> <h:panelGroup></h:panelGroup>  <h:panelGroup></h:panelGroup> 
         <h:form id="patientForm">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign, leftAlign">
-                <h:outputLabel for="inPatientRufName" value="#{msgs.patient_rufname}" />   
-                <h:inputText label="#{msgs.patient_rufname}" 
+                <h:outputLabel for="inPatientRufName" value="Rufname des Patienten:" />   
+                <h:inputText label="Patienten-Rufname" 
                              id="inPatientRufName" 
                              value="#{halterController.patient.patientRuf}" 
                              required="true" 
@@ -148,8 +156,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>  
 
-                <h:outputLabel for="inPatientName" value="#{msgs.patient_vollstaendiger_name}" />   
-                <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
+                <h:outputLabel for="inPatientName" value="vollständiger Name:" />   
+                <h:inputText label="Patienten-Name" 
                              id="inPatientName" 
                              value="#{halterController.patient.patientName}" 
                              required="true" 
@@ -159,8 +167,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inPatientChipNr" value="#{msgs.patient_chipnr}" />   
-                <h:inputText label="#{msgs.patient_chipnr}" 
+                <h:outputLabel for="inPatientChipNr" value="Chip-Nr:" />   
+                <h:inputText label="Chip-Nr" 
                              id="inPatientChipNr" 
                              value="#{halterController.patient.patientChip}" 
                              required="true" 
@@ -170,8 +178,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inPatientTatooNr" value="#{msgs.patient_tatoonr}" />   
-                <h:inputText label="#{msgs.patient_tatoonr}" 
+                <h:outputLabel for="inPatientTatooNr" value="Tatoo-Nr:" />   
+                <h:inputText label="Tatoo-Nr" 
                              id="inPatientTatooNr" 
                              value="#{halterController.patient.patientTatoonr}" 
                              required="true" 
@@ -181,8 +189,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inPatientZuchtBuchNr" value="#{msgs.patient_zuchtbuchnr}" />   
-                <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
+                <h:outputLabel for="inPatientZuchtBuchNr" value="Zuchtbuch-Nr:" />   
+                <h:inputText label="Zuchtbuch-Nr" 
                              id="inPatientZuchtBuchNr" 
                              value="#{halterController.patient.patientZuchtbuchnr}" 
                              required="true" 
@@ -192,8 +200,8 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
 
-                <h:outputLabel for="inPatientGebDat" value="#{msgs.patient_geburtstag}" />   
-                <h:inputText label="#{msgs.patient_geburtstag}" 
+                <h:outputLabel for="inPatientGebDat" value="Geburtstag:" />   
+                <h:inputText label="Geburtstag" 
                              id="inPatientGebDat" 
                              value="#{halterController.patient.patientGeb}" 
                              required="true" 
@@ -202,7 +210,7 @@
                     <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
                 <h:outputText value="#{ky:getAge(halterController.patient.patientGeb)} Jahre"/>
-                <h:outputText  value="#{msgs.patient_spezies}"/>
+                <h:outputText  value="Spezies"/>
                 <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
@@ -211,7 +219,7 @@
                 </h:selectOneMenu>   
                 <h:panelGroup></h:panelGroup>  
 
-                <h:outputText  value="#{msgs.patient_rasse}"/>
+                <h:outputText  value="Rasse"/>
                 <h:selectOneMenu id="inRasse" value="#{halterController.rassePK.rasseId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
@@ -224,6 +232,6 @@
                 <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" value="Patient speichern"/>
             </h:panelGrid>
         </h:form> 
-    </ui:define>
-</ui:composition>
+    </h:body>
+</html>
 

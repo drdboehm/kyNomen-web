@@ -19,4 +19,12 @@
             <converter-id>com.kynomics.ZipCodeConverter</converter-id>
         </converter>
     </tag>
+    <tag>
+        <tag-name>validateAge</tag-name>
+        <validator>
+            <validator-id>com.kynomics.validator.Age</validator-id>
+        </validator>
+    </tag>
+        
+    
 </facelet-taglib>
