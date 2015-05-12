@@ -12,22 +12,43 @@
     <body>
         <div id="container">
             <div id="header">
-                <ui:insert name="header">Default header</ui:insert>
+                <ui:insert name="header">
+                    <h:graphicImage value="/images/Logo_4.png" height="100px"/>
+                    <h1>#{msgs.title_main}</h1>    
+                </ui:insert>
             </div>
 
             <div id="left_sidebar">
-                <ui:insert name="left_sidebar">Default left side bar</ui:insert>
+                <ui:include src="leftSideBar.xhtml"></ui:include>
             </div>
-
             <div id="left_content">
-                <ui:insert name="left_content">Default content</ui:insert>
+                <div id="left_content_row1">
+                    <ui:insert name="left_content_row1">Defualt Row 1</ui:insert>
+                </div>
+                <div id="left_content_row2">
+                    <ui:insert name="left_content_row2">Defualt Row 2</ui:insert>
+                </div>
+                <div id="left_content_row3">
+                    <ui:insert name="left_content_row3">Defualt Row 3</ui:insert>
+                </div>
             </div>
             <div id="right_content">
-                <ui:insert name="right_content">Default content</ui:insert>
+                <div id="right_content_row1">
+                    <ui:insert name="right_content_row1">Defualt Row 1</ui:insert>
+                </div>
+                <div id="right_content_row2">
+                    <ui:insert name="right_content_row2">Defualt Row 2</ui:insert>
+                </div>
+                <div id="right_content_row3">
+                    <ui:insert name="right_content_row3">Defualt Row 3</ui:insert>
+                </div>
             </div>
 
             <div id="footer">
-                <ui:insert name="footer">Default footer</ui:insert>
+                <ui:insert name="footer">
+                    <h:outputText value="#{msgs.footer_left_text}" style="float: left;"/>
+                    <h:outputText value="#{msgs.footer_right_text}" style="float: right"/>
+                </ui:insert>
             </div>
         </div>
     </body>

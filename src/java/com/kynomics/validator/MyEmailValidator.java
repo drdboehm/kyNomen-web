@@ -5,6 +5,7 @@
  */
 package com.kynomics.validator;
 
+import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
@@ -20,7 +21,9 @@ import org.apache.commons.validator.routines.EmailValidator;
  * @author dboehm
  */
 @FacesValidator(value = "emailValidator")
-public class MyEmailValidator implements Validator {
+public class MyEmailValidator implements Validator, Serializable {
+
+    private static final long serialVersionUID = 3261427653947008453L;
 
     @Override
     public void validate(FacesContext context, UIComponent uiComponent, Object value) throws ValidatorException {

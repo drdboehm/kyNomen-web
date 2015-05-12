@@ -60,6 +60,8 @@ public class HalterController implements Serializable {
     private Halteradresse halteradresse;
     private Adresstyp adressTyp;
 
+    private List<Haltertreffer> treffer;
+
     /**
      * the default constructor
      */
@@ -160,6 +162,14 @@ public class HalterController implements Serializable {
         this.adressTyp = adressTyp;
     }
 
+    public List<Haltertreffer> getTreffer() {
+        return treffer;
+    }
+
+    public void setTreffer(List<Haltertreffer> treffer) {
+        this.treffer = treffer;
+    }
+
     /*
      Own Logic
      */
@@ -177,23 +187,34 @@ public class HalterController implements Serializable {
         return "index";
     }
 
-    public void sucheHalter(AjaxBehaviorEvent ev) {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        Application a = fc.getApplication();
-        if (a.getProjectStage() == ProjectStage.Development)
-            System.out.println("ProjectStage = " + a.getProjectStage().name());
-        System.out.println("******************");
-        System.out.println("halter.getHalterId()= " + halter.getHalterId());
-        System.out.println("halter.getHalterName()= " + halter.getHalterName());
-        System.out.println("halter.getHalterBemerkung()= " + halter.getHalterBemerkung());
-         System.out.println(" haltertyp.getHaltertypId()= " + haltertyp.getHaltertypId());
+    public String sucheHalter() {
+        System.out.println("halter.toString() = " + halter.toString());
         Suchkriterien suchKr = new Suchkriterien(halter.getHalterId(), halter.getHalterName(),
                 halter.getHalterBemerkung());
-        System.out.println("Suchstring: " + suchKr);
-        List<Haltertreffer> treffer = transmitterSessionBeanRemote.suchen(suchKr);
+        if (suchKr.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchKr + "'");
+        } else {
+            System.out.println("WhereClause: '" + suchKr + "'");
+        }
+        treffer = transmitterSessionBeanRemote.suchen(suchKr);
         for (Haltertreffer ht : treffer) {
             System.out.println(ht.toString());
         }
+        return "index.xhtml";
+    }
+
+    public String suchePatient() {
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper();
+       
+        
+        wrapper.setHalter(halter);
+        transmitterSessionBeanRemote.storeEjb(wrapper);
+        return "index";
+    }
+
+    public String savePatient() {
+
+        return "index.xhtml";
     }
 
     public void logAttributes() {

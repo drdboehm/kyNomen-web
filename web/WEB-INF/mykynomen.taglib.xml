@@ -22,7 +22,7 @@
     <tag>
         <tag-name>validateAge</tag-name>
         <validator>
-            <validator-id>com.kynomics.validator.Age</validator-id>
+            <validator-id>com.kynomics.AgeValidator</validator-id>
         </validator>
     </tag>
         

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+    <ui:define name="left_sidebar">
+        <ui:include src="leftSideBar.xhtml"/>
+    </ui:define>
+    <ui:define name="left_content">
+        <div id="left_content_row1">
+            <ui:insert name="left_content_row1">Default content</ui:insert>
+        </div>
+        <div id="left_content_row2">
+            <ui:insert name="left_content_row2">Default content</ui:insert>
+        </div>
+        <div id="left_content_row3">
+            <ui:insert name="left_content_row3">Default content</ui:insert>
+        </div>
+    </ui:define>
+
+</ui:composition>

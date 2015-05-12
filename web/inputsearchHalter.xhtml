@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form id="halterForm">
+            <h:messages styleClass="errorMsg"></h:messages>
+            <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                <h3>Halter-Information</h3><h:panelGroup></h:panelGroup>
+                <h:outputLabel for="inHalterId" value="#{msgs.halter_id}" />   
+                <h:inputText label="#{msgs.halter_id}" 
+                             id="inHalterId" 
+                             value="#{halterController.halter.halterId}" 
+                             p:placeholder="Halter-Id"
+                             validator="#{halterController.validateNumeric}">
+                </h:inputText>
+
+                <h:outputLabel for="inHalterName" value="#{msgs.halter_name}" />   
+                <h:inputText label="#{msgs.halter_name}" 
+                             id="inHalterName" 
+                             value="#{halterController.halter.halterName}" 
+                             p:placeholder="Halter-Name"
+                             validator="#{halterController.validateAlpha}">
+                </h:inputText>
+
+                <h:outputLabel for="inHalterBemerkung" value="#{msgs.halter_bemerkung}" />   
+                <h:inputText label="#{msgs.halter_bemerkung}" 
+                             id="inHalterBemerkung" 
+                             value="#{halterController.halter.halterBemerkung}" 
+                             p:placeholder="Bemerkung"
+                             validator="#{halterController.validateAlphaNumeric}">
+                </h:inputText>
+
+                <h:outputText  value="#{msgs.halter_haltertyp}"/>
+                <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
+                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
+                    <f:ajax listener="#{halterController.sucheHalter}" event="click" 
+                            execute="inHalterName inHalterTyp"  />
+                </h:selectOneMenu>
+
+                <h:commandButton id="sucheHalterButton" value="Suche Halter" 
+                                 action="#{halterController.sucheHalter()}"/>
+                <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" 
+                                 value="Halter speichern"/>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
+</html>
+
