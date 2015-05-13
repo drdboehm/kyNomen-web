@@ -232,8 +232,8 @@ public class HalterController implements Serializable {
             Halter h = transmitterSessionBeanRemote.findById(Halter.class, ht.halterId);
             halterList.add(h);
             System.out.println(ht.toString());
+            patientList.addAll(h.getPatientCollection());
         }
-
         return "index.xhtml";
     }
 
@@ -254,7 +254,7 @@ public class HalterController implements Serializable {
     }
 
     public String savePatient() {
-
+        System.out.println("Patient: " + patient);
         return "index.xhtml";
     }
 
