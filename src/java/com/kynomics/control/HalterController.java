@@ -7,7 +7,7 @@ package com.kynomics.control;
 
 import com.kynomics.daten.Adresstyp;
 import com.kynomics.daten.Halter;
-import com.kynomics.daten.HalterAdresssenPatientWrapper;
+import com.kynomics.daten.wrapper.HalterAdresssenPatientWrapper;
 import com.kynomics.daten.Halteradresse;
 import com.kynomics.daten.Haltertyp;
 import com.kynomics.daten.Patient;
@@ -15,22 +15,20 @@ import com.kynomics.daten.Rasse;
 import com.kynomics.daten.RassePK;
 import com.kynomics.daten.Spezies;
 import com.kynomics.daten.finder.Haltertreffer;
+import com.kynomics.daten.finder.Patiententreffer;
 import com.kynomics.daten.finder.Suchkriterien;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +58,10 @@ public class HalterController implements Serializable {
     private Halteradresse halteradresse;
     private Adresstyp adressTyp;
 
-    private List<Haltertreffer> treffer;
+    private List<Haltertreffer> halterTrefferList;
+    private List<Halter> halterList;
+    private List<Patiententreffer> patientenTrefferList;
+    private List<Patient> patientList;
 
     /**
      * the default constructor
@@ -162,14 +163,39 @@ public class HalterController implements Serializable {
         this.adressTyp = adressTyp;
     }
 
-    public List<Haltertreffer> getTreffer() {
-        return treffer;
+    public List<Haltertreffer> getHalterTrefferList() {
+        return halterTrefferList;
     }
 
-    public void setTreffer(List<Haltertreffer> treffer) {
-        this.treffer = treffer;
+    public void setHalterTrefferList(List<Haltertreffer> halterTrefferList) {
+        this.halterTrefferList = halterTrefferList;
     }
 
+    public List<Patiententreffer> getPatientenTrefferList() {
+        return patientenTrefferList;
+    }
+
+    public void setPatientenTrefferList(List<Patiententreffer> patientenTrefferList) {
+        this.patientenTrefferList = patientenTrefferList;
+    }
+
+    public List<Halter> getHalterList() {
+        return halterList;
+    }
+
+    public void setHalterList(List<Halter> halterList) {
+        this.halterList = halterList;
+    }
+
+    public List<Patient> getPatientList() {
+        return patientList;
+    }
+
+    public void setPatientList(List<Patient> patientList) {
+        this.patientList = patientList;
+    }
+
+    
     /*
      Own Logic
      */
@@ -183,11 +209,13 @@ public class HalterController implements Serializable {
 
     public String resetSpeziesRasse() {
         spezies.setSpeziesId(0);
-
         return "index";
     }
 
     public String sucheHalter() {
+        /*
+         check the attributes first
+         */
         System.out.println("halter.toString() = " + halter.toString());
         Suchkriterien suchKr = new Suchkriterien(halter.getHalterId(), halter.getHalterName(),
                 halter.getHalterBemerkung());
@@ -196,17 +224,30 @@ public class HalterController implements Serializable {
         } else {
             System.out.println("WhereClause: '" + suchKr + "'");
         }
-        treffer = transmitterSessionBeanRemote.suchen(suchKr);
-        for (Haltertreffer ht : treffer) {
+        halterTrefferList = transmitterSessionBeanRemote.sucheHalter(suchKr);
+        halterList = new ArrayList<Halter>();
+        patientList = new ArrayList<Patient>();
+                
+        for (Haltertreffer ht : halterTrefferList) {
+            Halter h = transmitterSessionBeanRemote.findById(Halter.class, ht.halterId);
+            halterList.add(h);
             System.out.println(ht.toString());
         }
+
         return "index.xhtml";
+    }
+
+    public Halter details(Haltertreffer halterTreffer) {
+        return (Halter) transmitterSessionBeanRemote.findById(Object.class, halterTreffer.halterId);
+    }
+
+    public Patient details(Patiententreffer patientenTreffer) {
+        return (Patient) transmitterSessionBeanRemote.findById(Object.class, patientenTreffer.getPatientId());
     }
 
     public String suchePatient() {
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper();
-       
-        
+
         wrapper.setHalter(halter);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return "index";
