@@ -16,9 +16,7 @@ public class KynomicsUtil {
 
     public static int getAge(Date birthday) {
         Calendar birthCal = Calendar.getInstance();
-        if (birthday == null) {
-            birthCal.set(1965, 5, 2);
-        } else {
+        if (birthday != null) {
             birthCal.setTime(birthday);
         }
         Calendar today = Calendar.getInstance();

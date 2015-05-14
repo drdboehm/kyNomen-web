@@ -17,41 +17,35 @@
                 <h:inputText label="#{msgs.patient_rufname}" 
                              id="inPatientRufName" 
                              value="#{halterController.patient.patientRuf}" 
-                             p:placeholder="Patienten-Rufname"
-                             validator="#{halterController.validateAlpha}">
-                    <f:validateLength minimum="2" maximum="30"/>
+                             p:placeholder="Patienten-Rufname">
                 </h:inputText>
 
                 <h:outputLabel for="inPatientName" value="#{msgs.patient_vollstaendiger_name}" />   
                 <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
                              id="inPatientName" 
                              value="#{halterController.patient.patientName}" 
-                             p:placeholder="vollständiger Name"
-                             validator="#{halterController.validateAlpha}">
+                             p:placeholder="vollständiger Name">
                 </h:inputText>
 
                 <h:outputLabel for="inPatientChipNr" value="#{msgs.patient_chipnr}" />   
                 <h:inputText label="#{msgs.patient_chipnr}" 
                              id="inPatientChipNr" 
                              value="#{halterController.patient.patientChip}" 
-                             p:placeholder="Chip-Nr."
-                             validator="#{halterController.validateNumeric}">
+                             p:placeholder="Chip-Nr.">
                 </h:inputText>
 
                 <h:outputLabel for="inPatientTatooNr" value="#{msgs.patient_tatoonr}" />   
                 <h:inputText label="#{msgs.patient_tatoonr}" 
                              id="inPatientTatooNr" 
                              value="#{halterController.patient.patientTatoonr}" 
-                             p:placeholder="Tatoo-Nr."
-                             validator="#{halterController.validateNumeric}">
+                             p:placeholder="Tatoo-Nr.">
                 </h:inputText>
 
                 <h:outputLabel for="inPatientZuchtBuchNr" value="#{msgs.patient_zuchtbuchnr}" />   
                 <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
                              id="inPatientZuchtBuchNr" 
                              value="#{halterController.patient.patientZuchtbuchnr}" 
-                             p:placeholder="Zuchtbuch-Nr."
-                             validator="#{halterController.validateNumeric}">
+                             p:placeholder="Zuchtbuch-Nr.">
                 </h:inputText>
 
                 <h:outputLabel for="inPatientGebDat" value="#{msgs.patient_geburtstag}" />   
@@ -64,6 +58,7 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
                 <h:outputText value="#{ky:getAge(halterController.patient.patientGeb)} Jahre"/>
+                
                 <h:outputText  value="#{msgs.patient_spezies}"/>
                 <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
@@ -74,13 +69,13 @@
                
 
                 <h:outputText  value="#{msgs.patient_rasse}"/>
-                <h:selectOneMenu id="inRasse" value="#{halterController.rassePK.rasseId}" >
+                <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
                     <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
                             render="inSpezies"/>
                 </h:selectOneMenu>  
-                <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient" immediate="true"/>
+                <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient"/>
                 <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" value="Patient speichern"/>
             </h:panelGrid>
         </h:form> 

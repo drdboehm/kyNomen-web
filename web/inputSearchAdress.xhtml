@@ -60,7 +60,7 @@
                 <h:outputLabel for="inHalterAdresseEMail" value="#{msgs.adress_email}" />   
                 <h:inputText label="#{msgs.adress_email}" 
                              id="inHalterAdresseEMail" 
-                             value="#{halterController.halteradresse.halterEmail }" 
+                             value="#{halterController.halteradresse.email}" 
                              p:placeholder="EMail-Adresse" >
                     <f:validateLength minimum="2" maximum="30"/>
                     <f:validator validatorId="emailValidator" />

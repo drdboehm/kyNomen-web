@@ -16,8 +16,7 @@
                 <h:inputText label="#{msgs.halter_id}" 
                              id="inHalterId" 
                              value="#{halterController.halter.halterId}" 
-                             p:placeholder="Halter-Id"
-                             validator="#{halterController.validateNumeric}">
+                             p:placeholder="Halter-Id">
                 </h:inputText>
 
                 <h:outputLabel for="inHalterName" value="#{msgs.halter_name}" />   
@@ -40,8 +39,6 @@
                 <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                     <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
-                    <f:ajax listener="#{halterController.sucheHalter}" event="click" 
-                            execute="inHalterName inHalterTyp"  />
                 </h:selectOneMenu>
 
                 <h:commandButton id="sucheHalterButton" value="Suche Halter" 
