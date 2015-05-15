@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ky="http://com.kynomics/kynomen">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
@@ -28,9 +29,55 @@
             </h:column>
             <h:column>
                 <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_chipnr}"/>
+                </f:facet>
+                <h:outputText value="#{p.patientChip}"> </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_tatoonr}"/>
+                </f:facet>
+                <h:outputText value="#{p.patientTatoonr}"> </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_zuchtbuchnr}"/>
+                </f:facet>
+                <h:outputText value="#{p.patientZuchtbuchnr}"> </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_geburtstag}"/>
+                </f:facet>
+                <h:outputText value="#{p.patientGeb}"> 
+                    <f:convertDateTime pattern="dd. MMM yyyy" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_alter}"/>
+                </f:facet>
+                <h:outputText value="#{ky:getAge(p.patientGeb)} Jahre"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_rasse}"/>
+                </f:facet>
+                <h:outputText value="#{p.rasseRasseId.rasseName}"> </h:outputText>
+            </h:column>
+             <h:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.patient_spezies}"/>
+                </f:facet>
+                 <h:outputText value="#{p.rasseRasseId.speziesSpeziesId.speziesName}"> </h:outputText>
+            </h:column>
+
+
+            <h:column>
+                <f:facet name="header">
                     <h:outputText value="#{msgs.halter_id}"/>
                 </f:facet>
-                <h:outputText value="#{p.halterHalterId}"> </h:outputText>
+                <h:outputText value="#{p.halterHalterId.halterId}"> </h:outputText>
             </h:column>
         </h:dataTable>
     </h:body>

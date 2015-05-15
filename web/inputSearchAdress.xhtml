@@ -13,6 +13,14 @@
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                 <h3>Adress-Information</h3> <h:panelGroup></h:panelGroup> 
+                
+                <h:outputLabel for="inHalterAdresseId" value="#{msgs.adress_id}" />   
+                <h:inputText label="#{msgs.adress_strasse_hausnr}" 
+                             id="inHalterAdresseId" 
+                             value="#{halterController.halteradresse.halteradresseId}" 
+                             p:placeholder="Adress-Id">
+                </h:inputText>
+                
                 <h:outputText  value="#{msgs.adress_adresstyp}"/>
                 <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
@@ -23,38 +31,30 @@
                 <h:inputText label="#{msgs.adress_strasse_hausnr}" 
                              id="inHalterAdresseStrasse" 
                              value="#{halterController.halteradresse.halterStrasse}" 
-                             p:placeholder="Strasse + Haus-Nr"
-                             validator="#{halterController.validateAlphaNumeric}">
-                    <f:validateLength minimum="2" maximum="30"/>
+                             p:placeholder="Strasse + Haus-Nr">
                 </h:inputText>
 
                 <h:outputLabel for="inHalterAdressePlz" value="#{msgs.adress_plz}" />   
                 <h:inputText label="#{msgs.adress_plz}" 
                              id="inHalterAdressePlz" 
                              value="#{halterController.halteradresse.halterPlz}" 
-                             p:placeholder="Postleitzahl"
-                             validator="#{halterController.validateAlphaNumeric}">
-                    <ky:convertZipCode/>
+                             p:placeholder="Postleitzahl">
+                    <!--<ky:convertZipCode/>-->
                     <!--<f:converter converterId="com.kynomics.ZipCodeConverter"/>-->
-                    <f:validateLength minimum="2" maximum="30"/>
                 </h:inputText>
 
                 <h:outputLabel for="inHalterAdresseOrt" value="#{msgs.adress_ort}" />   
                 <h:inputText label="#{msgs.adress_ort}" 
                              id="inHalterAdresseOrt" 
                              value="#{halterController.halteradresse.halterOrt}" 
-                             p:placeholder="Ort"
-                             validator="#{halterController.validateAlpha}">
-                    <f:validateLength minimum="2" maximum="30"/>
+                             p:placeholder="Ort">
                 </h:inputText>
 
                 <h:outputLabel for="inHalterAdresseTel" value="#{msgs.adress_tel}" />   
                 <h:inputText label="#{msgs.adress_tel}" 
                              id="inHalterAdresseTel" 
                              value="#{halterController.halteradresse.halterTel}" 
-                             p:placeholder="Vorwahl / Telefon-Nr."
-                             validator="#{halterController.validateAlphaNumeric}">
-                    <f:validateLength minimum="2" maximum="30"/>
+                             p:placeholder="Vorwahl / Telefon-Nr.">
                 </h:inputText>
 
                 <h:outputLabel for="inHalterAdresseEMail" value="#{msgs.adress_email}" />   
@@ -62,11 +62,11 @@
                              id="inHalterAdresseEMail" 
                              value="#{halterController.halteradresse.email}" 
                              p:placeholder="EMail-Adresse" >
-                    <f:validateLength minimum="2" maximum="30"/>
-                    <f:validator validatorId="emailValidator" />
+<!--                    <f:validateLength minimum="2" maximum="30"/>
+                    <f:validator validatorId="emailValidator" />-->
                 </h:inputText>
 
-                <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse" immediate="true"/>
+                <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse"/>
                 <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
             </h:panelGrid>
         </h:form>

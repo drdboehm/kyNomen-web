@@ -13,35 +13,41 @@
         <h:form id="patientForm">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
-                <h:outputLabel for="inPatientRufName" value="#{msgs.patient_rufname}" />   
+                <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
+                <h:inputText label="#{msgs.patient_id}" 
+                             id="inPatientId" 
+                             value="#{halterController.patient.patientId}" 
+                             p:placeholder="Patienten-Id">
+                </h:inputText>
+                <h:outputLabel for="inPatientRufName" value="*#{msgs.patient_rufname}" />   
                 <h:inputText label="#{msgs.patient_rufname}" 
                              id="inPatientRufName" 
                              value="#{halterController.patient.patientRuf}" 
                              p:placeholder="Patienten-Rufname">
                 </h:inputText>
 
-                <h:outputLabel for="inPatientName" value="#{msgs.patient_vollstaendiger_name}" />   
+                <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
                 <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
                              id="inPatientName" 
                              value="#{halterController.patient.patientName}" 
                              p:placeholder="vollständiger Name">
                 </h:inputText>
 
-                <h:outputLabel for="inPatientChipNr" value="#{msgs.patient_chipnr}" />   
+                <h:outputLabel for="inPatientChipNr" value="*#{msgs.patient_chipnr}" />   
                 <h:inputText label="#{msgs.patient_chipnr}" 
                              id="inPatientChipNr" 
                              value="#{halterController.patient.patientChip}" 
                              p:placeholder="Chip-Nr.">
                 </h:inputText>
 
-                <h:outputLabel for="inPatientTatooNr" value="#{msgs.patient_tatoonr}" />   
+                <h:outputLabel for="inPatientTatooNr" value="*#{msgs.patient_tatoonr}" />   
                 <h:inputText label="#{msgs.patient_tatoonr}" 
                              id="inPatientTatooNr" 
                              value="#{halterController.patient.patientTatoonr}" 
                              p:placeholder="Tatoo-Nr.">
                 </h:inputText>
 
-                <h:outputLabel for="inPatientZuchtBuchNr" value="#{msgs.patient_zuchtbuchnr}" />   
+                <h:outputLabel for="inPatientZuchtBuchNr" value="*#{msgs.patient_zuchtbuchnr}" />   
                 <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
                              id="inPatientZuchtBuchNr" 
                              value="#{halterController.patient.patientZuchtbuchnr}" 
@@ -58,7 +64,7 @@
                 </h:inputText>
                 <h:panelGroup></h:panelGroup>
                 <h:outputText value="#{ky:getAge(halterController.patient.patientGeb)} Jahre"/>
-                
+
                 <h:outputText  value="#{msgs.patient_spezies}"/>
                 <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                     <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
@@ -66,7 +72,7 @@
                     <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
                             render="inRasse"/>
                 </h:selectOneMenu>   
-               
+
 
                 <h:outputText  value="#{msgs.patient_rasse}"/>
                 <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" >

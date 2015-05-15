@@ -12,14 +12,14 @@
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                 <h3>Halter-Information</h3><h:panelGroup></h:panelGroup>
-                <h:outputLabel for="inHalterId" value="#{msgs.halter_id}" />   
+                <h:outputLabel for="inHalterId" value="*#{msgs.halter_id}" />   
                 <h:inputText label="#{msgs.halter_id}" 
                              id="inHalterId" 
                              value="#{halterController.halter.halterId}" 
                              p:placeholder="Halter-Id">
                 </h:inputText>
 
-                <h:outputLabel for="inHalterName" value="#{msgs.halter_name}" />   
+                <h:outputLabel for="inHalterName" value="*#{msgs.halter_name}" />   
                 <h:inputText label="#{msgs.halter_name}" 
                              id="inHalterName" 
                              value="#{halterController.halter.halterName}" 
@@ -27,7 +27,7 @@
                              validator="#{halterController.validateAlpha}">
                 </h:inputText>
 
-                <h:outputLabel for="inHalterBemerkung" value="#{msgs.halter_bemerkung}" />   
+                <h:outputLabel for="inHalterBemerkung" value="*#{msgs.halter_bemerkung}" />   
                 <h:inputText label="#{msgs.halter_bemerkung}" 
                              id="inHalterBemerkung" 
                              value="#{halterController.halter.halterBemerkung}" 
