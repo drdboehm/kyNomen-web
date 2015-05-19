@@ -100,3 +100,7 @@ div.side_box p.header {
 	font-weight: bold;
 	background-color: rgb(240, 235, 220);
 }
+
+.table-valign td {
+    vertical-align: top;
+}

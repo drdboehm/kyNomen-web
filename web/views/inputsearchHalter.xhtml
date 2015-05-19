@@ -3,12 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:pr="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
     <h:body>
         <h:form id="halterForm">
+            <pr:panel header="Halter-Formular" style="width: 500px;">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                 <h3>Halter-Information</h3><h:panelGroup></h:panelGroup>
@@ -46,6 +48,8 @@
                 <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" 
                                  value="Halter speichern"/>
             </h:panelGrid>
+            </pr:panel>
+            
         </h:form>
     </h:body>
 </html>

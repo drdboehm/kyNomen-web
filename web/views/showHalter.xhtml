@@ -1,0 +1,25 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pr="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+        <!--<pr:panel header="Halter-Formular" style="width: 300px;" >-->
+        <pr:dataTable value="#{halterController.halterList}" stickyHeader="true" var="halter">
+            <f:facet name="header">Liste der Halter</f:facet> 
+            <pr:column headerText="#{msgs.halter_id}">
+                <h:outputText value="#{halter.halterId}"></h:outputText>
+            </pr:column>
+            <pr:column headerText="#{msgs.halter_name}">
+                <h:outputText value="#{halter.halterName}"> </h:outputText>
+            </pr:column>
+            <pr:column headerText="#{msgs.halter_bemerkung}">
+                <h:outputText value="#{halter.halterBemerkung}"> </h:outputText>
+            </pr:column>
+            <pr:column headerText="#{msgs.halter_haltertyp}">
+                <h:outputText value="#{halter.haltertypId.haltertypName}"> </h:outputText>
+            </pr:column>
+            <f:facet name="footer">Anzahl Halter:</f:facet> 
+        </pr:dataTable>
+        <!--</pr:panel>-->
+</ui:composition>
+

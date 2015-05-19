@@ -4,13 +4,14 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ky="http://com.kynomics/kynomen">
+      xmlns:ky="http://com.kynomics/kynomen"
+        xmlns:pr="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
     <h:body>
-        <h3>Patienten-Information</h3> <h:panelGroup></h:panelGroup> 
         <h:form id="patientForm">
+             <pr:panel header="Patienten-Formular" style="width: 500px;">
             <h:messages styleClass="errorMsg"></h:messages>
             <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                 <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
@@ -84,6 +85,7 @@
                 <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient"/>
                 <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" value="Patient speichern"/>
             </h:panelGrid>
+             </pr:panel>
         </h:form> 
     </h:body>
 </html>

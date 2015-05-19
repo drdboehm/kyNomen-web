@@ -2,7 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <ui:decorate template="/META-INF/templates/sideBox.xhtml">
+    <ui:decorate template="/templates/sideBox.xhtml">
         <ui:param name="title" value="#{msgs.menu_title}"/>
         <h:form id="menu">
             <h:panelGrid columns="1">
@@ -19,7 +19,7 @@
         </h:form>
     </ui:decorate>
 
-    <ui:decorate template="/META-INF/templates/sideBox.xhtml">
+    <ui:decorate template="/templates/sideBox.xhtml">
         <ui:param name="title" value="#{msgs.news_title}"/>
     </ui:decorate>
 </ui:composition>
