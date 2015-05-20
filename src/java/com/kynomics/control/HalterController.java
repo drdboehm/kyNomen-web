@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -34,6 +35,7 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
+import javax.inject.Scope;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -46,6 +48,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Named(value = "halterController")
 @SessionScoped
+
 public class HalterController implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -66,6 +69,8 @@ public class HalterController implements Serializable {
     private List<Patient> patientList;
     private List<HalteradresseTreffer> halteradresseTrefferList;
     private List<Halteradresse> halteradresseList;
+    private List<Halter> filteredHalterList;
+    private List<Halter> alleHalter;
 
     /**
      * the default constructor
@@ -78,6 +83,12 @@ public class HalterController implements Serializable {
         halteradresse = new Halteradresse();
         adressTyp = new Adresstyp();
         rasse = new Rasse();
+
+    }
+
+    @PostConstruct
+    public void init() {
+        alleHalter = transmitterSessionBeanRemote.halterGet();
     }
 
     /* 
@@ -205,6 +216,22 @@ public class HalterController implements Serializable {
 
     public void setHalteradresseList(List<Halteradresse> halteradresseList) {
         this.halteradresseList = halteradresseList;
+    }
+
+    public List<Halter> getFilteredHalterList() {
+        return filteredHalterList;
+    }
+
+    public void setFilteredHalterList(List<Halter> filteredHalterList) {
+        this.filteredHalterList = filteredHalterList;
+    }
+
+    public List<Halter> getAlleHalter() {
+        return alleHalter;
+    }
+
+    public void setAlleHalter(List<Halter> alleHalter) {
+        this.alleHalter = alleHalter;
     }
 
     /*
