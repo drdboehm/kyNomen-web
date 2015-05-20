@@ -44,32 +44,30 @@
                             <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                             <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
                         </h:selectOneMenu>
-
-                        <h:commandButton id="sucheHalterButton" value="Suche Halter" 
-                                         action="#{halterController.sucheHalter()}"/>
                         <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" 
                                          value="Halter speichern"/>
+                        <h:commandButton id="sucheHalterButton" value="Suche Halter" 
+                                         action="#{halterController.sucheHalter()}"/>
                     </h:panelGrid>
                 </pf:panel>
             </h:form>
             <h:form id="halterSelect">
-                <pf:dataTable id="halterTbl" paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false" 
-                              widgetVar="halterTable" filteredValue="#{halterController.filteredHalterList}" emptyMessage="#{msgs.halter_empty_message}" 
-                              style="width: 900px; height: 280px" value="#{halterController.alleHalter}" stickyHeader="true" var="halter">
+                <pf:dataTable id="halterTbl" paginator="true" rows="5" paginatorPosition="bottom" 
+                              paginatorAlwaysVisible="false" emptyMessage="#{msgs.halter_empty_message}" 
+                              style="width: 900px; height: 280px" 
+                              value="#{halterController.halterList}" stickyHeader="true" var="halter">
                     <f:facet name="header">
                         <pf:outputPanel>
-                            Liste der Halter -   
-                            <h:outputText value="Gesamtsuche: "/>
-                            <pf:inputText id="globalFilter" onkeyup="halterTable.filter()" style="width: 150px" /> 
+                            <h:outputText value="Liste der Halter"/>
                         </pf:outputPanel>  
                     </f:facet>  
                     <pf:column style="width: 35px" headerText="#{msgs.halter_id}">
                         <h:outputText value="#{halter.halterId}"></h:outputText>
                     </pf:column>
-                    <pf:column style="width: 150px" filterBy="#{halter.halterName}" filterMatchMode="contains" headerText="#{msgs.halter_name}">
+                    <pf:column style="width: 150px" headerText="#{msgs.halter_name}">
                         <h:outputText value="#{halter.halterName}"> </h:outputText>
                     </pf:column>
-                    <pf:column style="width: 450px" filterBy="#{halter.halterBemerkung}" filterMatchMode="contains" headerText="#{msgs.halter_bemerkung}">
+                    <pf:column style="width: 450px"  headerText="#{msgs.halter_bemerkung}">
                         <h:outputText value="#{halter.halterBemerkung}"> </h:outputText>
                     </pf:column>
                     <pf:column headerText="#{msgs.halter_haltertyp}">
@@ -81,19 +79,21 @@
             <h:form id="patientForm">
                 <pf:panel header="Patienten-Formular" style="width: 350px;">
                     <h:messages styleClass="errorMsg"></h:messages>
-                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                    <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
                         <h:inputText label="#{msgs.patient_id}" 
                                      id="inPatientId" 
                                      value="#{halterController.patient.patientId}" 
                                      pt:placeholder="Patienten-Id">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientRufName" value="*#{msgs.patient_rufname}" />   
                         <h:inputText label="#{msgs.patient_rufname}" 
                                      id="inPatientRufName" 
                                      value="#{halterController.patient.patientRuf}" 
                                      pt:placeholder="Patienten-Rufname">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
                         <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
@@ -101,6 +101,7 @@
                                      value="#{halterController.patient.patientName}" 
                                      pt:placeholder="vollständiger Name">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientChipNr" value="*#{msgs.patient_chipnr}" />   
                         <h:inputText label="#{msgs.patient_chipnr}" 
@@ -108,6 +109,7 @@
                                      value="#{halterController.patient.patientChip}" 
                                      pt:placeholder="Chip-Nr.">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientTatooNr" value="*#{msgs.patient_tatoonr}" />   
                         <h:inputText label="#{msgs.patient_tatoonr}" 
@@ -115,6 +117,7 @@
                                      value="#{halterController.patient.patientTatoonr}" 
                                      pt:placeholder="Tatoo-Nr.">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientZuchtBuchNr" value="*#{msgs.patient_zuchtbuchnr}" />   
                         <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
@@ -122,6 +125,7 @@
                                      value="#{halterController.patient.patientZuchtbuchnr}" 
                                      pt:placeholder="Zuchtbuch-Nr.">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientGebDat" value="#{msgs.patient_geburtstag}" />   
                         <h:inputText label="#{msgs.patient_geburtstag}" 
@@ -132,8 +136,9 @@
                             <ky:validateAge maxAge="20"/>   
                         </h:inputText>
                         <h:panelGroup></h:panelGroup>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputText value="#{ky:getAge(halterController.patient.patientGeb)} Jahre"/>
-
+                        <h:panelGroup></h:panelGroup>
                         <h:outputText  value="#{msgs.patient_spezies}"/>
                         <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                             <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
@@ -141,7 +146,7 @@
                             <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
                                     render="inRasse"/>
                         </h:selectOneMenu>   
-
+                        <h:panelGroup></h:panelGroup>
 
                         <h:outputText  value="#{msgs.patient_rasse}"/>
                         <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" >
@@ -150,13 +155,16 @@
                             <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
                                     render="inSpezies"/>
                         </h:selectOneMenu>  
-                        <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient"/>
+                        <h:panelGroup></h:panelGroup>
                         <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" value="Patient speichern"/>
+                        <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient"/>                    
                     </h:panelGrid>
                 </pf:panel>
             </h:form> 
             <h:form id="patientSelect">
-                <pf:dataTable paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"  style="width: 900px;" value="#{halterController.patientList}" stickyHeader="true" var="p">
+                <pf:dataTable paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"  
+                              style="width: 900px;" value="#{halterController.patientList}" 
+                              emptyMessage="#{msgs.patient_empty_message}" stickyHeader="true" var="p">
                     <pf:column style="width: 35px" headerText="#{msgs.patient_id}">
                         <h:outputText value="#{p.patientId}"> </h:outputText>
                     </pf:column>
@@ -250,39 +258,41 @@
                             <!--                    <f:validateLength minimum="2" maximum="30"/>
                                                 <f:validator validatorId="emailValidator" />-->
                         </h:inputText>
-
-                        <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse"/>
                         <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
+                        <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse"/>
                     </h:panelGrid>
                 </pf:panel>
             </h:form>
             <h:form id="adressSelect">
-                <pf:dataTable paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"  style="width: 900px;" value="#{halterController.halteradresseList}" var="ha" stickyHeader="true">
-                    <pf:column headerText="#{msgs.adress_id}">
+                <pf:dataTable paginator="true" rows="5" paginatorPosition="bottom" 
+                              paginatorAlwaysVisible="false"  style="width: 900px;" 
+                              value="#{halterController.halteradresseList}" var="ha" 
+                              emptyMessage="#{msgs.adress_empty_message}" stickyHeader="true">
+                    <pf:column style="width: 35px" headerText="#{msgs.adress_id}">
                         <h:outputText value="#{ha.halteradresseId}"> </h:outputText>
                     </pf:column>
-                    <pf:column headerText="#{msgs.adress_adresstyp}">
+                    <pf:column style="width: 100px" headerText="#{msgs.adress_adresstyp}">
                         <h:outputText value="#{ha.adresstypId.adresstypName}"> </h:outputText>
                     </pf:column>
-                    <pf:column headerText="#{msgs.adress_strasse_hausnr}">
+                    <pf:column style="width: 100px" headerText="#{msgs.adress_strasse_hausnr}">
                         <h:outputText value="#{ha.halterStrasse}"> </h:outputText>
                     </pf:column>
-                    <pf:column headerText="#{msgs.adress_plz}">
+                    <pf:column style="width: 80px" headerText="#{msgs.adress_plz}">
                         <h:outputText value="#{ha.halterPlz}"> </h:outputText>
                     </pf:column>
 
-                    <pf:column headerText="#{msgs.adress_ort}">
+                    <pf:column style="width: 100px" headerText="#{msgs.adress_ort}">
                         <h:outputText value="#{ha.halterOrt}"> </h:outputText>
                     </pf:column>
 
-                    <pf:column headerText="#{msgs.adress_tel}">
+                    <pf:column style="width: 100px" headerText="#{msgs.adress_tel}">
                         <h:outputText value="#{ha.halterTel}"> </h:outputText>
                     </pf:column>
-                    <pf:column headerText="#{msgs.adress_email}">
+                    <pf:column style="width: 100px" headerText="#{msgs.adress_email}">
                         <h:outputText value="#{ha.email}"> </h:outputText>
                     </pf:column>
                     <pf:column headerText="#{msgs.halter_id}">
-                        <h:outputText value="#{ha.halterId.halterId}"> </h:outputText>
+                        <h:outputText style="width: 35px" value="#{ha.halterId.halterId}"> </h:outputText>
                     </pf:column>
                     <f:facet name="footer">Anzahl Adressen: #{fn:length(halterController.halteradresseList)}</f:facet> 
                 </pf:dataTable>

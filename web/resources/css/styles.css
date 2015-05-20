@@ -56,26 +56,9 @@ body {
 
 #left_sidebar {
 	float: left;
-	width: 140px;
+	/*width: 50px;*/
 	margin-top: 15px;
 }
-
-#left_content {
-	float: left;
-	width: 500px;
-	margin-left: 15px;
-	margin-top: 15px;
-}
-
-#left_content h2 {
-	margin-top: 0px;
-	font-size: 17px;
-}
-
-#left_content h3 {
-	font-size: 14px;
-}
-
 #footer {
 	display: block;
 	height: 14px;
@@ -92,6 +75,7 @@ div.side_box {
 	border: solid 1px rgb(126, 125, 123);
 	padding: 2px;
 	margin-bottom: 5px;
+        width: 1200px;
 }
 
 div.side_box p.header {

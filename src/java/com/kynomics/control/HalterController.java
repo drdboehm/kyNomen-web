@@ -22,6 +22,7 @@ import com.kynomics.daten.finder.SuchkriterienPatient;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,6 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
-import javax.inject.Scope;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -70,7 +70,6 @@ public class HalterController implements Serializable {
     private List<HalteradresseTreffer> halteradresseTrefferList;
     private List<Halteradresse> halteradresseList;
     private List<Halter> filteredHalterList;
-    private List<Halter> alleHalter;
 
     /**
      * the default constructor
@@ -88,7 +87,6 @@ public class HalterController implements Serializable {
 
     @PostConstruct
     public void init() {
-        alleHalter = transmitterSessionBeanRemote.halterGet();
     }
 
     /* 
@@ -226,14 +224,6 @@ public class HalterController implements Serializable {
         this.filteredHalterList = filteredHalterList;
     }
 
-    public List<Halter> getAlleHalter() {
-        return alleHalter;
-    }
-
-    public void setAlleHalter(List<Halter> alleHalter) {
-        this.alleHalter = alleHalter;
-    }
-
     /*
      Own Logic
      */
@@ -264,6 +254,16 @@ public class HalterController implements Serializable {
         return "index.xhtml";
     }
 
+    public String resetLists() {
+        halterList.clear();
+        patientList.clear();
+        halteradresseList.clear();
+        halter = new Halter();
+        patient = new Patient();
+        halteradresse = new Halteradresse();
+        return "index.xhtml";
+    }
+            
     public String resetSpeziesRasse() {
         spezies.setSpeziesId(0);
         return "index";
@@ -283,30 +283,26 @@ public class HalterController implements Serializable {
         }
         halterTrefferList = transmitterSessionBeanRemote.sucheHalter(suchKr);
         halterList = new ArrayList<>();
+        patientList = new ArrayList<>();
+        halteradresseList = new ArrayList<>();
         for (Haltertreffer ht : halterTrefferList) {
             Halter h = this.details(ht);
             halterList.add(h);
             /*
-            Call to .size() here should resolve the lazy loaded relationship, thus avoiding the NullpointerException
+             Call to .size() here should resolve the lazy loaded relationship, thus avoiding the NullpointerException
              */
             if (h.getPatientCollection() != null) {
-                System.out.println(ht.toString() + " - " + h.getPatientCollection());
-//                patientList.addAll(h.getPatientCollection());
+                System.out.println(ht.toString() + " - Size PatientList: " + h.getPatientCollection().size());
+                patientList.addAll(h.getPatientCollection());
+            }
+
+            if (h.getHalteradresseCollection() != null) {
+                System.out.println(ht.toString() + " - Size AdressList: "
+                        + h.getHalteradresseCollection().size());
+                halteradresseList.addAll(h.getHalteradresseCollection());
             }
         }
         return "index.xhtml";
-    }
-
-    public Halter details(Haltertreffer halterTreffer) {
-        return transmitterSessionBeanRemote.findById(Halter.class, halterTreffer.halterId);
-    }
-
-    public Patient details(Patiententreffer patientenTreffer) {
-        return transmitterSessionBeanRemote.findById(Patient.class, patientenTreffer.getPatientId());
-    }
-
-    public Halteradresse details(HalteradresseTreffer halteradresseTreffer) {
-        return transmitterSessionBeanRemote.findById(Halteradresse.class, halteradresseTreffer.getHalteradresseId());
     }
 
     public String suchePatient() {
@@ -326,8 +322,15 @@ public class HalterController implements Serializable {
         }
         patientenTrefferList = transmitterSessionBeanRemote.suchePatient(suchKr);
         patientList = new ArrayList<>();
+        halterList = new ArrayList<>();
+        halteradresseList = new ArrayList<>();
         for (Patiententreffer pt : patientenTrefferList) {
-            patientList.add(this.details(pt));
+            Patient p = this.details(pt);
+            patientList.add(p);
+            Halter h = p.getHalterHalterId();
+            halterList.add(h);
+            Collection<Halteradresse> halteradresseCollection = p.getHalterHalterId().getHalteradresseCollection();
+            halteradresseList.addAll(halteradresseCollection);
         }
         return "index";
     }
@@ -350,10 +353,28 @@ public class HalterController implements Serializable {
         }
         halteradresseTrefferList = transmitterSessionBeanRemote.sucheHalterAdresse(suchKr);
         halteradresseList = new ArrayList<>();
+        halterList = new ArrayList<>();
+        patientList = new  ArrayList<>();
         for (HalteradresseTreffer hat : halteradresseTrefferList) {
-            halteradresseList.add(this.details(hat));
+            Halteradresse ha = this.details(hat);
+            halteradresseList.add(ha);
+            halterList.add(ha.getHalterId());
+            Collection<Patient> patientCollection = ha.getHalterId().getPatientCollection();
+            patientList.addAll(patientCollection);
         }
         return "index";
+    }
+
+    public Halter details(Haltertreffer halterTreffer) {
+        return transmitterSessionBeanRemote.findById(Halter.class, halterTreffer.halterId);
+    }
+
+    public Patient details(Patiententreffer patientenTreffer) {
+        return transmitterSessionBeanRemote.findById(Patient.class, patientenTreffer.getPatientId());
+    }
+
+    public Halteradresse details(HalteradresseTreffer halteradresseTreffer) {
+        return transmitterSessionBeanRemote.findById(Halteradresse.class, halteradresseTreffer.getHalteradresseId());
     }
 
     public void logAttributes() {
@@ -423,7 +444,7 @@ public class HalterController implements Serializable {
         for (Rasse r : list) {
 //            System.out.println("r.getRasseName() = " + r.getRasseName() + "  r.getSpeziesSpeziesId().getSpeziesId() = " + r.getSpeziesSpeziesId().getSpeziesId());
             /*
-                use nullsafe equals of Integer-Type
+             use nullsafe equals of Integer-Type
              */
             if (Objects.equals(spezies.getSpeziesId(), r.getSpeziesSpeziesId().getSpeziesId())) {
 //                System.out.println("" + r.getRasseName() + "-" + r.getSpeziesSpeziesId().getSpeziesId());

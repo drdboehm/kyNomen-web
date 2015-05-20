@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <ui:decorate template="/templates/sideBox.xhtml">
-        <ui:param name="title" value="#{msgs.menu_title}"/>
-        <h:form id="menu">
-            <h:panelGrid columns="1">
-                <h:commandLink action="/showCustomer.xhtml">
-                    #{msgs.menu_show_halter}
-                </h:commandLink>
-                <h:commandLink action="/showCustomer.xhtml">
-                    #{msgs.menu_show_adress}
-                </h:commandLink>
-                <h:commandLink action="/showCustomer.xhtml">
-                    #{msgs.menu_show_patient}
-                </h:commandLink>
-            </h:panelGrid>
-        </h:form>
-    </ui:decorate>
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:pf="http://primefaces.org/ui">
+        <ui:decorate template="/templates/sideBox.xhtml">
+            <ui:param name="title" value="#{msgs.menu_title}"/>
+            <h:form id="menu">
+                <h:panelGrid columns="3">
+                    <h:commandLink action="#{halterController.resetLists()}">
+                        #{msgs.menu_reset} 
+                    </h:commandLink>
+                    <h:commandLink action="/showCustomer.xhtml">
+                        #{msgs.menu_control_untersuchung}
+                    </h:commandLink>
+                    <h:commandLink action="/showCustomer.xhtml">
+                        #{msgs.menu_control_SOPs}
+                    </h:commandLink>
+                </h:panelGrid>
+            </h:form>
+        </ui:decorate>
 
-    <ui:decorate template="/templates/sideBox.xhtml">
-        <ui:param name="title" value="#{msgs.news_title}"/>
-    </ui:decorate>
+<!--        <ui:decorate template="/templates/sideBox.xhtml">
+            <ui:param name="title" value="#{msgs.news_title}"/>
+        </ui:decorate>-->
 </ui:composition>
