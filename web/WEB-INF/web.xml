@@ -25,4 +25,8 @@
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
+<!--    <taglib>
+        <taglib-uri>/WEB-INF/my_custom_tags.xml</taglib-uri>
+        <taglib-location>/WEB-INF/my_custom_tags.xml</taglib-location>
+    </taglib>-->
 </web-app>

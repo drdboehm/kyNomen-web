@@ -70,6 +70,8 @@ public class HalterController implements Serializable {
     private List<HalteradresseTreffer> halteradresseTrefferList;
     private List<Halteradresse> halteradresseList;
     private List<Halter> filteredHalterList;
+    private String radSelectIndex2 = "";
+    private List<Halter> sampleTable2 = null;
 
     /**
      * the default constructor
@@ -87,6 +89,7 @@ public class HalterController implements Serializable {
 
     @PostConstruct
     public void init() {
+        populateTable2Values();
     }
 
     /* 
@@ -224,6 +227,24 @@ public class HalterController implements Serializable {
         this.filteredHalterList = filteredHalterList;
     }
 
+    public String getRadSelectIndex2() {
+        return radSelectIndex2;
+    }
+
+    public void setRadSelectIndex2(String radSelectIndex2) {
+        this.radSelectIndex2 = radSelectIndex2;
+    }
+
+    public List<Halter> getSampleTable2() {
+        return sampleTable2;
+    }
+
+    public void setSampleTable2(List<Halter> sampleTable2) {
+        this.sampleTable2 = sampleTable2;
+    }
+
+    
+
     /*
      Own Logic
      */
@@ -263,7 +284,7 @@ public class HalterController implements Serializable {
         halteradresse = new Halteradresse();
         return "index.xhtml";
     }
-            
+
     public String resetSpeziesRasse() {
         spezies.setSpeziesId(0);
         return "index";
@@ -354,7 +375,7 @@ public class HalterController implements Serializable {
         halteradresseTrefferList = transmitterSessionBeanRemote.sucheHalterAdresse(suchKr);
         halteradresseList = new ArrayList<>();
         halterList = new ArrayList<>();
-        patientList = new  ArrayList<>();
+        patientList = new ArrayList<>();
         for (HalteradresseTreffer hat : halteradresseTrefferList) {
             Halteradresse ha = this.details(hat);
             halteradresseList.add(ha);
@@ -505,6 +526,19 @@ public class HalterController implements Serializable {
             HtmlInputText htmlInputText = (HtmlInputText) uiComponent;
             FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + ": nur Zahlen erlaubt");
             throw new ValidatorException(facesMessage);
+        }
+    }
+
+    //Method to populate the table which contains 
+    //the radio which needs to be gropued in a column
+    private void populateTable2Values() {
+        sampleTable2 = new ArrayList();
+        for (int i = 0; i < 3; i++) {
+            Halter halter = new Halter();
+            halter.setHalterName("Detlef");
+            halter.setHalterId(10);
+            halter.setHalterBemerkung("");
+            sampleTable2.add(halter);
         }
     }
 }
