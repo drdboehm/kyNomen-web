@@ -21,8 +21,11 @@ import com.kynomics.daten.finder.SuchkriterienHalteradresse;
 import com.kynomics.daten.finder.SuchkriterienPatient;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +73,8 @@ public class HalterController implements Serializable {
     private List<HalteradresseTreffer> halteradresseTrefferList;
     private List<Halteradresse> halteradresseList;
     private List<Halter> filteredHalterList;
-    private String radSelectIndex2 = "";
-    private List<Halter> sampleTable2 = null;
+    final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    private Boolean sortOrderDesc = false;
 
     /**
      * the default constructor
@@ -89,7 +92,6 @@ public class HalterController implements Serializable {
 
     @PostConstruct
     public void init() {
-        populateTable2Values();
     }
 
     /* 
@@ -226,24 +228,6 @@ public class HalterController implements Serializable {
     public void setFilteredHalterList(List<Halter> filteredHalterList) {
         this.filteredHalterList = filteredHalterList;
     }
-
-    public String getRadSelectIndex2() {
-        return radSelectIndex2;
-    }
-
-    public void setRadSelectIndex2(String radSelectIndex2) {
-        this.radSelectIndex2 = radSelectIndex2;
-    }
-
-    public List<Halter> getSampleTable2() {
-        return sampleTable2;
-    }
-
-    public void setSampleTable2(List<Halter> sampleTable2) {
-        this.sampleTable2 = sampleTable2;
-    }
-
-    
 
     /*
      Own Logic
@@ -386,6 +370,37 @@ public class HalterController implements Serializable {
         return "index";
     }
 
+    public String deleteHalter(Integer halterId) {
+        System.out.println("Delete halter with Id " + halterId);
+        Halter deleteById = transmitterSessionBeanRemote.deleteById(Halter.class, halterId);
+        if (deleteById != null) {
+            System.out.println("Halter Details deleted from database: " + deleteById);
+        }
+
+        /*
+        here we need to adjust the halterList, patientList and halteradresseList
+        first of all: we have a DELETE ON CASCADE in our DELETE query!
+        We need to decide, whether this should be like this!?
+        If so, we have to possibilities to update the other lists.
+        1. the search can be repeated at ALL, then all will be updated, BUT there will be traffic to the EJB and back! 
+        2. we remove the CASCADED entries by hand here !
+        3. third, we do not want to delete patienten and halteradresses !?
+         */
+        if (halterList.remove(deleteById)) {
+            System.out.println("Halter Details deleted from halterList: " + deleteById);
+            
+        };
+        return "index";
+    }
+    
+    public void editHalter(Halter halter) {
+        halter.setEdited(true);
+    }
+    
+    public void saveHalter(Halter halter) {
+        halter.setEdited(false);
+    }
+
     public Halter details(Haltertreffer halterTreffer) {
         return transmitterSessionBeanRemote.findById(Halter.class, halterTreffer.halterId);
     }
@@ -396,45 +411,6 @@ public class HalterController implements Serializable {
 
     public Halteradresse details(HalteradresseTreffer halteradresseTreffer) {
         return transmitterSessionBeanRemote.findById(Halteradresse.class, halteradresseTreffer.getHalteradresseId());
-    }
-
-    public void logAttributes() {
-        /*
-         first collect, what we have from the JSF page
-         */
-        System.out.println("**********  Halter related Attributes ***** ");
-        System.out.println("halter = " + halter);
-        System.out.println("halter.getHalterId() = " + halter.getHalterId());
-        System.out.println("halter.getHalterName() = " + halter.getHalterName());
-        System.out.println("halter.getHalterBemerkung() = " + halter.getHalterBemerkung());
-        System.out.println("halter.getHaltertypId() = " + halter.getHaltertypId());
-        System.out.println("haltertyp = " + haltertyp);
-        System.out.println("haltertyp.getHaltertypId() = " + haltertyp.getHaltertypId());
-        System.out.println("haltertyp.getHaltertypName() = " + haltertyp.getHaltertypName());
-        System.out.println("**********  Patient related Attributes ***** ");
-        System.out.println("patient = " + patient);
-        System.out.println("patient.getPatientId() = " + patient.getPatientId());
-        System.out.println("patient.getPatientRuf() = " + patient.getPatientRuf());
-        System.out.println("patient.getPatientName() = " + patient.getPatientName());
-        System.out.println("patient.getPatientChip() = " + patient.getPatientChip());
-        System.out.println("patient.getPatientTatoonr() = " + patient.getPatientTatoonr());
-        System.out.println("patient.getPatientZuchtbuchnr() = " + patient.getPatientZuchtbuchnr());
-        System.out.println("patient.getPatientGeb() = " + patient.getPatientGeb());
-        System.out.println("patient.getRasseRasseId() = " + patient.getRasseRasseId());
-        System.out.println("patient.getHalterHalterId() = " + patient.getHalterHalterId());
-        System.out.println("patient.getAuftragpositionCollection() = " + patient.getAuftragpositionCollection());
-        System.out.println("**********  Spezies related Attributes ***** ");
-        System.out.println("spezies = " + spezies);
-        System.out.println("spezies.getSpeziesId() = " + spezies.getSpeziesId());
-        System.out.println("spezies.getSpeziesName() = " + spezies.getSpeziesName());
-        System.out.println("spezies.getRasseCollection() = " + spezies.getRasseCollection());
-        System.out.println("**********  Rasse related Attributes ***** ");
-        System.out.println("rasse = " + rasse);
-        System.out.println("rasse.getRasseId() = " + rasse.getRasseId());
-        System.out.println("rasse.getRasseName() = " + rasse.getRasseName());
-        System.out.println("rasse.getSpeziesSpeziesId() = " + rasse.getSpeziesSpeziesId());
-        System.out.println("rasse.getPatientCollection() = " + rasse.getPatientCollection());
-        System.out.println("**********************************");
     }
 
     /**
@@ -501,10 +477,55 @@ public class HalterController implements Serializable {
         }
         return alleAdressTypenMap;
     }
+
+    public String sortHalterByRanking() {
+        Collections.sort(halterList, new Comparator<Halter>() {
+            @Override
+            public int compare(Halter o1, Halter o2) {
+                Integer diff = (o1.getHalterId() - o2.getHalterId());
+                diff = sortOrderDesc ? (diff) : (-diff);
+                return diff;
+            }
+        });
+        sortOrderDesc = !sortOrderDesc;
+        return null;
+    }
+
+    public String sortHalterByName() {
+        Collections.sort(halterList, new Comparator<Halter>() {
+            @Override
+            public int compare(Halter o1, Halter o2) {
+                if (sortOrderDesc) {
+                    return o1.getHalterName().compareTo(o2.getHalterName());
+                } else {
+                    return o2.getHalterName().compareTo(o1.getHalterName());
+                }
+            }
+        });
+        sortOrderDesc = !sortOrderDesc;
+        return null;
+
+    }
+
+    public String sortHalterByBemerkung() {
+        Collections.sort(halterList, new Comparator<Halter>() {
+            @Override
+            public int compare(Halter o1, Halter o2) {
+                if (sortOrderDesc) {
+                    return o1.getHalterBemerkung().compareTo(o2.getHalterBemerkung());
+                } else {
+                    return o2.getHalterBemerkung().compareTo(o1.getHalterBemerkung());
+                }
+            }
+        });
+        sortOrderDesc = !sortOrderDesc;
+        return null;
+
+    }
+
     /*
      Own validators
      */
-
     public void validateAlpha(FacesContext context, UIComponent uiComponent, Object value) throws ValidatorException {
         if (!StringUtils.isAlphaSpace((String) value)) {
             HtmlInputText htmlInputText = (HtmlInputText) uiComponent;
@@ -529,16 +550,43 @@ public class HalterController implements Serializable {
         }
     }
 
-    //Method to populate the table which contains 
-    //the radio which needs to be gropued in a column
-    private void populateTable2Values() {
-        sampleTable2 = new ArrayList();
-        for (int i = 0; i < 3; i++) {
-            Halter halter = new Halter();
-            halter.setHalterName("Detlef");
-            halter.setHalterId(10);
-            halter.setHalterBemerkung("");
-            sampleTable2.add(halter);
-        }
+    public void logAttributes() {
+        /*
+         first collect, what we have from the JSF page
+         */
+        System.out.println("**********  Halter related Attributes ***** ");
+        System.out.println("halter = " + halter);
+        System.out.println("halter.getHalterId() = " + halter.getHalterId());
+        System.out.println("halter.getHalterName() = " + halter.getHalterName());
+        System.out.println("halter.getHalterBemerkung() = " + halter.getHalterBemerkung());
+        System.out.println("halter.getHaltertypId() = " + halter.getHaltertypId());
+        System.out.println("haltertyp = " + haltertyp);
+        System.out.println("haltertyp.getHaltertypId() = " + haltertyp.getHaltertypId());
+        System.out.println("haltertyp.getHaltertypName() = " + haltertyp.getHaltertypName());
+        System.out.println("**********  Patient related Attributes ***** ");
+        System.out.println("patient = " + patient);
+        System.out.println("patient.getPatientId() = " + patient.getPatientId());
+        System.out.println("patient.getPatientRuf() = " + patient.getPatientRuf());
+        System.out.println("patient.getPatientName() = " + patient.getPatientName());
+        System.out.println("patient.getPatientChip() = " + patient.getPatientChip());
+        System.out.println("patient.getPatientTatoonr() = " + patient.getPatientTatoonr());
+        System.out.println("patient.getPatientZuchtbuchnr() = " + patient.getPatientZuchtbuchnr());
+        System.out.println("patient.getPatientGeb() = " + patient.getPatientGeb());
+        System.out.println("patient.getRasseRasseId() = " + patient.getRasseRasseId());
+        System.out.println("patient.getHalterHalterId() = " + patient.getHalterHalterId());
+        System.out.println("patient.getAuftragpositionCollection() = " + patient.getAuftragpositionCollection());
+        System.out.println("**********  Spezies related Attributes ***** ");
+        System.out.println("spezies = " + spezies);
+        System.out.println("spezies.getSpeziesId() = " + spezies.getSpeziesId());
+        System.out.println("spezies.getSpeziesName() = " + spezies.getSpeziesName());
+        System.out.println("spezies.getRasseCollection() = " + spezies.getRasseCollection());
+        System.out.println("**********  Rasse related Attributes ***** ");
+        System.out.println("rasse = " + rasse);
+        System.out.println("rasse.getRasseId() = " + rasse.getRasseId());
+        System.out.println("rasse.getRasseName() = " + rasse.getRasseName());
+        System.out.println("rasse.getSpeziesSpeziesId() = " + rasse.getSpeziesSpeziesId());
+        System.out.println("rasse.getPatientCollection() = " + rasse.getPatientCollection());
+        System.out.println("**********************************");
     }
+
 }

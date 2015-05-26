@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:pf="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ky="http://com.kynomics/kynomen"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="bodyContent">
+        <h:panelGrid columns="2" styleClass="table-valign">
+            <h:form id="halterForm">
+                <h:messages styleClass="errorMsg"></h:messages>
+                <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                    <h:commandButton value="#{msgs.menu_reset}" action="#{untersuchungenController.resetLists()}"/>
+                    <h:panelGroup></h:panelGroup>
+                    <h:outputLabel for="inUnteruchungId" value="*#{msgs.untersuchung_id}" />   
+                    <h:inputText label="#{msgs.untersuchung_id}" 
+                                 id="inUntersuchungId" 
+                                 value="#{untersuchungenController.currentUntersuchung.untersuchungId}" 
+                                 p:placeholder="Untersuchung-Id">
+                    </h:inputText>
+
+                    <h:outputLabel for="inUntersuchungName" value="*#{msgs.untersuchung_name}" />   
+                    <h:inputText label="#{msgs.untersuchung_name}" 
+                                 id="inUntersuchungName" 
+                                 value="#{untersuchungenController.currentUntersuchung.untersuchungName}" 
+                                 p:placeholder="Untersuchungs-Name">
+                    </h:inputText>
+
+                    <h:outputLabel for="inUntersuchungPreis" value="*#{msgs.untersuchung_preis}" />   
+                    <h:inputText label="#{msgs.untersuchung_preis}" 
+                                 id="inUntersuchungPreis" 
+                                 value="#{untersuchungenController.currentUntersuchung.untersuchungPreis}" 
+                                 p:placeholder="Preis">
+                    </h:inputText>
+                    <h:outputLabel for="inUntersuchungDauer" value="*#{msgs.untersuchung_dauer}" />   
+                    <h:inputText label="#{msgs.untersuchung_dauer}" 
+                                 id="inUntersuchungDauer" 
+                                 value="#{untersuchungenController.currentUntersuchung.untersuchungDauer}" 
+                                 p:placeholder="Dauer">
+                    </h:inputText>
+
+                    <h:outputText  value="#{msgs.untersuchung_untersuchungtyp}"/>
+                    <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" >
+                        <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                        <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}"/>
+                    </h:selectOneMenu>
+
+                    <h:commandButton id="sucheUntersuchungButton" value="Suche Untersuchung" 
+                                     action="#{untersuchungenController.sucheUntersuchung()}"/>
+                    <h:commandButton id="saveUntersuchungButton" action="#{untersuchungenController.saveUntersuchung()}" 
+                                     value="Untersuchung speichern"/>
+                </h:panelGrid>
+            </h:form>
+            <h:form id="halterSelect">
+                <h:dataTable style="width: 900px;" value="#{untersuchungenController.untersuchungenList}" 
+                             var="u" >
+                    <f:facet name="header">Liste aller Untersuchungen</f:facet> 
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.untersuchung_id} - 
+                            <h:commandButton id="untersuchungIdSort" value="Sort" action="#{untersuchungenController.sortUntersuchungByRanking()}"/>
+                        </f:facet>
+                        <h:outputText value="#{u.untersuchungId}"></h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.untersuchung_name} -
+                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByName()}"/>
+                        </f:facet>
+                        <h:outputText value="#{u.untersuchungName}" rendered="#{not u.edited}"> </h:outputText>
+                        <h:inputText value="#{u.untersuchungName}" rendered="#{u.edited}"></h:inputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.untersuchung_dauer} -
+                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByDauer()}"/>
+                        </f:facet>
+                        <h:outputText value="#{u.untersuchungDauer}"  rendered="#{not u.edited}"> </h:outputText>
+                        <h:inputText value="#{u.untersuchungDauer}"  rendered="#{u.edited}"> </h:inputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.untersuchung_preis} -
+                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByPreis()}"/>
+                        </f:facet>
+                        <h:outputText value="#{u.untersuchungPreis}"  rendered="#{not u.edited}"> </h:outputText>
+                        <h:inputText value="#{u.untersuchungPreis}"  rendered="#{u.edited}"> </h:inputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.untersuchung_untersuchungtyp}</f:facet>
+                        <h:outputText value="#{u.untersuchungstypUntersuchungtypId.untersuchungtypName}" rendered="#{not u.edited}"> </h:outputText>
+                        <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" rendered="#{u.edited}">
+                            <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}" />
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Ändern</f:facet>
+                        <h:commandButton value="Ändern" action="#{untersuchungenController.editUntersuchung(u)}" rendered="#{not u.edited}"/>
+                        <h:commandButton value="Speichern" action="#{untersuchungenController.saveUntersuchung(u)}" rendered="#{u.edited}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Löschen</f:facet>
+                        <h:commandButton value="Löschen" action="#{untersuchungenController.deleteUntersuchung(u.untersuchungId)}"/>
+                    </h:column>
+                    <f:facet name="footer">Anzahl Untersuchungen: #{fn:length(untersuchungenController.untersuchungenList)}</f:facet> 
+                </h:dataTable>
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>
+

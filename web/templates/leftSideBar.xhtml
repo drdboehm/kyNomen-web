@@ -3,24 +3,19 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:pf="http://primefaces.org/ui">
-        <ui:decorate template="/templates/sideBox.xhtml">
-            <ui:param name="title" value="#{msgs.menu_title}"/>
-            <h:form id="menu">
-                <h:panelGrid columns="3">
-                    <h:commandLink action="#{halterController.resetLists()}">
-                        #{msgs.menu_reset} 
-                    </h:commandLink>
-                    <h:commandLink action="/showCustomer.xhtml">
-                        #{msgs.menu_control_untersuchung}
-                    </h:commandLink>
-                    <h:commandLink action="/showCustomer.xhtml">
-                        #{msgs.menu_control_SOPs}
-                    </h:commandLink>
-                </h:panelGrid>
-            </h:form>
-        </ui:decorate>
+    <ui:decorate template="/templates/sideBox.xhtml">
+        <ui:param name="title" value="#{msgs.menu_title}"/>
+        <h:form id="menu">
+             <a href="index.xhtml">Startseite</a>
+            <h:panelGrid columns="3">
+                <h:commandButton value="#{msgs.menu_control_halter_patienten_adressen}" action="/index.xhtml}"/>
+                <h:commandButton value="#{msgs.menu_control_auftrag}" action="/controlAuftrag.xhtml"/>
+                <h:commandButton value="#{msgs.menu_control_untersuchungen}" action="/controlUntersuchungen.xhtml"/>
+            </h:panelGrid>
+        </h:form>
+    </ui:decorate>
 
-<!--        <ui:decorate template="/templates/sideBox.xhtml">
-            <ui:param name="title" value="#{msgs.news_title}"/>
-        </ui:decorate>-->
+    <!--        <ui:decorate template="/templates/sideBox.xhtml">
+                <ui:param name="title" value="#{msgs.news_title}"/>
+            </ui:decorate>-->
 </ui:composition>
