@@ -7,56 +7,42 @@ package com.kynomics.control;
 
 import com.kynomics.daten.Untersuchung;
 import com.kynomics.daten.Untersuchungstyp;
+import com.kynomics.lib.TransmitterSessionBeanRemote;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 
 /**
  *
  * @author dboehm
  */
-@Named(value = "untersuchungenController")
+@Named(value = "untersuchungsTypenController")
 @SessionScoped
-public class UntersuchungenController implements Serializable {
-    
-    private Untersuchung currentUntersuchung;
-    private List<Untersuchung> untersuchungenList;
-    private Untersuchungstyp currentUntersuchungstyp;
+public class UntersuchungsTypenController implements Serializable {
 
-    
+    private Untersuchungstyp currentUntersuchungstyp;
+    @EJB
+    private TransmitterSessionBeanRemote transmitterSessionBeanRemote;
+
     /* 
      the UntersuchungenTypen - Map for the  <h:selectOneMenu ... 
      */
     private final Map<String, Integer> alleUntersuchungsTypenMap = new HashMap();
-    
+
     /**
      * Creates a new instance of UntersuchungsController
      */
-    public UntersuchungenController() {
+    public UntersuchungsTypenController() {
     }
 
-    public Untersuchung getCurrentUntersuchung() {
-        return currentUntersuchung;
-    }
-
-    public void setCurrentUntersuchung(Untersuchung currentUntersuchung) {
-        this.currentUntersuchung = currentUntersuchung;
-    }
-
-    public List<Untersuchung> getUntersuchungenList() {
-        return untersuchungenList;
-    }
-
-    public void setUntersuchungenList(List<Untersuchung> untersuchungenList) {
-        this.untersuchungenList = untersuchungenList;
-    }
-
-    public Map<String, Integer> getAlleUntersuchungsTypenMap() {
-        return alleUntersuchungsTypenMap;
-    }
+//
+//    public Map<String, Integer> getAlleUntersuchungsTypenMap() {
+//        return alleUntersuchungsTypenMap;
+//    }
 
     public Untersuchungstyp getCurrentUntersuchungstyp() {
         return currentUntersuchungstyp;
@@ -66,9 +52,12 @@ public class UntersuchungenController implements Serializable {
         this.currentUntersuchungstyp = currentUntersuchungstyp;
     }
 
-    
-   
+    public Map<String, Integer> getAlleUntersuchungsTypenMap() {
+        List<Untersuchungstyp> tempList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
+        for (Untersuchungstyp next : tempList) {
+            this.alleUntersuchungsTypenMap.put(next.getUntersuchungtypName(), next.getUntersuchungtypId());
+        }
+        return alleUntersuchungsTypenMap;
+    }
 
-  
-    
 }

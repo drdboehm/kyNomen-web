@@ -233,10 +233,31 @@ public class HalterController implements Serializable {
      Own Logic
      */
     public String saveHalter() {
+//        System.out.println("Halter = " + halter);
+//        System.out.println("Haltertyp = " + haltertyp);
+//        System.out.println("checkHalterEntries() = " + checkHalterEntries());
+//        if (!checkHalterEntries()) {
+//            return "index";
+//        }
         halter.setHaltertypId(haltertyp);
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(halter, null, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return "index";
+    }
+
+    private boolean checkHalterEntries() {
+        boolean valid = true;
+        /**
+         * check required fields
+         */
+        System.out.println("halter.getHalterName().isEmpty() = " + halter.getHalterName().isEmpty());
+        System.out.println("Haltertyp == null : " + haltertyp == null);
+        if (halter.getHalterName().isEmpty()
+                || halter.getHalterBemerkung().isEmpty()
+                || haltertyp == null) {
+            valid = false;
+        }
+        return valid;
     }
 
     public String savePatient() {
@@ -378,25 +399,25 @@ public class HalterController implements Serializable {
         }
 
         /*
-        here we need to adjust the halterList, patientList and halteradresseList
-        first of all: we have a DELETE ON CASCADE in our DELETE query!
-        We need to decide, whether this should be like this!?
-        If so, we have to possibilities to update the other lists.
-        1. the search can be repeated at ALL, then all will be updated, BUT there will be traffic to the EJB and back! 
-        2. we remove the CASCADED entries by hand here !
-        3. third, we do not want to delete patienten and halteradresses !?
+         here we need to adjust the halterList, patientList and halteradresseList
+         first of all: we have a DELETE ON CASCADE in our DELETE query!
+         We need to decide, whether this should be like this!?
+         If so, we have to possibilities to update the other lists.
+         1. the search can be repeated at ALL, then all will be updated, BUT there will be traffic to the EJB and back! 
+         2. we remove the CASCADED entries by hand here !
+         3. third, we do not want to delete patienten and halteradresses !?
          */
         if (halterList.remove(deleteById)) {
             System.out.println("Halter Details deleted from halterList: " + deleteById);
-            
+
         };
         return "index";
     }
-    
+
     public void editHalter(Halter halter) {
         halter.setEdited(true);
     }
-    
+
     public void saveHalter(Halter halter) {
         halter.setEdited(false);
     }

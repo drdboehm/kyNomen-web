@@ -4,7 +4,6 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:pf="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ky="http://com.kynomics/kynomen"
@@ -16,8 +15,9 @@
             <h:form id="halterForm">
                 <h:messages styleClass="errorMsg"></h:messages>
                 <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                    <f:facet name="header">Halter-Formular</f:facet> 
                     <h:commandButton value="#{msgs.menu_reset}" action="#{halterController.resetLists()}"/>
-                    <h:panelGroup></h:panelGroup>
+                    <h:panelGroup></h:panelGroup> 
                     <h:outputLabel for="inHalterId" value="*#{msgs.halter_id}" />   
                     <h:inputText label="#{msgs.halter_id}" 
                                  id="inHalterId" 
@@ -101,6 +101,7 @@
                 <!--<pf:panel header="Patienten-Formular" style="width: 350px;">-->
                 <h:messages styleClass="errorMsg"></h:messages>
                 <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                    <f:facet name="header">Patienten-Formular</f:facet>
                     <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
                     <h:inputText label="#{msgs.patient_id}" 
                                  id="inPatientId" 
@@ -176,6 +177,7 @@
             </h:form> 
             <h:form id="patientSelect">
                 <h:dataTable style="width: 900px;" value="#{halterController.patientList}" var="p">
+                    <f:facet name="header">Liste der Patienten</f:facet> 
                     <h:column>
                         <f:facet  name="header">
                             #{msgs.patient_id}
@@ -249,97 +251,121 @@
                 </h:dataTable>
             </h:form>
             <h:form id="adressForm">
-                <pf:panel header="Adress-Formular" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
-                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
-                        <h:outputLabel for="inHalterAdresseId" value="*#{msgs.adress_id}" />   
-                        <h:inputText label="#{msgs.adress_strasse_hausnr}" 
-                                     id="inHalterAdresseId" 
-                                     value="#{halterController.halteradresse.halteradresseId}" 
-                                     p:placeholder="Adress-Id">
-                        </h:inputText>
+                <h:messages styleClass="errorMsg"></h:messages>
+                <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                    <f:facet name="header">Adress-Formular</f:facet> 
+                    <h:outputLabel for="inHalterAdresseId" value="*#{msgs.adress_id}" />   
+                    <h:inputText label="#{msgs.adress_strasse_hausnr}" 
+                                 id="inHalterAdresseId" 
+                                 value="#{halterController.halteradresse.halteradresseId}" 
+                                 p:placeholder="Adress-Id">
+                    </h:inputText>
 
-                        <h:outputText  value="#{msgs.adress_adresstyp}"/>
-                        <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
-                            <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
-                            <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
-                        </h:selectOneMenu>
+                    <h:outputText  value="#{msgs.adress_adresstyp}"/>
+                    <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
+                        <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                        <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
+                    </h:selectOneMenu>
 
-                        <h:outputLabel for="inHalterAdresseStrasse" value="*#{msgs.adress_strasse_hausnr}" />   
-                        <h:inputText label="#{msgs.adress_strasse_hausnr}" 
-                                     id="inHalterAdresseStrasse" 
-                                     value="#{halterController.halteradresse.halterStrasse}" 
-                                     p:placeholder="Strasse + Haus-Nr">
-                        </h:inputText>
+                    <h:outputLabel for="inHalterAdresseStrasse" value="*#{msgs.adress_strasse_hausnr}" />   
+                    <h:inputText label="#{msgs.adress_strasse_hausnr}" 
+                                 id="inHalterAdresseStrasse" 
+                                 value="#{halterController.halteradresse.halterStrasse}" 
+                                 p:placeholder="Strasse + Haus-Nr">
+                    </h:inputText>
 
-                        <h:outputLabel for="inHalterAdressePlz" value="*#{msgs.adress_plz}" />   
-                        <h:inputText label="#{msgs.adress_plz}" 
-                                     id="inHalterAdressePlz" 
-                                     value="#{halterController.halteradresse.halterPlz}" 
-                                     p:placeholder="Postleitzahl">
-                            <!--<ky:convertZipCode/>-->
-                            <!--<f:converter converterId="com.kynomics.ZipCodeConverter"/>-->
-                        </h:inputText>
+                    <h:outputLabel for="inHalterAdressePlz" value="*#{msgs.adress_plz}" />   
+                    <h:inputText label="#{msgs.adress_plz}" 
+                                 id="inHalterAdressePlz" 
+                                 value="#{halterController.halteradresse.halterPlz}" 
+                                 p:placeholder="Postleitzahl">
+                        <!--<ky:convertZipCode/>-->
+                        <!--<f:converter converterId="com.kynomics.ZipCodeConverter"/>-->
+                    </h:inputText>
 
-                        <h:outputLabel for="inHalterAdresseOrt" value="*#{msgs.adress_ort}" />   
-                        <h:inputText label="#{msgs.adress_ort}" 
-                                     id="inHalterAdresseOrt" 
-                                     value="#{halterController.halteradresse.halterOrt}" 
-                                     p:placeholder="Ort">
-                        </h:inputText>
+                    <h:outputLabel for="inHalterAdresseOrt" value="*#{msgs.adress_ort}" />   
+                    <h:inputText label="#{msgs.adress_ort}" 
+                                 id="inHalterAdresseOrt" 
+                                 value="#{halterController.halteradresse.halterOrt}" 
+                                 p:placeholder="Ort">
+                    </h:inputText>
 
-                        <h:outputLabel for="inHalterAdresseTel" value="*#{msgs.adress_tel}" />   
-                        <h:inputText label="#{msgs.adress_tel}" 
-                                     id="inHalterAdresseTel" 
-                                     value="#{halterController.halteradresse.halterTel}" 
-                                     p:placeholder="Vorwahl / Telefon-Nr.">
-                        </h:inputText>
+                    <h:outputLabel for="inHalterAdresseTel" value="*#{msgs.adress_tel}" />   
+                    <h:inputText label="#{msgs.adress_tel}" 
+                                 id="inHalterAdresseTel" 
+                                 value="#{halterController.halteradresse.halterTel}" 
+                                 p:placeholder="Vorwahl / Telefon-Nr.">
+                    </h:inputText>
 
-                        <h:outputLabel for="inHalterAdresseEMail" value="*#{msgs.adress_email}" />   
-                        <h:inputText label="#{msgs.adress_email}" 
-                                     id="inHalterAdresseEMail" 
-                                     value="#{halterController.halteradresse.email}" 
-                                     p:placeholder="EMail-Adresse" >
-                            <!--                    <f:validateLength minimum="2" maximum="30"/>
-                                                <f:validator validatorId="emailValidator" />-->
-                        </h:inputText>
+                    <h:outputLabel for="inHalterAdresseEMail" value="*#{msgs.adress_email}" />   
+                    <h:inputText label="#{msgs.adress_email}" 
+                                 id="inHalterAdresseEMail" 
+                                 value="#{halterController.halteradresse.email}" 
+                                 p:placeholder="EMail-Adresse" >
+                        <!--                    <f:validateLength minimum="2" maximum="30"/>
+                                            <f:validator validatorId="emailValidator" />-->
+                    </h:inputText>
 
-                        <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse"/>
-                        <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
-                    </h:panelGrid>
-                </pf:panel>
+                    <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse"/>
+                    <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
+                </h:panelGrid>
             </h:form>
             <h:form id="adressSelect">
-                <pf:dataTable style="width: 900px;" value="#{halterController.halteradresseList}" var="ha" stickyHeader="true">
-                    <pf:column headerText="#{msgs.adress_id}">
+                <h:dataTable style="width: 900px;" value="#{halterController.halteradresseList}" var="ha">
+                     <f:facet name="header">Liste der Adressen</f:facet> 
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_id}
+                        </f:facet>
                         <h:outputText value="#{ha.halteradresseId}"> </h:outputText>
-                    </pf:column>
-                    <pf:column headerText="#{msgs.adress_adresstyp}">
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_adresstyp}
+                        </f:facet>
                         <h:outputText value="#{ha.adresstypId.adresstypName}"> </h:outputText>
-                    </pf:column>
-                    <pf:column headerText="#{msgs.adress_strasse_hausnr}">
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_strasse_hausnr}
+                        </f:facet>
                         <h:outputText value="#{ha.halterStrasse}"> </h:outputText>
-                    </pf:column>
-                    <pf:column headerText="#{msgs.adress_plz}">
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_plz}
+                        </f:facet>
                         <h:outputText value="#{ha.halterPlz}"> </h:outputText>
-                    </pf:column>
+                    </h:column>
 
-                    <pf:column headerText="#{msgs.adress_ort}">
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_ort}
+                        </f:facet>
                         <h:outputText value="#{ha.halterOrt}"> </h:outputText>
-                    </pf:column>
+                    </h:column>
 
-                    <pf:column headerText="#{msgs.adress_tel}">
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_tel}
+                        </f:facet>
                         <h:outputText value="#{ha.halterTel}"> </h:outputText>
-                    </pf:column>
-                    <pf:column headerText="#{msgs.adress_email}">
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.adress_email}
+                        </f:facet>
                         <h:outputText value="#{ha.email}"> </h:outputText>
-                    </pf:column>
-                    <pf:column headerText="#{msgs.halter_id}">
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            #{msgs.halter_id}
+                        </f:facet>
                         <h:outputText value="#{ha.halterId.halterId}"> </h:outputText>
-                    </pf:column>
+                    </h:column>
                     <f:facet name="footer">Anzahl Adressen: 
                         #{fn:length(halterController.halteradresseList)}</f:facet>
-                </pf:dataTable>
+                </h:dataTable>
             </h:form>
         </h:panelGrid>
     </ui:define>

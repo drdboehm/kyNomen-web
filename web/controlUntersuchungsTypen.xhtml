@@ -4,7 +4,6 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:pf="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ky="http://com.kynomics/kynomen"
@@ -12,54 +11,41 @@
 
     <ui:define name="bodyContent">
         <h:panelGrid columns="2" styleClass="table-valign">
-            <h:form id="halterForm">
+            <h:form id="auftragForm">
                 <h:messages styleClass="errorMsg"></h:messages>
                 <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
-                    <h:commandButton value="#{msgs.menu_reset}" action="#{untersuchungenController.resetLists()}"/>
-                    <h:panelGroup></h:panelGroup>
-                    <h:outputLabel for="inUnteruchungId" value="*#{msgs.untersuchung_id}" />   
-                    <h:inputText label="#{msgs.untersuchung_id}" 
-                                 id="inUntersuchungId" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungId}" 
-                                 p:placeholder="Untersuchung-Id">
+                    <f:facet name="header">Untersuchungstypen-Formular</f:facet> 
+                    <h:outputLabel for="inUntersuchungsTypId" value="*#{msgs.untersuchungstyp_id}" />   
+                    <h:inputText label="#{msgs.untersuchungstyp_id}" 
+                                 id="inUntersuchungsTypId" 
+                                 value="#{untersuchungsTypenController.currentUntersuchungstyp.untersuchungtypId}" 
+                                 p:placeholder="Untersuchungstyp-Id">
                     </h:inputText>
-
-                    <h:outputLabel for="inUntersuchungName" value="*#{msgs.untersuchung_name}" />   
-                    <h:inputText label="#{msgs.untersuchung_name}" 
-                                 id="inUntersuchungName" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungName}" 
-                                 p:placeholder="Untersuchungs-Name">
+                    <h:outputLabel for="inUntersuchungsTypName" value="*#{msgs.untersuchungstyp_name}" />   
+                    <h:inputText label="#{msgs.untersuchungstyp_name}" 
+                                 id="inUntersuchungsTypName" 
+                                 value="#{untersuchungsTypenController.currentUntersuchungstyp.untersuchungtypName}" 
+                                 p:placeholder="Bezeichnung">
                     </h:inputText>
-
-                    <h:outputLabel for="inUntersuchungPreis" value="*#{msgs.untersuchung_preis}" />   
-                    <h:inputText label="#{msgs.untersuchung_preis}" 
-                                 id="inUntersuchungPreis" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungPreis}" 
-                                 p:placeholder="Preis">
+                    <h:outputLabel for="inUntersuchungTypGen" value="*#{msgs.untersuchungstyp_gen}" />   
+                    <h:inputText label="#{msgs.untersuchungstyp_gen}" 
+                                 id="inUntersuchungTypGen" 
+                                 value="#{untersuchungsTypenController.currentUntersuchungstyp.untersuchungtypGen}" 
+                                 p:placeholder="Genname">
                     </h:inputText>
-                    <h:outputLabel for="inUntersuchungDauer" value="*#{msgs.untersuchung_dauer}" />   
-                    <h:inputText label="#{msgs.untersuchung_dauer}" 
-                                 id="inUntersuchungDauer" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungDauer}" 
-                                 p:placeholder="Dauer">
+                    <h:outputLabel for="inUntersuchungTypMut" value="*#{msgs.untersuchungtyp_mut}" />   
+                    <h:inputText label="#{msgs.untersuchungtyp_mut}" 
+                                 id="inUntersuchungTypMut" 
+                                 value="#{untersuchungsTypenController.currentUntersuchungstyp.untersuchungtypMut}" 
+                                 p:placeholder="Mutation">
                     </h:inputText>
-
-                    <h:outputText  value="#{msgs.untersuchung_untersuchungtyp}"/>
-                    <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" >
-                        <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
-                        <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}"/>
-                    </h:selectOneMenu>
-
-                    <h:commandButton id="sucheUntersuchungButton" value="Suche Untersuchung" 
-                                     action="#{untersuchungenController.sucheUntersuchung()}"/>
-                    <h:commandButton id="saveUntersuchungButton" action="#{untersuchungenController.saveUntersuchung()}" 
-                                     value="Untersuchung speichern"/>
                 </h:panelGrid>
             </h:form>
-            <h:form id="halterSelect">
-                <h:dataTable style="width: 900px;" value="#{untersuchungenController.untersuchungenList}" 
-                             var="u" >
-                    <f:facet name="header">Liste aller Untersuchungen</f:facet> 
+            <h:form id="auftragSelect">
+
+                <h:dataTable style="width: 900px;" > 
+                    var="u" >
+                    <f:facet name="header">B a u s t e l l e</f:facet> 
                     <h:column>
                         <f:facet name="header">
                             #{msgs.untersuchung_id} - 
@@ -107,6 +93,7 @@
                     <f:facet name="footer">Anzahl Untersuchungen: #{fn:length(untersuchungenController.untersuchungenList)}</f:facet> 
                 </h:dataTable>
             </h:form>
+
         </h:panelGrid>
     </ui:define>
 </ui:composition>
