@@ -21,14 +21,14 @@
                     <h:outputLabel for="inHalterId" value="*#{msgs.halter_id}" />   
                     <h:inputText label="#{msgs.halter_id}" 
                                  id="inHalterId" 
-                                 value="#{halterController.halter.halterId}" 
+                                 value="#{halterController.currentHalter.halterId}" 
                                  p:placeholder="Halter-Id">
                     </h:inputText>
 
                     <h:outputLabel for="inHalterName" value="*#{msgs.halter_name}" />   
                     <h:inputText label="#{msgs.halter_name}" 
                                  id="inHalterName" 
-                                 value="#{halterController.halter.halterName}" 
+                                 value="#{halterController.currentHalter.halterName}" 
                                  p:placeholder="Halter-Name"
                                  validator="#{halterController.validateAlpha}">
                     </h:inputText>
@@ -36,7 +36,7 @@
                     <h:outputLabel for="inHalterBemerkung" value="*#{msgs.halter_bemerkung}" />   
                     <h:inputText label="#{msgs.halter_bemerkung}" 
                                  id="inHalterBemerkung" 
-                                 value="#{halterController.halter.halterBemerkung}" 
+                                 value="#{halterController.currentHalter.halterBemerkung}" 
                                  p:placeholder="Bemerkung"
                                  validator="#{halterController.validateAlphaNumeric}">
                     </h:inputText>
@@ -105,54 +105,54 @@
                     <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
                     <h:inputText label="#{msgs.patient_id}" 
                                  id="inPatientId" 
-                                 value="#{halterController.patient.patientId}" 
+                                 value="#{halterController.currentPatient.patientId}" 
                                  p:placeholder="Patienten-Id">
                     </h:inputText>
                     <h:outputLabel for="inPatientRufName" value="*#{msgs.patient_rufname}" />   
                     <h:inputText label="#{msgs.patient_rufname}" 
                                  id="inPatientRufName" 
-                                 value="#{halterController.patient.patientRuf}" 
+                                 value="#{halterController.currentPatient.patientRuf}" 
                                  p:placeholder="Patienten-Rufname">
                     </h:inputText>
 
                     <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
                     <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
                                  id="inPatientName" 
-                                 value="#{halterController.patient.patientName}" 
+                                 value="#{halterController.currentPatient.patientName}" 
                                  p:placeholder="vollständiger Name">
                     </h:inputText>
 
                     <h:outputLabel for="inPatientChipNr" value="*#{msgs.patient_chipnr}" />   
                     <h:inputText label="#{msgs.patient_chipnr}" 
                                  id="inPatientChipNr" 
-                                 value="#{halterController.patient.patientChip}" 
+                                 value="#{halterController.currentPatient.patientChip}" 
                                  p:placeholder="Chip-Nr.">
                     </h:inputText>
 
                     <h:outputLabel for="inPatientTatooNr" value="*#{msgs.patient_tatoonr}" />   
                     <h:inputText label="#{msgs.patient_tatoonr}" 
                                  id="inPatientTatooNr" 
-                                 value="#{halterController.patient.patientTatoonr}" 
+                                 value="#{halterController.currentPatient.patientTatoonr}" 
                                  p:placeholder="Tatoo-Nr.">
                     </h:inputText>
 
                     <h:outputLabel for="inPatientZuchtBuchNr" value="*#{msgs.patient_zuchtbuchnr}" />   
                     <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
                                  id="inPatientZuchtBuchNr" 
-                                 value="#{halterController.patient.patientZuchtbuchnr}" 
+                                 value="#{halterController.currentPatient.patientZuchtbuchnr}" 
                                  p:placeholder="Zuchtbuch-Nr.">
                     </h:inputText>
 
                     <h:outputLabel for="inPatientGebDat" value="#{msgs.patient_geburtstag}" />   
                     <h:inputText label="#{msgs.patient_geburtstag}" 
                                  id="inPatientGebDat" 
-                                 value="#{halterController.patient.patientGeb}" 
+                                 value="#{halterController.currentPatient.patientGeb}" 
                                  p:placeholder="dd.mm.yyyy">
                         <f:convertDateTime pattern="dd.MM.yyyy" />
                         <ky:validateAge maxAge="20"/>   
                     </h:inputText>
                     <h:panelGroup></h:panelGroup>
-                    <h:outputText value="#{ky:getAge(halterController.patient.patientGeb)} Jahre"/>
+                    <h:outputText value="#{ky:getAge(halterController.currentPatient.patientGeb)} Jahre"/>
 
                     <h:outputText  value="#{msgs.patient_spezies}"/>
                     <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >

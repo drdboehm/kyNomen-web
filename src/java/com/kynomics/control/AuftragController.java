@@ -9,11 +9,14 @@ import com.kynomics.daten.Auftrag;
 import com.kynomics.daten.Auftragposition;
 import com.kynomics.daten.Halter;
 import com.kynomics.daten.Patient;
+import com.kynomics.daten.Untersuchungstyp;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 
 /**
@@ -28,43 +31,54 @@ public class AuftragController implements Serializable {
     @EJB
     private TransmitterSessionBeanRemote transmitterSessionBeanRemote;
 
-    private Halter halter;
-    private Patient patient;
-    private Auftrag auftrag;
+    private Halter currentHalter;
+    private Patient currentPatient;
+    private Auftrag currentAuftrag;
+    private List<Auftrag> auftragList;
     private List<Auftragposition> auftragpositionenList;
-    
-    
+
+    private final Map<String, Integer> alleUntersuchungsTypenMap;
     
 
     /**
      * Creates a new instance of AuftragController
      */
     public AuftragController() {
+        this.alleUntersuchungsTypenMap = new HashMap();
     }
 
-    public Halter getHalter() {
-        return halter;
+    public Halter getCurrentHalter() {
+        return currentHalter;
     }
 
-    public void setHalter(Halter halter) {
-        this.halter = halter;
+    public void setCurrentHalter(Halter currentHalter) {
+        this.currentHalter = currentHalter;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public Patient getCurrentPatient() {
+        return currentPatient;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setCurrentPatient(Patient currentPatient) {
+        this.currentPatient = currentPatient;
     }
 
-    public Auftrag getAuftrag() {
-        return auftrag;
+    public Auftrag getCurrentAuftrag() {
+        return currentAuftrag;
     }
 
-    public void setAuftrag(Auftrag auftrag) {
-        this.auftrag = auftrag;
+    public void setCurrentAuftrag(Auftrag currentAuftrag) {
+        this.currentAuftrag = currentAuftrag;
     }
+
+    public List<Auftrag> getAuftragList() {
+        return auftragList;
+    }
+
+    public void setAuftragList(List<Auftrag> auftragList) {
+        this.auftragList = auftragList;
+    }
+
 
     public List<Auftragposition> getAuftragpositionenList() {
         return auftragpositionenList;
@@ -74,4 +88,11 @@ public class AuftragController implements Serializable {
         this.auftragpositionenList = auftragpositionenList;
     }
 
+     public Map<String, Integer> getAlleUntersuchungsTypenMap() {
+        List<Untersuchungstyp> tempList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
+        for (Untersuchungstyp next : tempList) {
+            this.alleUntersuchungsTypenMap.put(next.getUntersuchungtypName(), next.getUntersuchungtypId());
+        }
+        return alleUntersuchungsTypenMap;
+    }
 }

@@ -12,9 +12,9 @@
     <ui:define name="bodyContent">
         <h:panelGrid columns="2" styleClass="table-valign">
             <h:outputText id="selectedHalterId" value="für ausgewählten Halter:"/>
-            <h:outputText  value="#{halterController.halter.halterId}"/>
+            <h:outputText  value="#{halterController.currentHalter.halterId}"/>
             <h:outputText id="selectedPatientId" value="für ausgewählten Patienten:"/>
-            <h:outputText  value="#{halterController.patient.patientId}"/>
+            <h:outputText  value="#{halterController.currentPatient.patientId}"/>
             <h:form id="auftragForm">
                 <h:messages styleClass="errorMsg"></h:messages>
                 <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
@@ -22,31 +22,31 @@
                     <h:outputLabel for="inAuftragId" value="*#{msgs.auftrag_id}" />   
                     <h:inputText label="#{msgs.auftrag_id}" 
                                  id="inAuftragId" 
-                                 value="#{auftragController.auftrag.auftragId}" 
+                                 value="#{auftragController.currentAuftrag.auftragId}" 
                                  p:placeholder="Auftrag-Id">
                     </h:inputText>
                     <h:outputLabel for="inAuftragText" value="*#{msgs.auftrag_text}" />   
                     <h:inputText label="#{msgs.auftrag_text}" 
                                  id="inAuftragText" 
-                                 value="#{auftragController.auftrag.auftragText}" 
+                                 value="#{auftragController.currentAuftrag.auftragText}" 
                                  p:placeholder="Auftrag-Text">
                     </h:inputText>
                     <h:outputLabel for="inAuftragsTypId" value="*#{msgs.auftrag_typ_id}" />   
                     <h:inputText label="#{msgs.auftrag_typ_id}" 
                                  id="inAuftragsTypId" 
-                                 value="#{auftragController.auftrag.auftragstypId}" 
+                                 value="#{auftragController.currentAuftrag.auftragstypId}" 
                                  p:placeholder="Auftrags-Typ">
                     </h:inputText>
                     <h:outputLabel for="inAuftragStart" value="*#{msgs.auftrag_start}" />   
                     <h:inputText label="#{msgs.auftrag_start}" 
                                  id="inAuftragStart" 
-                                 value="#{auftragController.auftrag.auftragStart}" 
+                                 value="#{auftragController.currentAuftrag.auftragStart}" 
                                  p:placeholder="Auftrag-Start">
                     </h:inputText>
                     <h:outputLabel for="inAuftragEnde" value="*#{msgs.auftrag_ende}" />   
                     <h:inputText label="#{msgs.auftrag_ende}" 
                                  id="inAuftragEnde" 
-                                 value="#{auftragController.auftrag.auftragEnde}" 
+                                 value="#{auftragController.currentAuftrag.auftragEnde}" 
                                  p:placeholder="Auftrag-Ende">
                     </h:inputText>
 
@@ -54,13 +54,13 @@
             </h:form>
             <h:form id="auftragSelect">
 
-                <h:dataTable style="width: 900px;" > 
-                    var="u" >
-                    <f:facet name="header">B a u s t e l l e</f:facet> 
+                <h:dataTable style="width: 900px;" value="#{auftragController.auftragList}" 
+                             var="auftrag" > 
+                    <f:facet name="header">Liste der Aufträge</f:facet> 
                     <h:column>
                         <f:facet name="header">
-                            #{msgs.untersuchung_id} - 
-                            <h:commandButton id="untersuchungIdSort" value="Sort" action="#{untersuchungenController.sortUntersuchungByRanking()}"/>
+                            #{msgs.auftrag_id} - 
+                            <h:commandButton id="auftragIdSort" value="Sort" action="#{AuftragController.sortAuftragByRanking()}"/>
                         </f:facet>
                         <h:outputText value="#{u.untersuchungId}"></h:outputText>
                     </h:column>

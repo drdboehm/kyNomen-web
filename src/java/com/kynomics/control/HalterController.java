@@ -58,8 +58,8 @@ public class HalterController implements Serializable {
     @EJB
     private TransmitterSessionBeanRemote transmitterSessionBeanRemote;
 
-    private Halter halter;
-    private Patient patient;
+    private Halter currentHalter;
+    private Patient currentPatient;
     private Spezies spezies;
     private Rasse rasse;
     private Haltertyp haltertyp;
@@ -80,8 +80,8 @@ public class HalterController implements Serializable {
      * the default constructor
      */
     public HalterController() {
-        halter = new Halter();
-        patient = new Patient();
+        currentHalter = new Halter();
+        currentPatient = new Patient();
         haltertyp = new Haltertyp();
         spezies = new Spezies();
         halteradresse = new Halteradresse();
@@ -117,12 +117,12 @@ public class HalterController implements Serializable {
     /*
      Getters and setters
      */
-    public Patient getPatient() {
-        return patient;
+    public Patient getCurrentPatient() {
+        return currentPatient;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setCurrentPatient(Patient currentPatient) {
+        this.currentPatient = currentPatient;
     }
 
     public Spezies getSpezies() {
@@ -141,12 +141,12 @@ public class HalterController implements Serializable {
         this.rasse = rasse;
     }
 
-    public Halter getHalter() {
-        return halter;
+    public Halter getCurrentHalter() {
+        return currentHalter;
     }
 
-    public void setHalter(Halter halter) {
-        this.halter = halter;
+    public void setCurrentHalter(Halter currentHalter) {
+        this.currentHalter = currentHalter;
     }
 
     public Haltertyp getHaltertyp() {
@@ -233,14 +233,14 @@ public class HalterController implements Serializable {
      Own Logic
      */
     public String saveHalter() {
-//        System.out.println("Halter = " + halter);
+//        System.out.println("Halter = " + currentHalter);
 //        System.out.println("Haltertyp = " + haltertyp);
 //        System.out.println("checkHalterEntries() = " + checkHalterEntries());
 //        if (!checkHalterEntries()) {
 //            return "index";
 //        }
-        halter.setHaltertypId(haltertyp);
-        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(halter, null, null);
+        currentHalter.setHaltertypId(haltertyp);
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(currentHalter, null, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return "index";
     }
@@ -250,10 +250,10 @@ public class HalterController implements Serializable {
         /**
          * check required fields
          */
-        System.out.println("halter.getHalterName().isEmpty() = " + halter.getHalterName().isEmpty());
+        System.out.println("halter.getHalterName().isEmpty() = " + currentHalter.getHalterName().isEmpty());
         System.out.println("Haltertyp == null : " + haltertyp == null);
-        if (halter.getHalterName().isEmpty()
-                || halter.getHalterBemerkung().isEmpty()
+        if (currentHalter.getHalterName().isEmpty()
+                || currentHalter.getHalterBemerkung().isEmpty()
                 || haltertyp == null) {
             valid = false;
         }
@@ -261,20 +261,20 @@ public class HalterController implements Serializable {
     }
 
     public String savePatient() {
-        Halter h = transmitterSessionBeanRemote.findById(Halter.class, halter.getHalterId());
+        Halter h = transmitterSessionBeanRemote.findById(Halter.class, currentHalter.getHalterId());
         Rasse r = transmitterSessionBeanRemote.findById(Rasse.class, rasse.getRasseId());
-        patient.setRasseRasseId(r);
-        patient.setHalterHalterId(h);
-        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, null, patient);
+        currentPatient.setRasseRasseId(r);
+        currentPatient.setHalterHalterId(h);
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, null, currentPatient);
         transmitterSessionBeanRemote.storeEjb(wrapper);
-        System.out.println("Patient: " + patient);
+        System.out.println("Patient: " + currentPatient);
         logAttributes();
         return "index.xhtml";
     }
 
     public String saveAdresse() {
         halteradresse.setAdresstypId(adressTyp);
-        halteradresse.setHalterId(halter);
+        halteradresse.setHalterId(currentHalter);
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, halteradresse, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return "index.xhtml";
@@ -284,8 +284,8 @@ public class HalterController implements Serializable {
         halterList.clear();
         patientList.clear();
         halteradresseList.clear();
-        halter = new Halter();
-        patient = new Patient();
+        currentHalter = new Halter();
+        currentPatient = new Patient();
         halteradresse = new Halteradresse();
         return "index.xhtml";
     }
@@ -299,9 +299,9 @@ public class HalterController implements Serializable {
         /*
          check the attributes first
          */
-        System.out.println("halter.toString() = " + halter.toString());
-        SuchkriterienHalter suchKr = new SuchkriterienHalter(halter.getHalterId(), halter.getHalterName(),
-                halter.getHalterBemerkung());
+        System.out.println("halter.toString() = " + currentHalter.toString());
+        SuchkriterienHalter suchKr = new SuchkriterienHalter(currentHalter.getHalterId(), currentHalter.getHalterName(),
+                currentHalter.getHalterBemerkung());
         if (suchKr.toString().length() == 0) {
             System.out.println("WhereClause is empty: '" + suchKr + "'");
         } else {
@@ -333,14 +333,14 @@ public class HalterController implements Serializable {
 
     public String suchePatient() {
         // check the attributes first
-        System.out.println("patient.toString() = " + patient.toString());
+        System.out.println("patient.toString() = " + currentPatient.toString());
         SuchkriterienPatient suchKr = new SuchkriterienPatient();
-        suchKr.setPatientId(patient.getPatientId());
-        suchKr.setPatientRuf(patient.getPatientRuf());
-        suchKr.setPatientName(patient.getPatientName());
-        suchKr.setPatientChip(patient.getPatientChip());
-        suchKr.setPatientTatoonr(patient.getPatientTatoonr());
-        suchKr.setPatientZuchtbuchnr(patient.getPatientZuchtbuchnr());
+        suchKr.setPatientId(currentPatient.getPatientId());
+        suchKr.setPatientRuf(currentPatient.getPatientRuf());
+        suchKr.setPatientName(currentPatient.getPatientName());
+        suchKr.setPatientChip(currentPatient.getPatientChip());
+        suchKr.setPatientTatoonr(currentPatient.getPatientTatoonr());
+        suchKr.setPatientZuchtbuchnr(currentPatient.getPatientZuchtbuchnr());
         if (suchKr.toString().length() == 0) {
             System.out.println("WhereClause is empty: '" + suchKr + "'");
         } else {
@@ -576,26 +576,26 @@ public class HalterController implements Serializable {
          first collect, what we have from the JSF page
          */
         System.out.println("**********  Halter related Attributes ***** ");
-        System.out.println("halter = " + halter);
-        System.out.println("halter.getHalterId() = " + halter.getHalterId());
-        System.out.println("halter.getHalterName() = " + halter.getHalterName());
-        System.out.println("halter.getHalterBemerkung() = " + halter.getHalterBemerkung());
-        System.out.println("halter.getHaltertypId() = " + halter.getHaltertypId());
+        System.out.println("halter = " + currentHalter);
+        System.out.println("halter.getHalterId() = " + currentHalter.getHalterId());
+        System.out.println("halter.getHalterName() = " + currentHalter.getHalterName());
+        System.out.println("halter.getHalterBemerkung() = " + currentHalter.getHalterBemerkung());
+        System.out.println("halter.getHaltertypId() = " + currentHalter.getHaltertypId());
         System.out.println("haltertyp = " + haltertyp);
         System.out.println("haltertyp.getHaltertypId() = " + haltertyp.getHaltertypId());
         System.out.println("haltertyp.getHaltertypName() = " + haltertyp.getHaltertypName());
         System.out.println("**********  Patient related Attributes ***** ");
-        System.out.println("patient = " + patient);
-        System.out.println("patient.getPatientId() = " + patient.getPatientId());
-        System.out.println("patient.getPatientRuf() = " + patient.getPatientRuf());
-        System.out.println("patient.getPatientName() = " + patient.getPatientName());
-        System.out.println("patient.getPatientChip() = " + patient.getPatientChip());
-        System.out.println("patient.getPatientTatoonr() = " + patient.getPatientTatoonr());
-        System.out.println("patient.getPatientZuchtbuchnr() = " + patient.getPatientZuchtbuchnr());
-        System.out.println("patient.getPatientGeb() = " + patient.getPatientGeb());
-        System.out.println("patient.getRasseRasseId() = " + patient.getRasseRasseId());
-        System.out.println("patient.getHalterHalterId() = " + patient.getHalterHalterId());
-        System.out.println("patient.getAuftragpositionCollection() = " + patient.getAuftragpositionCollection());
+        System.out.println("patient = " + currentPatient);
+        System.out.println("patient.getPatientId() = " + currentPatient.getPatientId());
+        System.out.println("patient.getPatientRuf() = " + currentPatient.getPatientRuf());
+        System.out.println("patient.getPatientName() = " + currentPatient.getPatientName());
+        System.out.println("patient.getPatientChip() = " + currentPatient.getPatientChip());
+        System.out.println("patient.getPatientTatoonr() = " + currentPatient.getPatientTatoonr());
+        System.out.println("patient.getPatientZuchtbuchnr() = " + currentPatient.getPatientZuchtbuchnr());
+        System.out.println("patient.getPatientGeb() = " + currentPatient.getPatientGeb());
+        System.out.println("patient.getRasseRasseId() = " + currentPatient.getRasseRasseId());
+        System.out.println("patient.getHalterHalterId() = " + currentPatient.getHalterHalterId());
+        System.out.println("patient.getAuftragpositionCollection() = " + currentPatient.getAuftragpositionCollection());
         System.out.println("**********  Spezies related Attributes ***** ");
         System.out.println("spezies = " + spezies);
         System.out.println("spezies.getSpeziesId() = " + spezies.getSpeziesId());
