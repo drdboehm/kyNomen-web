@@ -17,86 +17,78 @@
                     <h:commandButton value="#{msgs.menu_reset}" action="#{uTypController.resetLists()}"/>
                     <h:panelGroup></h:panelGroup> 
                     <f:facet name="header">Untersuchungstypen-Formular</f:facet> 
-                    <h:outputLabel for="inUntersuchungsTypId" value="*#{msgs.untersuchungstyp_id}" />   
-                    <h:inputText label="#{msgs.untersuchungstyp_id}" 
+                    <h:outputLabel for="inUntersuchungsTypId" value="*#{msgs.uTyp_id}" />   
+                    <h:inputText label="#{msgs.uTyp_id}" 
                                  id="inUntersuchungsTypId" 
                                  value="#{uTypController.currentUTyp.untersuchungtypId}" 
                                  p:placeholder="Untersuchungstyp-Id">
                     </h:inputText>
-                    <h:outputLabel for="inUntersuchungsTypName" value="*#{msgs.untersuchungstyp_name}" />   
-                    <h:inputText label="#{msgs.untersuchungstyp_name}" 
+                    <h:outputLabel for="inUntersuchungsTypName" value="*#{msgs.uTyp_name}" />   
+                    <h:inputText label="#{msgs.uTyp_name}" 
                                  id="inUntersuchungsTypName" 
                                  value="#{uTypController.currentUTyp.untersuchungtypName}" 
                                  p:placeholder="Bezeichnung">
                     </h:inputText>
-                    <h:outputLabel for="inUntersuchungTypGen" value="*#{msgs.untersuchungstyp_gen}" />   
-                    <h:inputText label="#{msgs.untersuchungstyp_gen}" 
+                    <h:outputLabel for="inUntersuchungTypGen" value="*#{msgs.uTyp_gen}" />   
+                    <h:inputText label="#{msgs.uTyp_gen}" 
                                  id="inUntersuchungTypGen" 
                                  value="#{uTypController.currentUTyp.untersuchungtypGen}" 
                                  p:placeholder="Genname">
                     </h:inputText>
-                    <h:outputLabel for="inUntersuchungTypMut" value="*#{msgs.untersuchungstyp_mut}" />   
-                    <h:inputText label="#{msgs.untersuchungstyp_mut}" 
+                    <h:outputLabel for="inUntersuchungTypMut" value="*#{msgs.uTyp_mut}" />   
+                    <h:inputText label="#{msgs.uTyp_mut}" 
                                  id="inUntersuchungTypMut" 
                                  value="#{uTypController.currentUTyp.untersuchungtypMut}" 
                                  p:placeholder="Mutation">
                     </h:inputText>
-                    <h:commandButton id="sucheUntersuchungsTypButton" value="Suche Untersuchungstyp" 
+                    <h:commandButton id="sucheUTypButton" value="Suche Untersuchungstyp" 
                                      action="#{uTypController.sucheUTyp()}"/>
-                    <h:commandButton id="saveHalterButton" action="#{uTypController.saveUTyp()}" 
+                    <h:commandButton id="saveUTypButton" action="#{uTypController.saveUTyp()}" 
                                      value="Untersuchungstyp speichern"/>
                 </h:panelGrid>
             </h:form>
             <h:form id="uiTypSelect">
 
-                <h:dataTable style="width: 900px;" > 
-                    var="u" >
+                <h:dataTable style="width: 900px;" value="#{uTypController.utypList}" var="utyp" >
                     <f:facet name="header">Liste der Untersuchungstypen</f:facet> 
                     <h:column>
                         <f:facet name="header">
-                            #{msgs.untersuchung_id} - 
-                            <h:commandButton id="untersuchungIdSort" value="Sort" action="#{uTypController.sortUTypByRanking()}"/>
+                            #{msgs.uTyp_id} - 
+                            <h:commandButton id="uTypIdSort" value="Sort" action="#{uTypController.sortUTypById()}"/>
                         </f:facet>
-                        <h:outputText value="#{u.untersuchungId}"></h:outputText>
+                        <h:outputText value="#{utyp.untersuchungtypId}"></h:outputText>
                     </h:column>
                     <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_name} -
+                        <f:facet name="header">#{msgs.uTyp_name} -
                             <h:commandButton value="Sort" action="#{uTypController.sortUTypByName()}"/>
                         </f:facet>
-                        <h:outputText value="#{u.untersuchungName}" rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungName}" rendered="#{u.edited}"></h:inputText>
+                        <h:outputText value="#{utyp.untersuchungtypName}" rendered="#{not utyp.edited}"> </h:outputText>
+                        <h:inputText value="#{utyp.untersuchungtypName}" rendered="#{utyp.edited}"></h:inputText>
                     </h:column>
                     <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_dauer} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByDauer()}"/>
+                        <f:facet name="header">#{msgs.uTyp_gen} -
+                            <h:commandButton value="Sort" action="#{uTypController.sortUTypByGen()}"/>
                         </f:facet>
-                        <h:outputText value="#{u.untersuchungDauer}"  rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungDauer}"  rendered="#{u.edited}"> </h:inputText>
+                        <h:outputText value="#{utyp.untersuchungtypGen}"  rendered="#{not utyp.edited}"> </h:outputText>
+                        <h:inputText value="#{utyp.untersuchungtypGen}"  rendered="#{utyp.edited}"> </h:inputText>
                     </h:column>
                     <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_preis} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByPreis()}"/>
+                        <f:facet name="header">#{msgs.uTyp_mut} -
+                            <h:commandButton value="Sort" action="#{uTypController.sortUTypByMut()}"/>
                         </f:facet>
-                        <h:outputText value="#{u.untersuchungPreis}"  rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungPreis}"  rendered="#{u.edited}"> </h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_untersuchungtyp}</f:facet>
-                        <h:outputText value="#{u.untersuchungstypUntersuchungtypId.untersuchungtypName}" rendered="#{not u.edited}"> </h:outputText>
-                        <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" rendered="#{u.edited}">
-                            <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}" />
-                        </h:selectOneMenu>
+                        <h:outputText value="#{utyp.untersuchungtypMut}"  rendered="#{not utyp.edited}"> </h:outputText>
+                        <h:inputText value="#{utyp.untersuchungtypMut}"  rendered="#{utyp.edited}"> </h:inputText>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Ändern</f:facet>
-                        <h:commandButton value="Ändern" action="#{untersuchungenController.editUntersuchung(u)}" rendered="#{not u.edited}"/>
-                        <h:commandButton value="Speichern" action="#{untersuchungenController.saveUntersuchung(u)}" rendered="#{u.edited}"/>
+                        <h:commandButton value="Ändern" action="#{uTypController.editEntity(utyp)}" rendered="#{not utyp.edited}"/>
+                        <h:commandButton value="Speichern" action="#{uTypController.saveUTyp(utyp)}" rendered="#{utyp.edited}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Löschen</f:facet>
-                        <h:commandButton value="Löschen" action="#{untersuchungenController.deleteUntersuchung(u.untersuchungId)}"/>
+                        <h:commandButton value="Löschen" action="#{uTypController.deleteUTyp(utyp.untersuchungtypId)}"/>
                     </h:column>
-                    <f:facet name="footer">Anzahl Untersuchungen: #{fn:length(untersuchungenController.untersuchungenList)}</f:facet> 
+                    <f:facet name="footer">Anzahl Untersuchungs-Typen: #{fn:length(uTypController.utypList)}</f:facet> 
                 </h:dataTable>
             </h:form>
             <h:form id="milestoneForm">
@@ -106,13 +98,13 @@
                     <h:outputLabel for="inMilestoneId" value="*#{msgs.milestone_id}"/>   
                     <h:inputText label="#{msgs.milestone_id}" 
                                  id="inMilestoneId" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestoneId}" 
+                                 value="#{uTypController.currentMilestone.milestoneId}" 
                                  p:placeholder="Milestone-Id">
                     </h:inputText>
                     <h:outputLabel for="inMilestoneName" value="*#{msgs.milestone_name}" />   
                     <h:inputText label="#{msgs.milestone_name}" 
                                  id="inMilestoneName" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestoneName}" 
+                                 value="#{uTypController.currentMilestone.milestoneName}" 
                                  p:placeholder="Milestone-Name"
                                  validator="#{halterController.validateAlpha}">
                     </h:inputText>
@@ -120,47 +112,47 @@
                     <h:outputLabel for="inMilestoneAlltime" value="*#{msgs.milestone_alltime}" />   
                     <h:inputText label="#{msgs.milestone_alltime}" 
                                  id="inMilestoneAlltime" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestoneAlltime}" 
+                                 value="#{uTypController.currentMilestone.milestoneAlltime}" 
                                  p:placeholder="hh:mm">
                     </h:inputText>
 
                     <h:outputLabel for="inMilestoneHandsontime" value="*#{msgs.milestone_handsontime}" />   
                     <h:inputText label="#{msgs.milestone_handsontime}" 
                                  id="inMilestoneHandsontime" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestoneHandsontime}" 
+                                 value="#{uTypController.currentMilestone.milestoneHandsontime}" 
                                  p:placeholder="hh:mm">
                     </h:inputText>
 
                     <h:outputLabel for="inMilestoneMannumber" value="*#{msgs.milestone_mannumber}" />   
                     <h:inputText label="#{msgs.milestone_mannumber}" 
                                  id="inMilestoneMannumber" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestoneMannumber}" 
+                                 value="#{uTypController.currentMilestone.milestoneMannumber}" 
                                  p:placeholder="Anzahl">
                     </h:inputText>
 
                     <h:outputLabel for="inMilestoneManhour" value="*#{msgs.milestone_manhour}" />   
                     <h:inputText label="#{msgs.milestone_manhour}" 
                                  id="inMilestoneManhour" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestoneManhour}" 
+                                 value="#{uTypController.currentMilestone.milestoneManhour}" 
                                  p:placeholder="hh:mm">
                     </h:inputText>
-                    
-                     <h:outputLabel for="inMilestoneCost" value="*#{msgs.milestone_cost}" />   
+
+                    <h:outputLabel for="inMilestoneCost" value="*#{msgs.milestone_cost}" />   
                     <h:inputText label="#{msgs.milestone_cost}" 
                                  id="inMilestoneCost" 
-                                 value="#{untersuchungsTypenController.currentMilestone.milestonecost}" 
+                                 value="#{uTypController.currentMilestone.milestonecost}" 
                                  p:placeholder="Preis €">
                     </h:inputText>
 
                     <h:outputText  value="#{msgs.milestonetyp}"/>
                     <h:selectOneMenu id="inMilestoneTyp" value="#{untersuchungsTypenController.currentMilestone.milestonetypId}" >
                         <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
-                        <f:selectItems value="#{untersuchungsTypenController.alleMilestoneTypenMap}"/>
+                        <f:selectItems value="#{uTypController.alleMilestoneTypenMap}"/>
                     </h:selectOneMenu>
 
                     <h:commandButton id="sucheMSButton" value="Suche Milestone" 
-                                     action="#{untersuchungsTypenController.sucheMS()}"/>
-                    <h:commandButton id="saveMSButton" action="#{untersuchungsTypenController.saveMS()}" 
+                                     action="#{uTypController.sucheMS()}"/>
+                    <h:commandButton id="saveMSButton" action="#{uTypController.saveMS()}" 
                                      value="Milestone speichern"/>
                 </h:panelGrid>
             </h:form>

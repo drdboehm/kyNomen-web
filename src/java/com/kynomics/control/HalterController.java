@@ -87,6 +87,9 @@ public class HalterController implements Serializable {
         halteradresse = new Halteradresse();
         adressTyp = new Adresstyp();
         rasse = new Rasse();
+        patientList = new ArrayList<>();
+        halterList = new ArrayList<>();
+        halteradresseList = new ArrayList<>();
 
     }
 
@@ -347,9 +350,6 @@ public class HalterController implements Serializable {
             System.out.println("WhereClause: '" + suchKr + "'");
         }
         patientenTrefferList = transmitterSessionBeanRemote.suchePatient(suchKr);
-        patientList = new ArrayList<>();
-        halterList = new ArrayList<>();
-        halteradresseList = new ArrayList<>();
         for (Patiententreffer pt : patientenTrefferList) {
             Patient p = this.details(pt);
             patientList.add(p);
@@ -414,10 +414,16 @@ public class HalterController implements Serializable {
         return "index";
     }
 
-    public void editHalter(Halter halter) {
+    public void editEntity(Halter halter) {
         halter.setEdited(true);
     }
-
+    public void editEntityr(Patient patient) {
+        patient.setEdited(true);
+    } 
+    public void editEntityr(Halteradresse ha) {
+        ha.setEdited(true);
+    }
+    
     public void saveHalter(Halter halter) {
         halter.setEdited(false);
     }
@@ -499,7 +505,7 @@ public class HalterController implements Serializable {
         return alleAdressTypenMap;
     }
 
-    public String sortHalterByRanking() {
+    public String sortHalterById() {
         Collections.sort(halterList, new Comparator<Halter>() {
             @Override
             public int compare(Halter o1, Halter o2) {

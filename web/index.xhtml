@@ -60,7 +60,7 @@
                     <h:column>
                         <f:facet name="header">
                             #{msgs.halter_id} - 
-                            <h:commandButton id="halterIdSort" value="Sort" action="#{halterController.sortHalterByRanking()}"/>
+                            <h:commandButton id="halterIdSort" value="Sort" action="#{halterController.sortHalterById()}"/>
                         </f:facet>
                         <h:outputText value="#{halter.halterId}"></h:outputText>
                     </h:column>
@@ -87,7 +87,7 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">Ändern</f:facet>
-                        <h:commandButton value="Ändern" action="#{halterController.editHalter(halter)}" rendered="#{not halter.edited}"/>
+                        <h:commandButton value="Ändern" action="#{halterController.editEntity(halter)}" rendered="#{not halter.edited}"/>
                         <h:commandButton value="Speichern" action="#{halterController.saveHalter(halter)}" rendered="#{halter.edited}"/>
                     </h:column>
                     <h:column>
