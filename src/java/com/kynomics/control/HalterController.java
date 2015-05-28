@@ -391,7 +391,7 @@ public class HalterController implements Serializable {
         return "index";
     }
 
-    public String deleteHalter(Integer halterId) {
+    public String deleteEntity(Integer halterId) {
         System.out.println("Delete halter with Id " + halterId);
         Halter deleteById = transmitterSessionBeanRemote.deleteById(Halter.class, halterId);
         if (deleteById != null) {
@@ -410,21 +410,21 @@ public class HalterController implements Serializable {
         if (halterList.remove(deleteById)) {
             System.out.println("Halter Details deleted from halterList: " + deleteById);
 
-        };
+        }
         return "index";
     }
 
     public void editEntity(Halter halter) {
         halter.setEdited(true);
     }
-    public void editEntityr(Patient patient) {
+    public void editEntity(Patient patient) {
         patient.setEdited(true);
     } 
-    public void editEntityr(Halteradresse ha) {
+    public void editEntity(Halteradresse ha) {
         ha.setEdited(true);
     }
     
-    public void saveHalter(Halter halter) {
+    public void saveEntity(Halter halter) {
         halter.setEdited(false);
     }
 

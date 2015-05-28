@@ -5,7 +5,6 @@
  */
 package com.kynomics.control;
 
-import com.kynomics.daten.Halter;
 import com.kynomics.daten.Milestone;
 import com.kynomics.daten.Milestonetyp;
 import com.kynomics.daten.Untersuchungstyp;
@@ -51,6 +50,7 @@ public class UTypController implements Serializable {
     public UTypController() {
         currentUTyp = new Untersuchungstyp();
         currentMilestone = new Milestone();
+        currentMilestone.setMilestonetypId(new Milestonetyp());
         milestoneList = new ArrayList<>();
 
         this.alleMilestoneTypenMap = new HashMap();
@@ -59,6 +59,7 @@ public class UTypController implements Serializable {
     @PostConstruct
     public void init() {
         utypList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
+        milestoneList = transmitterSessionBeanRemote.initializeAllMilestones();
     }
 
     public Map<String, Integer> getAlleMilestoneTypenMap() {
@@ -117,6 +118,14 @@ public class UTypController implements Serializable {
     public String saveUTyp() {
         System.out.println("currentUTyp= " + currentUTyp);
         UTypMileStoneWrapper wrapper = new UTypMileStoneWrapper(currentUTyp, null);
+        boolean storeEjb = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (storeEjb) init();
+        return null;
+    }
+
+    public String saveMS() {
+        System.out.println("currentMilestone = " + currentMilestone);
+        UTypMileStoneWrapper wrapper = new UTypMileStoneWrapper(null, currentMilestone);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return null;
     }
@@ -129,9 +138,10 @@ public class UTypController implements Serializable {
         return null;
     }
 
-     public void editEntity(Untersuchungstyp uTyp) {
+    public void editEntity(Untersuchungstyp uTyp) {
         uTyp.setEdited(true);
     }
+
     public String sortUTypById() {
         Collections.sort(utypList, new Comparator<Untersuchungstyp>() {
             @Override
@@ -170,6 +180,7 @@ public class UTypController implements Serializable {
         sortOrderDesc = !sortOrderDesc;
         return null;
     }
+
     public String sortUTypByMut() {
         Collections.sort(utypList, new Comparator<Untersuchungstyp>() {
             @Override
@@ -180,6 +191,39 @@ public class UTypController implements Serializable {
             }
         });
         sortOrderDesc = !sortOrderDesc;
+        return null;
+    }
+
+    public void saveEntity(Untersuchungstyp object) {
+        UTypMileStoneWrapper wrapper = new UTypMileStoneWrapper(object, null);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            object.setEdited(false);
+        } else {
+// send a message
+        }
+    }
+
+    public String deleteEntity(Integer uTypId) {
+        System.out.println("Delete entity  with Id " + uTypId);
+        Untersuchungstyp deleteById = transmitterSessionBeanRemote.deleteById(Untersuchungstyp.class, uTypId);
+        if (deleteById != null) {
+            System.out.println("Entity Details deleted from database: " + deleteById);
+        }
+
+        /*
+         here we need to adjust the halterList, patientList and halteradresseList
+         first of all: we have a DELETE ON CASCADE in our DELETE query!
+         We need to decide, whether this should be like this!?
+         If so, we have to possibilities to update the other lists.
+         1. the search can be repeated at ALL, then all will be updated, BUT there will be traffic to the EJB and back! 
+         2. we remove the CASCADED entries by hand here !
+         3. third, we do not want to delete patienten and halteradresses !?
+         */
+        if (utypList.remove(deleteById)) {
+            System.out.println("Entity Details deleted from list: " + deleteById);
+
+        }
         return null;
     }
 }

@@ -88,11 +88,11 @@
                     <h:column>
                         <f:facet name="header">Ändern</f:facet>
                         <h:commandButton value="Ändern" action="#{halterController.editEntity(halter)}" rendered="#{not halter.edited}"/>
-                        <h:commandButton value="Speichern" action="#{halterController.saveHalter(halter)}" rendered="#{halter.edited}"/>
+                        <h:commandButton value="Speichern" action="#{halterController.saveEntity()}" rendered="#{halter.edited}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Löschen</f:facet>
-                        <h:commandButton value="Löschen" action="#{halterController.deleteHalter(halter.halterId)}"/>
+                        <h:commandButton value="Löschen" action="#{halterController.deleteEntity()}"/>
                     </h:column>
                     <f:facet name="footer">Anzahl Halter: #{fn:length(halterController.halterList)}</f:facet> 
                 </h:dataTable>
