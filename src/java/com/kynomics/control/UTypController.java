@@ -8,6 +8,10 @@ package com.kynomics.control;
 import com.kynomics.daten.Milestone;
 import com.kynomics.daten.Milestonetyp;
 import com.kynomics.daten.Untersuchungstyp;
+import com.kynomics.daten.finder.MilestoneTreffer;
+import com.kynomics.daten.finder.SuchkriterienMilestone;
+import com.kynomics.daten.finder.SuchkriterienUTyp;
+import com.kynomics.daten.finder.UTypTreffer;
 import com.kynomics.daten.wrapper.UTypMileStoneWrapper;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import javax.inject.Named;
@@ -34,6 +38,7 @@ public class UTypController implements Serializable {
     private List<Untersuchungstyp> utypList;
     private Milestone currentMilestone;
     private List<Milestone> milestoneList;
+    private Milestonetyp milestonetyp;
     private Boolean sortOrderDesc = false;
 
     @EJB
@@ -50,16 +55,19 @@ public class UTypController implements Serializable {
     public UTypController() {
         currentUTyp = new Untersuchungstyp();
         currentMilestone = new Milestone();
-        currentMilestone.setMilestonetypId(new Milestonetyp());
         milestoneList = new ArrayList<>();
+        milestonetyp = new Milestonetyp();
+        currentMilestone.setMilestonetypId(milestonetyp);
 
         this.alleMilestoneTypenMap = new HashMap();
     }
 
     @PostConstruct
     public void init() {
-        utypList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
-        milestoneList = transmitterSessionBeanRemote.initializeAllMilestones();
+//        utypList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
+        utypList = new ArrayList<>();
+//        milestoneList = transmitterSessionBeanRemote.initializeAllMilestones();
+        milestoneList = new ArrayList<>();
     }
 
     public Map<String, Integer> getAlleMilestoneTypenMap() {
@@ -115,18 +123,98 @@ public class UTypController implements Serializable {
         this.sortOrderDesc = sortOrderDesc;
     }
 
+    public Milestonetyp getMilestonetyp() {
+        return milestonetyp;
+    }
+
+    public void setMilestonetyp(Milestonetyp milestonetyp) {
+        this.milestonetyp = milestonetyp;
+    }
+
     public String saveUTyp() {
         System.out.println("currentUTyp= " + currentUTyp);
         UTypMileStoneWrapper wrapper = new UTypMileStoneWrapper(currentUTyp, null);
         boolean storeEjb = transmitterSessionBeanRemote.storeEjb(wrapper);
-        if (storeEjb) init();
+        if (storeEjb) {
+            init();
+        }
+        return null;
+    }
+
+    public String sucheUTyp() {
+        /*
+         check the attributes first
+         */
+        System.out.println("currentUTyp.toString() = " + currentUTyp.toString());
+        SuchkriterienUTyp suchKr = new SuchkriterienUTyp();
+        suchKr.setUntersuchungtypId(currentUTyp.getUntersuchungtypId());
+        suchKr.setUntersuchungtypName(currentUTyp.getUntersuchungtypName());
+        suchKr.setUntersuchungtypGen(currentUTyp.getUntersuchungtypGen());
+        suchKr.setUntersuchungtypMut(currentUTyp.getUntersuchungtypMut());
+        if (suchKr.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchKr + "'");
+        } else {
+            System.out.println("WhereClause: '" + suchKr + "'");
+        }
+        List<UTypTreffer> uTypTrefferList = transmitterSessionBeanRemote.sucheUntersuchungstyp(suchKr);
+        resetLists();
+        for (UTypTreffer utt : uTypTrefferList) {
+            Untersuchungstyp ut = details(utt);
+            utypList.add(ut);
+        }
+
         return null;
     }
 
     public String saveMS() {
         System.out.println("currentMilestone = " + currentMilestone);
+        System.out.println("milestonetyp = " + milestonetyp);
+        /*
+         we get the milestonetypId set in the milestontyp object only as an Integer, 
+         so we need to get the details from that object, either by extracting from the  
+         List<Milestonetyp> tempList in public Map<String, Integer> getAlleMilestoneTypenMap()
+         Method OR by  public <T extends Object> T findById(Class<T> entityClass, Integer primaryKey) 
+         implementation from interface TransmitterSessionBeanRemote and set it to currentMilestone
+         */
+        currentMilestone.setMilestonetypId(transmitterSessionBeanRemote.findById(Milestonetyp.class, milestonetyp.getMilestonetypId()));
+        System.out.println("niw currentMilestone is set properly = " + currentMilestone);
         UTypMileStoneWrapper wrapper = new UTypMileStoneWrapper(null, currentMilestone);
-        transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (transmitterSessionBeanRemote.storeEjb(wrapper)) {
+//            init();
+        }
+        return null;
+    }
+
+    public String sucheMS() {
+        /*
+         check the attributes first
+         */
+        /*
+         we get the milestonetypId set in the milestontyp object only as an Integer, 
+         so we need to get the details from that object, either by extracting from the  
+         List<Milestonetyp> tempList in public Map<String, Integer> getAlleMilestoneTypenMap()
+         Method OR by  public <T extends Object> T findById(Class<T> entityClass, Integer primaryKey) 
+         implementation from interface TransmitterSessionBeanRemote and set it to currentMilestone
+         */
+//        currentMilestone.setMilestonetypId(transmitterSessionBeanRemote.findById(Milestonetyp.class, milestonetyp.getMilestonetypId()));
+        System.out.println("currentMilestone.toString() = " + currentMilestone.toString());
+        SuchkriterienMilestone suchKr = new SuchkriterienMilestone();
+        suchKr.setMilestoneId(currentMilestone.getMilestoneId());
+        suchKr.setMilestoneName(currentMilestone.getMilestoneName());
+//        suchKr.setMilestonetypId(currentMilestone.getMilestonetypId());
+
+        if (suchKr.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchKr + "'");
+        } else {
+            System.out.println("WhereClause: '" + suchKr + "'");
+        }
+        List<MilestoneTreffer> milestoneTrefferList = transmitterSessionBeanRemote.sucheMilestone(suchKr);
+
+        resetLists();
+        for (MilestoneTreffer mst : milestoneTrefferList) {
+            Milestone ms = details(mst);
+            milestoneList.add(ms);
+        }
         return null;
     }
 
@@ -225,5 +313,13 @@ public class UTypController implements Serializable {
 
         }
         return null;
+    }
+
+    private Untersuchungstyp details(UTypTreffer utt) {
+        return transmitterSessionBeanRemote.findById(Untersuchungstyp.class, utt.getUntersuchungtypId());
+    }
+
+    private Milestone details(MilestoneTreffer mst) {
+        return transmitterSessionBeanRemote.findById(Milestone.class, mst.getMilestoneId());
     }
 }

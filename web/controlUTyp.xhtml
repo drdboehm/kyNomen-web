@@ -41,10 +41,11 @@
                                  value="#{uTypController.currentUTyp.untersuchungtypMut}" 
                                  p:placeholder="Mutation">
                     </h:inputText>
-                    <h:commandButton id="sucheUTypButton" value="Suche Untersuchungstyp" 
-                                     action="#{uTypController.sucheUTyp()}"/>
+
                     <h:commandButton id="saveUTypButton" action="#{uTypController.saveUTyp()}" 
-                                     value="Untersuchungstyp speichern"/>
+                                     value="Speichern"/>
+                    <h:commandButton id="sucheUTypButton" value="Suche" 
+                                     action="#{uTypController.sucheUTyp()}"/>
                 </h:panelGrid>
             </h:form>
             <h:form id="uTypSelect">
@@ -108,7 +109,7 @@
                                  p:placeholder="Milestone-Name"
                                  validator="#{halterController.validateAlpha}">
                     </h:inputText>
-                    <h:outputLabel for="inMilestoneAlltime" value="*#{msgs.milestone_alltime}" />   
+                    <h:outputLabel for="inMilestoneAlltime" value="#{msgs.milestone_alltime}" />   
                     <h:inputText label="#{msgs.milestone_alltime}" 
                                  id="inMilestoneAlltime" 
                                  value="#{uTypController.currentMilestone.milestoneAlltime}" 
@@ -116,7 +117,7 @@
                         <f:convertDateTime pattern="HH:mm"  timeZone="GMT+1" />
                     </h:inputText>
 
-                    <h:outputLabel for="inMilestoneHandsontime" value="*#{msgs.milestone_handsontime}" />   
+                    <h:outputLabel for="inMilestoneHandsontime" value="#{msgs.milestone_handsontime}" />   
                     <h:inputText label="#{msgs.milestone_handsontime}" 
                                  id="inMilestoneHandsontime" 
                                  value="#{uTypController.currentMilestone.milestoneHandsontime}" 
@@ -124,14 +125,14 @@
                         <f:convertDateTime pattern="HH:mm"  timeZone="GMT+1" />
                     </h:inputText>
 
-                    <h:outputLabel for="inMilestoneMannumber" value="*#{msgs.milestone_mannumber}" />   
+                    <h:outputLabel for="inMilestoneMannumber" value="#{msgs.milestone_mannumber}" />   
                     <h:inputText label="#{msgs.milestone_mannumber}" 
                                  id="inMilestoneMannumber" 
                                  value="#{uTypController.currentMilestone.milestoneMannumber}" 
                                  p:placeholder="Anzahl">    
                     </h:inputText>
 
-                    <h:outputLabel for="inMilestoneManhour" value="*#{msgs.milestone_manhour}" />   
+                    <h:outputLabel for="inMilestoneManhour" value="#{msgs.milestone_manhour}" />   
                     <h:inputText label="#{msgs.milestone_manhour}" 
                                  id="inMilestoneManhour" 
                                  value="#{uTypController.currentMilestone.milestoneManhour}" 
@@ -139,7 +140,7 @@
                         <f:convertDateTime pattern="HH:mm"  timeZone="GMT+1" />
                     </h:inputText>
 
-                    <h:outputLabel for="inMilestoneCost" value="*#{msgs.milestone_cost}" />   
+                    <h:outputLabel for="inMilestoneCost" value="#{msgs.milestone_cost}" />   
                     <h:inputText label="#{msgs.milestone_cost}" 
                                  id="inMilestoneCost" 
                                  value="#{uTypController.currentMilestone.milestonecost}" 
@@ -147,16 +148,15 @@
                     </h:inputText>
 
                     <h:outputText  value="#{msgs.milestonetyp}"/>
-                    <h:selectOneMenu id="inMilestoneTyp" value="#{uTypController.currentMilestone.
-                                                                  milestonetypId.milestonetypId}" >
+                    <h:selectOneMenu id="inMilestoneTyp" value="#{uTypController.milestonetyp.milestonetypId}" >
                         <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                         <f:selectItems value="#{uTypController.alleMilestoneTypenMap}"/>
                     </h:selectOneMenu>
 
-                    <h:commandButton id="sucheMSButton" value="Suche Milestone" 
-                                     action="#{uTypController.sucheMS()}"/>
                     <h:commandButton id="saveMSButton" action="#{uTypController.saveMS()}" 
-                                     value="Milestone speichern"/>
+                                     value="Speichern"/>
+                    <h:commandButton id="sucheMSButton" value="Suche" 
+                                     action="#{uTypController.sucheMS()}"/>
                 </h:panelGrid>
             </h:form>
             <h:form id="milestoneSelect">

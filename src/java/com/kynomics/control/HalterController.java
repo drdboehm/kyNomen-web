@@ -245,7 +245,7 @@ public class HalterController implements Serializable {
         currentHalter.setHaltertypId(haltertyp);
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(currentHalter, null, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
-        return "index";
+        return null;
     }
 
     private boolean checkHalterEntries() {
@@ -358,7 +358,7 @@ public class HalterController implements Serializable {
             Collection<Halteradresse> halteradresseCollection = p.getHalterHalterId().getHalteradresseCollection();
             halteradresseList.addAll(halteradresseCollection);
         }
-        return "index";
+        return null;
     }
 
     public String sucheAdresse() {

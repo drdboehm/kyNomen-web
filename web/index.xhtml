@@ -46,11 +46,11 @@
                         <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                         <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
                     </h:selectOneMenu>
-
-                    <h:commandButton id="sucheHalterButton" value="Suche Halter" 
-                                     action="#{halterController.sucheHalter()}"/>
                     <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" 
-                                     value="Halter speichern"/>
+                                     value="Speichern"/>
+                    <h:commandButton id="sucheHalterButton" value="Suche" 
+                                     action="#{halterController.sucheHalter()}"/>
+
                 </h:panelGrid>
             </h:form>
             <h:form id="halterSelect">
@@ -88,11 +88,11 @@
                     <h:column>
                         <f:facet name="header">Ändern</f:facet>
                         <h:commandButton value="Ändern" action="#{halterController.editEntity(halter)}" rendered="#{not halter.edited}"/>
-                        <h:commandButton value="Speichern" action="#{halterController.saveEntity()}" rendered="#{halter.edited}"/>
+                        <h:commandButton value="Speichern" action="#{halterController.saveEntity(halter)}" rendered="#{halter.edited}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Löschen</f:facet>
-                        <h:commandButton value="Löschen" action="#{halterController.deleteEntity()}"/>
+                        <h:commandButton value="Löschen" action="#{halterController.deleteEntity(halter.halterId)}"/>
                     </h:column>
                     <f:facet name="footer">Anzahl Halter: #{fn:length(halterController.halterList)}</f:facet> 
                 </h:dataTable>
@@ -170,8 +170,11 @@
                         <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
                                 render="inSpezies"/>
                     </h:selectOneMenu>  
-                    <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" value="Suche Patient"/>
-                    <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" value="Patient speichern"/>
+
+                    <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" 
+                                     value="Speichern"/>
+                    <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" 
+                                     value="Suche"/>
                 </h:panelGrid>
                 <!--</pf:panel>-->
             </h:form> 
@@ -306,13 +309,15 @@
                                             <f:validator validatorId="emailValidator" />-->
                     </h:inputText>
 
-                    <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" value="Suche Adresse"/>
-                    <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" value="Adresse speichern"/>
+                    <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" 
+                                     value="Speichern"/>
+                    <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" 
+                                     value="Suche"/>
                 </h:panelGrid>
             </h:form>
             <h:form id="adressSelect">
                 <h:dataTable style="width: 900px;" value="#{halterController.halteradresseList}" var="ha">
-                     <f:facet name="header">Liste der Adressen</f:facet> 
+                    <f:facet name="header">Liste der Adressen</f:facet> 
                     <h:column>
                         <f:facet name="header">
                             #{msgs.adress_id}
