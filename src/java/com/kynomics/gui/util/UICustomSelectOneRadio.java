@@ -6,14 +6,16 @@
 package com.kynomics.gui.util;
 
 import javax.el.ValueExpression;
+import javax.faces.component.FacesComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
 
 /**
  *
  * @author teilnehmer
  */
+//@FacesComponent(createTag = true, namespace = "http://xmlns.kynomics.com/jsf/components", 
+//        tagName = "selectOneRadio")
 public class UICustomSelectOneRadio extends UIInput {
 
     private String name = null;

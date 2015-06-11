@@ -12,13 +12,21 @@ import javax.faces.component.UIData;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.render.FacesRenderer;
 import javax.faces.render.Renderer;
 
 /**
  *
  * @author teilnehmer
  */
+//@FacesRenderer(componentFamily = "javax.faces.Input",
+//        rendererType = HTMLCustomSelectOneRadioRenderer.RENDERER_TYPE)
 public class HTMLCustomSelectOneRadioRenderer extends Renderer {
+
+    public static final String RENDERER_TYPE = "com.kynomics.gui.util.HTMLCustomSelectOneRadioRenderer";
+
+    public HTMLCustomSelectOneRadioRenderer() {
+    }
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {

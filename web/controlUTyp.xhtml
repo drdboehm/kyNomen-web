@@ -220,7 +220,7 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{msgs.milestone_milestonetypId_milestonetypName}</f:facet>
-                        <h:commandButton value="Sort" action="#{uTypController.sortMilestoneTypByName()}"/>
+                       
                         <h:outputText value="#{ms.milestonetypId.milestonetypName}" rendered="#{not ms.edited}"> </h:outputText>
                         <h:selectOneMenu id="inHalterTyp" value="#{uTypController.currentMilestone.milestonetypId.milestonetypId}" rendered="#{ms.edited}">
                             <f:selectItems value="#{uTypController.alleMilestoneTypenMap}" />

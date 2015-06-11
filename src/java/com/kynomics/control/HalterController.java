@@ -63,7 +63,7 @@ public class HalterController implements Serializable {
     private Spezies spezies;
     private Rasse rasse;
     private Haltertyp haltertyp;
-    private Halteradresse halteradresse;
+    private Halteradresse currentHalteradresse;
     private Adresstyp adressTyp;
 
     private List<Haltertreffer> halterTrefferList;
@@ -84,7 +84,7 @@ public class HalterController implements Serializable {
         currentPatient = new Patient();
         haltertyp = new Haltertyp();
         spezies = new Spezies();
-        halteradresse = new Halteradresse();
+        currentHalteradresse = new Halteradresse();
         adressTyp = new Adresstyp();
         rasse = new Rasse();
         patientList = new ArrayList<>();
@@ -103,7 +103,7 @@ public class HalterController implements Serializable {
     private final Map<String, Integer> alleHalterTypenMap = new HashMap();
 
     /* 
-     the HalterAdressTypen - Map for the  <h:selectOneMenu ... 
+     the HalterAdressTypen - Map for the  <h:selectOneMenu ... as label, value
      */
     private final Map<String, Integer> alleAdressTypenMap = new HashMap();
 
@@ -160,12 +160,12 @@ public class HalterController implements Serializable {
         this.haltertyp = haltertyp;
     }
 
-    public Halteradresse getHalteradresse() {
-        return halteradresse;
+    public Halteradresse getCurrentHalteradresse() {
+        return currentHalteradresse;
     }
 
-    public void setHalteradresse(Halteradresse halteradresse) {
-        this.halteradresse = halteradresse;
+    public void setCurrentHalteradresse(Halteradresse currentHalteradresse) {
+        this.currentHalteradresse = currentHalteradresse;
     }
 
     public Adresstyp getAdressTyp() {
@@ -236,31 +236,10 @@ public class HalterController implements Serializable {
      Own Logic
      */
     public String saveHalter() {
-//        System.out.println("Halter = " + currentHalter);
-//        System.out.println("Haltertyp = " + haltertyp);
-//        System.out.println("checkHalterEntries() = " + checkHalterEntries());
-//        if (!checkHalterEntries()) {
-//            return "index";
-//        }
         currentHalter.setHaltertypId(haltertyp);
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(currentHalter, null, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return null;
-    }
-
-    private boolean checkHalterEntries() {
-        boolean valid = true;
-        /**
-         * check required fields
-         */
-        System.out.println("halter.getHalterName().isEmpty() = " + currentHalter.getHalterName().isEmpty());
-        System.out.println("Haltertyp == null : " + haltertyp == null);
-        if (currentHalter.getHalterName().isEmpty()
-                || currentHalter.getHalterBemerkung().isEmpty()
-                || haltertyp == null) {
-            valid = false;
-        }
-        return valid;
     }
 
     public String savePatient() {
@@ -272,15 +251,15 @@ public class HalterController implements Serializable {
         transmitterSessionBeanRemote.storeEjb(wrapper);
         System.out.println("Patient: " + currentPatient);
         logAttributes();
-        return "index.xhtml";
+        return null;
     }
 
     public String saveAdresse() {
-        halteradresse.setAdresstypId(adressTyp);
-        halteradresse.setHalterId(currentHalter);
-        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, halteradresse, null);
+        currentHalteradresse.setAdresstypId(adressTyp);
+        currentHalteradresse.setHalterId(currentHalter);
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, currentHalteradresse, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
-        return "index.xhtml";
+        return null;
     }
 
     public String resetLists() {
@@ -289,13 +268,13 @@ public class HalterController implements Serializable {
         halteradresseList.clear();
         currentHalter = new Halter();
         currentPatient = new Patient();
-        halteradresse = new Halteradresse();
-        return "index.xhtml";
+        currentHalteradresse = new Halteradresse();
+        return null;
     }
 
     public String resetSpeziesRasse() {
         spezies.setSpeziesId(0);
-        return "index";
+        return null;
     }
 
     public String sucheHalter() {
@@ -311,9 +290,7 @@ public class HalterController implements Serializable {
             System.out.println("WhereClause: '" + suchKr + "'");
         }
         halterTrefferList = transmitterSessionBeanRemote.sucheHalter(suchKr);
-        halterList = new ArrayList<>();
-        patientList = new ArrayList<>();
-        halteradresseList = new ArrayList<>();
+        resetLists();
         for (Haltertreffer ht : halterTrefferList) {
             Halter h = this.details(ht);
             halterList.add(h);
@@ -331,7 +308,7 @@ public class HalterController implements Serializable {
                 halteradresseList.addAll(h.getHalteradresseCollection());
             }
         }
-        return "index.xhtml";
+        return null;
     }
 
     public String suchePatient() {
@@ -350,6 +327,7 @@ public class HalterController implements Serializable {
             System.out.println("WhereClause: '" + suchKr + "'");
         }
         patientenTrefferList = transmitterSessionBeanRemote.suchePatient(suchKr);
+        resetLists();
         for (Patiententreffer pt : patientenTrefferList) {
             Patient p = this.details(pt);
             patientList.add(p);
@@ -363,24 +341,22 @@ public class HalterController implements Serializable {
 
     public String sucheAdresse() {
         // check the attributes first
-        System.out.println("halteradresse.toString() = " + halteradresse.toString());
+        System.out.println("halteradresse.toString() = " + currentHalteradresse.toString());
 
         SuchkriterienHalteradresse suchKr = new SuchkriterienHalteradresse();
-        suchKr.setHalteradresseId(halteradresse.getHalteradresseId());
-        suchKr.setHalterStrasse(halteradresse.getHalterStrasse());
-        suchKr.setHalterPlz(halteradresse.getHalterPlz());
-        suchKr.setHalterOrt(halteradresse.getHalterOrt());
-        suchKr.setHalterTel(halteradresse.getHalterTel());
-        suchKr.setEmail(halteradresse.getEmail());
+        suchKr.setHalteradresseId(currentHalteradresse.getHalteradresseId());
+        suchKr.setHalterStrasse(currentHalteradresse.getHalterStrasse());
+        suchKr.setHalterPlz(currentHalteradresse.getHalterPlz());
+        suchKr.setHalterOrt(currentHalteradresse.getHalterOrt());
+        suchKr.setHalterTel(currentHalteradresse.getHalterTel());
+        suchKr.setEmail(currentHalteradresse.getEmail());
         if (suchKr.toString().length() == 0) {
             System.out.println("WhereClause is empty: '" + suchKr + "'");
         } else {
             System.out.println("WhereClause: '" + suchKr + "'");
         }
         halteradresseTrefferList = transmitterSessionBeanRemote.sucheHalterAdresse(suchKr);
-        halteradresseList = new ArrayList<>();
-        halterList = new ArrayList<>();
-        patientList = new ArrayList<>();
+        resetLists();
         for (HalteradresseTreffer hat : halteradresseTrefferList) {
             Halteradresse ha = this.details(hat);
             halteradresseList.add(ha);
@@ -388,10 +364,10 @@ public class HalterController implements Serializable {
             Collection<Patient> patientCollection = ha.getHalterId().getPatientCollection();
             patientList.addAll(patientCollection);
         }
-        return "index";
+        return null;
     }
 
-    public String deleteEntity(Integer halterId) {
+    public String deleteHalter(Integer halterId) {
         System.out.println("Delete halter with Id " + halterId);
         Halter deleteById = transmitterSessionBeanRemote.deleteById(Halter.class, halterId);
         if (deleteById != null) {
@@ -411,21 +387,76 @@ public class HalterController implements Serializable {
             System.out.println("Halter Details deleted from halterList: " + deleteById);
 
         }
-        return "index";
+        return null;
     }
 
-    public void editEntity(Halter halter) {
+    public void editHalter(Halter halter) {
         halter.setEdited(true);
     }
-    public void editEntity(Patient patient) {
+
+    public String deletePatient(Integer patientId) {
+        System.out.println("Delete patient with Id " + patientId);
+        Patient deleteById = transmitterSessionBeanRemote.deleteById(Patient.class, patientId);
+        if (deleteById != null) {
+            System.out.println("Patient Details deleted from database: " + deleteById);
+        }
+        if (patientList.remove(deleteById)) {
+            System.out.println("Patient Details deleted from patientList: " + deleteById);
+        }
+        return null;
+    }
+
+    public void editPatient(Patient patient) {
         patient.setEdited(true);
-    } 
-    public void editEntity(Halteradresse ha) {
+    }
+
+    public void editHalteradresse(Halteradresse ha) {
         ha.setEdited(true);
     }
-    
-    public void saveEntity(Halter halter) {
-        halter.setEdited(false);
+
+    public String deleteHalteradresse(Integer halteradresseId) {
+        System.out.println("Delete halteradresse with Id " + halteradresseId);
+        Halteradresse deleteById = transmitterSessionBeanRemote.deleteById(Halteradresse.class, halteradresseId);
+        if (deleteById != null) {
+            System.out.println("Halteradresse Details deleted from database: " + deleteById);
+        }
+        if (halteradresseList.remove(deleteById)) {
+            System.out.println("Halteradresse Details deleted from halteradresseList: " + deleteById);
+        }
+        return null;
+    }
+
+    public void saveHalter(Halter halter) {
+        System.out.println("Halter : " + halter);
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(halter, null, null);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            halter.setEdited(false);
+        } else {
+            // send a message
+        }
+    }
+
+    public void savePatient(Patient patient) {
+        System.out.println("Patient : " + patient);
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, null, patient);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            patient.setEdited(false);
+        } else {
+            // send a message
+        }
+    }
+
+    public void saveHalteradresse(Halteradresse ha) {
+        System.out.println("Halteradresse : " + ha);
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, ha, null);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            ha.setEdited(false);
+        } else {
+            // send a message
+        }
     }
 
     public Halter details(Haltertreffer halterTreffer) {
@@ -438,6 +469,104 @@ public class HalterController implements Serializable {
 
     public Halteradresse details(HalteradresseTreffer halteradresseTreffer) {
         return transmitterSessionBeanRemote.findById(Halteradresse.class, halteradresseTreffer.getHalteradresseId());
+    }
+
+    public void selectHalter(Halter halter) {
+        halter.setSelected(true);
+        System.out.println("selected Halter : " + halter);
+        currentHalter = halter;
+        patientList.clear();
+        halteradresseList.clear();
+        for (Halter h : halterList) {
+//            System.out.println("Halter: " + h);
+            if (h.isSelected()) {
+                fillOtherListsBySelected(h);
+            }
+        }
+    }
+
+    public void selectPatient(Patient patient) {
+        patient.setSelected(true);
+        System.out.println("selected Patient : " + patient);
+        currentPatient = patient;
+        halterList.clear();
+        halteradresseList.clear();
+        for (Patient p : patientList) {
+            if (p.isSelected()) {
+                fillOtherListsBySelected(p);
+            }
+
+        }
+    }
+
+    public void selectHalteradresse(Halteradresse ha) {
+        ha.setSelected(true);
+        System.out.println("selected Halteradresse : " + ha);
+        currentHalteradresse = ha;
+        patientList.clear();
+        halterList.clear();
+        for (Halteradresse hal : halteradresseList) {
+//            System.out.println("Halter: " + h);
+            if (hal.isSelected()) {
+                fillOtherListsBySelected(hal);
+            }
+        }
+
+    }
+
+    public String fillOtherListsBySelected(Halter h) {
+        patientList.addAll(h.getPatientCollection());
+        halteradresseList.addAll(h.getHalteradresseCollection());
+        return null;
+    }
+
+    public String fillOtherListsBySelected(Patient p) {
+        halterList.add(p.getHalterHalterId());
+        halteradresseList.addAll(p.getHalterHalterId().getHalteradresseCollection());
+        return null;
+    }
+
+    public String fillOtherListsBySelected(Halteradresse ha) {
+        patientList.addAll(ha.getHalterId().getPatientCollection());
+        halterList.add(ha.getHalterId());
+        return null;
+    }
+
+    public void deSelectHalter(Halter halter) {
+        halter.setSelected(false);
+        currentHalter = new Halter();
+        patientList.clear();
+        halteradresseList.clear();
+        for (Halter h : halterList) {
+//            System.out.println("Halter: " + h);
+            if (h.isSelected()) {
+                fillOtherListsBySelected(h);
+            }
+        }
+    }
+
+    public void deSelectPatient(Patient patient) {
+        patient.setSelected(false);
+        currentPatient = new Patient();
+        halterList.clear();
+        halteradresseList.clear();
+        for (Patient p : patientList) {
+            if (p.isSelected()) {
+                fillOtherListsBySelected(p);
+            }
+        }
+    }
+
+    public void deSelectHalteradresse(Halteradresse ha) {
+        ha.setSelected(false);
+        currentHalteradresse = new Halteradresse();
+        halterList.clear();
+        patientList.clear();
+        for (Halteradresse hal : halteradresseList) {
+            if (hal.isSelected()) {
+                fillOtherListsBySelected(hal);
+            }
+        }
     }
 
     /**
