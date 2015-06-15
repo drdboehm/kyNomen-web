@@ -19,6 +19,7 @@ import com.kynomics.daten.finder.Patiententreffer;
 import com.kynomics.daten.finder.SuchkriterienHalter;
 import com.kynomics.daten.finder.SuchkriterienHalteradresse;
 import com.kynomics.daten.finder.SuchkriterienPatient;
+import com.kynomics.daten.wrapper.SpeziesRasseWrapper;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -77,6 +79,15 @@ public class HalterController implements Serializable {
     private Boolean sortOrderDesc = false;
 
     /**
+     * the Suchkriterien are set private properties, which can be used to reload
+     * each list after persisting changes in order to keep the list updated all
+     * the time.
+     */
+    private SuchkriterienHalteradresse suchKrHalteradresse = new SuchkriterienHalteradresse();
+    private SuchkriterienPatient suchKrPatient = new SuchkriterienPatient();
+    private SuchkriterienHalter suchKrHalter = new SuchkriterienHalter();
+
+    /**
      * the default constructor
      */
     public HalterController() {
@@ -100,22 +111,22 @@ public class HalterController implements Serializable {
     /* 
      the HalterTypen - Map for the  <h:selectOneMenu ... 
      */
-    private final Map<String, Integer> alleHalterTypenMap = new HashMap();
+    private final Map<String, Integer> alleHalterTypenMap = new TreeMap();
 
     /* 
      the HalterAdressTypen - Map for the  <h:selectOneMenu ... as label, value
      */
-    private final Map<String, Integer> alleAdressTypenMap = new HashMap();
+    private final Map<String, Integer> alleAdressTypenMap = new TreeMap();
 
     /* 
      the SpeziesTypen - Map for the  <h:selectOneMenu ... 
      */
-    private final Map<String, Integer> alleSpeziesTypenMap = new HashMap();
+    private final Map<String, Integer> alleSpeziesTypenMap = new TreeMap();
 
     /* 
      the RasseTypen - Map for the  <h:selectOneMenu ... 
      */
-    private final Map<String, Integer> alleRasseTypenMap = new HashMap();
+    private final Map<String, Integer> alleRasseTypenMap = new TreeMap();
 
     /*
      Getters and setters
@@ -239,10 +250,12 @@ public class HalterController implements Serializable {
         currentHalter.setHaltertypId(haltertyp);
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(currentHalter, null, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
+        sucheHalter();
         return null;
     }
 
     public String savePatient() {
+
         Halter h = transmitterSessionBeanRemote.findById(Halter.class, currentHalter.getHalterId());
         Rasse r = transmitterSessionBeanRemote.findById(Rasse.class, rasse.getRasseId());
         currentPatient.setRasseRasseId(r);
@@ -251,7 +264,42 @@ public class HalterController implements Serializable {
         transmitterSessionBeanRemote.storeEjb(wrapper);
         System.out.println("Patient: " + currentPatient);
         logAttributes();
+        suchePatient();
         return null;
+    }
+
+    public String saveSpezies() {
+        /**
+         * speziesID != null indicates an existing Spezies which gets a new
+         * Rasse entry if rasseId == 0 and rasseName is not empty
+         * (rasseName.lenght != 0) speziesId == 0 indicates a new spezies which
+         * has a name field only and perhaps a rasseName with rasseId == 0
+         * indicating a new Rasse entry which boths entitys an needs to be
+         * persisted. A rasseId == 0 together with an empty name indicates a
+         * missing rasse entity
+         *
+         * we implement this logic in the EJB
+         */
+        System.out.println("Spezies: " + spezies);
+        System.out.println("Rasse " + rasse);
+        Integer id;
+        if ((id = spezies.getSpeziesId()) != 0) {
+            // get the Spezies-Entity by Id because it exists and need to be set as a  
+            // foreign key in the corresponding Rasse entity
+            Spezies s = transmitterSessionBeanRemote.findById(Spezies.class, id);
+            rasse.setSpeziesSpeziesId(s);
+        }
+        if (rasse.getRasseName().length() > 0 && spezies.getSpeziesName().length() > 0) {
+            SpeziesRasseWrapper wrapper = new SpeziesRasseWrapper(spezies, rasse);
+            if (transmitterSessionBeanRemote.storeEjb(wrapper)) {
+                return null; // success 
+            } else {
+                // give a note, that RasseName can not be empty
+                return null; // failure
+            }
+
+        }
+        return null; //default
     }
 
     public String saveAdresse() {
@@ -259,6 +307,7 @@ public class HalterController implements Serializable {
         currentHalteradresse.setHalterId(currentHalter);
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, currentHalteradresse, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
+        sucheAdresse();
         return null;
     }
 
@@ -281,18 +330,21 @@ public class HalterController implements Serializable {
         /*
          check the attributes first
          */
-        System.out.println("halter.toString() = " + currentHalter.toString());
-        SuchkriterienHalter suchKr = new SuchkriterienHalter(currentHalter.getHalterId(), currentHalter.getHalterName(),
-                currentHalter.getHalterBemerkung());
-        if (suchKr.toString().length() == 0) {
-            System.out.println("WhereClause is empty: '" + suchKr + "'");
+//        System.out.println("halter.toString() = " + currentHalter.toString());
+
+        suchKrHalter.setHalterId(currentHalter.getHalterId());
+        suchKrHalter.setTeilVonHalterName(currentHalter.getHalterName());
+        suchKrHalter.setTeilDerBeschreibung(currentHalter.getHalterBemerkung());
+        if (suchKrHalter.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchKrHalter + "'");
         } else {
-            System.out.println("WhereClause: '" + suchKr + "'");
+            System.out.println("WhereClause: '" + suchKrHalter + "'");
         }
-        halterTrefferList = transmitterSessionBeanRemote.sucheHalter(suchKr);
+        halterTrefferList = transmitterSessionBeanRemote.sucheHalter(suchKrHalter);
         resetLists();
         for (Haltertreffer ht : halterTrefferList) {
             Halter h = this.details(ht);
+            System.out.println("Haltertyp-Details  in Halter before adding to halterList : " + h.getHaltertypId().getHaltertypName());
             halterList.add(h);
             /*
              Call to .size() here should resolve the lazy loaded relationship, thus avoiding the NullpointerException
@@ -313,20 +365,20 @@ public class HalterController implements Serializable {
 
     public String suchePatient() {
         // check the attributes first
-        System.out.println("patient.toString() = " + currentPatient.toString());
-        SuchkriterienPatient suchKr = new SuchkriterienPatient();
-        suchKr.setPatientId(currentPatient.getPatientId());
-        suchKr.setPatientRuf(currentPatient.getPatientRuf());
-        suchKr.setPatientName(currentPatient.getPatientName());
-        suchKr.setPatientChip(currentPatient.getPatientChip());
-        suchKr.setPatientTatoonr(currentPatient.getPatientTatoonr());
-        suchKr.setPatientZuchtbuchnr(currentPatient.getPatientZuchtbuchnr());
-        if (suchKr.toString().length() == 0) {
-            System.out.println("WhereClause is empty: '" + suchKr + "'");
+//        System.out.println("patient.toString() = " + currentPatient.toString());
+
+        suchKrPatient.setPatientId(currentPatient.getPatientId());
+        suchKrPatient.setPatientRuf(currentPatient.getPatientRuf());
+        suchKrPatient.setPatientName(currentPatient.getPatientName());
+        suchKrPatient.setPatientChip(currentPatient.getPatientChip());
+        suchKrPatient.setPatientTatoonr(currentPatient.getPatientTatoonr());
+        suchKrPatient.setPatientZuchtbuchnr(currentPatient.getPatientZuchtbuchnr());
+        if (suchKrPatient.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchKrPatient + "'");
         } else {
-            System.out.println("WhereClause: '" + suchKr + "'");
+            System.out.println("WhereClause: '" + suchKrPatient + "'");
         }
-        patientenTrefferList = transmitterSessionBeanRemote.suchePatient(suchKr);
+        patientenTrefferList = transmitterSessionBeanRemote.suchePatient(suchKrPatient);
         resetLists();
         for (Patiententreffer pt : patientenTrefferList) {
             Patient p = this.details(pt);
@@ -341,21 +393,20 @@ public class HalterController implements Serializable {
 
     public String sucheAdresse() {
         // check the attributes first
-        System.out.println("halteradresse.toString() = " + currentHalteradresse.toString());
+//        System.out.println("halteradresse.toString() = " + currentHalteradresse.toString());
 
-        SuchkriterienHalteradresse suchKr = new SuchkriterienHalteradresse();
-        suchKr.setHalteradresseId(currentHalteradresse.getHalteradresseId());
-        suchKr.setHalterStrasse(currentHalteradresse.getHalterStrasse());
-        suchKr.setHalterPlz(currentHalteradresse.getHalterPlz());
-        suchKr.setHalterOrt(currentHalteradresse.getHalterOrt());
-        suchKr.setHalterTel(currentHalteradresse.getHalterTel());
-        suchKr.setEmail(currentHalteradresse.getEmail());
-        if (suchKr.toString().length() == 0) {
-            System.out.println("WhereClause is empty: '" + suchKr + "'");
+        suchKrHalteradresse.setHalteradresseId(currentHalteradresse.getHalteradresseId());
+        suchKrHalteradresse.setHalterStrasse(currentHalteradresse.getHalterStrasse());
+        suchKrHalteradresse.setHalterPlz(currentHalteradresse.getHalterPlz());
+        suchKrHalteradresse.setHalterOrt(currentHalteradresse.getHalterOrt());
+        suchKrHalteradresse.setHalterTel(currentHalteradresse.getHalterTel());
+        suchKrHalteradresse.setEmail(currentHalteradresse.getEmail());
+        if (suchKrHalteradresse.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchKrHalteradresse + "'");
         } else {
-            System.out.println("WhereClause: '" + suchKr + "'");
+            System.out.println("WhereClause: '" + suchKrHalteradresse + "'");
         }
-        halteradresseTrefferList = transmitterSessionBeanRemote.sucheHalterAdresse(suchKr);
+        halteradresseTrefferList = transmitterSessionBeanRemote.sucheHalterAdresse(suchKrHalteradresse);
         resetLists();
         for (HalteradresseTreffer hat : halteradresseTrefferList) {
             Halteradresse ha = this.details(hat);
@@ -432,6 +483,7 @@ public class HalterController implements Serializable {
         boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
         if (success) {
             halter.setEdited(false);
+            sucheHalter();
         } else {
             // send a message
         }
@@ -443,6 +495,7 @@ public class HalterController implements Serializable {
         boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
         if (success) {
             patient.setEdited(false);
+            suchePatient();
         } else {
             // send a message
         }
@@ -454,6 +507,7 @@ public class HalterController implements Serializable {
         boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
         if (success) {
             ha.setEdited(false);
+            sucheAdresse();
         } else {
             // send a message
         }
@@ -603,25 +657,17 @@ public class HalterController implements Serializable {
 //                System.out.println("" + r.getRasseName() + "-" + r.getSpeziesSpeziesId().getSpeziesId());
                 alleRasseTypenMap.put(r.getRasseName(), r.getRasseId());
             }
+            alleRasseTypenMap.put("neue Rasse anlegen", 0);
         }
         return alleRasseTypenMap;
     }
 
     public Map<String, Integer> getAlleSpeziesTypenMap() {
         List<Spezies> list = transmitterSessionBeanRemote.initializeSpeziesTypen();
-        /*
-         filter the list by selected rasseId
-         1. empty the Map
-         2. avoid NullPointerException when rasseId is null, -> then add all Spezies
-         3. Filter the Spezies List by RasseId
-         4. If we do that, we need a system to RESET selection !!!! this is a "goldener Henkel" 
-         => concentrate on business logic implementation 
-         */
         alleSpeziesTypenMap.clear();
         for (Spezies s : list) {
-//            if (s.getSpeziesId() == rassePK.getRasseId()) {
-//                System.out.println("" + s.getSpeziesName() + "for Rasse " + rassePK.getRasseId());
             alleSpeziesTypenMap.put(s.getSpeziesName(), s.getSpeziesId());
+            alleSpeziesTypenMap.put("neue Spezies anlegen", 0);
         }
         return alleSpeziesTypenMap;
     }

@@ -10,7 +10,6 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:pf="http://primefaces.org/ui">
 
-
     <ui:define name="bodyContent">
         <h:panelGrid columns="2" styleClass="table-valign">
             <h:form id="halterForm">
@@ -90,7 +89,7 @@
                             <f:facet name="header">#{msgs.halter_haltertyp}</f:facet>
                             <h:outputText value="#{halter.haltertypId.haltertypName}" style="font-weight: bold" rendered="#{not halter.edited and halter.selected}" />
                             <h:outputText value="#{halter.haltertypId.haltertypName}" rendered="#{not halter.edited and not halter.selected}"> </h:outputText>
-                            <h:selectOneMenu id="inHalterTyp" label="#{halter.haltertypId.haltertypName}" value="#{halter.haltertyp.haltertypId}" rendered="#{halter.edited}">
+                            <h:selectOneMenu id="inHalterTyp" label="#{halter.haltertypId.haltertypName}" value="#{halter.haltertypId.haltertypId}" rendered="#{halter.edited}">
                                 <f:selectItems value="#{halterController.alleHalterTypenMap}" />
                             </h:selectOneMenu>
                         </h:column>
@@ -109,47 +108,47 @@
             <h:form id="patientForm">
                 <pf:panel header="Patienten-Formular" style="width: 350px;">
                     <h:messages styleClass="errorMsg"></h:messages>
-                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                    <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
                         <h:inputText label="#{msgs.patient_id}" 
                                      id="inPatientId" 
                                      value="#{halterController.currentPatient.patientId}" 
                                      p:placeholder="Patienten-Id">
-                        </h:inputText>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientRufName" value="*#{msgs.patient_rufname}" />   
                         <h:inputText label="#{msgs.patient_rufname}" 
                                      id="inPatientRufName" 
                                      value="#{halterController.currentPatient.patientRuf}" 
                                      p:placeholder="Patienten-Rufname">
-                        </h:inputText>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
                         <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
                                      id="inPatientName" 
                                      value="#{halterController.currentPatient.patientName}" 
                                      p:placeholder="vollständiger Name">
-                        </h:inputText>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientChipNr" value="*#{msgs.patient_chipnr}" />   
                         <h:inputText label="#{msgs.patient_chipnr}" 
                                      id="inPatientChipNr" 
                                      value="#{halterController.currentPatient.patientChip}" 
                                      p:placeholder="Chip-Nr.">
-                        </h:inputText>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientTatooNr" value="*#{msgs.patient_tatoonr}" />   
                         <h:inputText label="#{msgs.patient_tatoonr}" 
                                      id="inPatientTatooNr" 
                                      value="#{halterController.currentPatient.patientTatoonr}" 
                                      p:placeholder="Tatoo-Nr.">
-                        </h:inputText>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientZuchtBuchNr" value="*#{msgs.patient_zuchtbuchnr}" />   
                         <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
                                      id="inPatientZuchtBuchNr" 
                                      value="#{halterController.currentPatient.patientZuchtbuchnr}" 
                                      p:placeholder="Zuchtbuch-Nr.">
-                        </h:inputText>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputLabel for="inPatientGebDat" value="#{msgs.patient_geburtstag}" />   
                         <h:inputText label="#{msgs.patient_geburtstag}" 
@@ -158,17 +157,24 @@
                                      p:placeholder="dd.mm.yyyy">
                             <f:convertDateTime pattern="dd.MM.yyyy" />
                             <ky:validateAge maxAge="20"/>   
-                        </h:inputText>
-                        <h:panelGroup></h:panelGroup>
-                        <h:outputText value="#{ky:getAge(halterController.currentPatient.patientGeb)} Jahre"/>
+                        </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputText  value="#{msgs.patient_spezies}"/>
                         <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
                             <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                             <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
                             <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
-                                    render="inRasse"/>
-                        </h:selectOneMenu>   
+                                    render="inRasse speziesButton"/>
+                        </h:selectOneMenu>    
+                        <h:panelGroup id="speziesButton">
+                            <h:inputText label="" 
+                                         id="inNewSpezies" size="5"
+                                         value="#{halterController.spezies.speziesName}" 
+                                         p:placeholder="Spezies"
+                                         rendered="#{halterController.spezies.speziesId == 0}">
+                            </h:inputText>
+                            <h:panelGroup rendered="#{halterController.spezies.speziesId != 0}"/>    
+                        </h:panelGroup>
 
 
                         <h:outputText  value="#{msgs.patient_rasse}"/>
@@ -176,13 +182,26 @@
                             <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
                             <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
                             <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
-                                    render="inSpezies"/>
-                        </h:selectOneMenu>  
+                                    render="inSpezies rasseButton saveSpeziesGroup"/>
+                        </h:selectOneMenu>   
+                        <h:panelGroup id="rasseButton">
+                            <h:inputText label="" 
+                                         id="inNewRasse" size="5"
+                                         value="#{halterController.rasse.rasseName}" 
+                                         p:placeholder="Rasse"
+                                         rendered="#{halterController.rasse.rasseId == 0}">
+                            </h:inputText>
+                            <h:panelGroup rendered="#{halterController.rasse.rasseId != 0}"/>    
+                        </h:panelGroup>
 
                         <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" 
                                          value="Speichern"/>
                         <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" 
                                          value="Suche"/>
+                        <h:panelGroup id="saveSpeziesGroup">
+                            <h:commandButton id="saveSpeziesButton" action="#{halterController.saveSpezies()}" 
+                                             rendered="#{halterController.spezies.speziesId == 0 || halterController.rasse.rasseId == 0}" value="Save"/>
+                        </h:panelGroup>
                     </h:panelGrid>
                 </pf:panel>
             </h:form> 

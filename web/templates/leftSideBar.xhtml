@@ -6,9 +6,9 @@
     <ui:decorate template="/templates/sideBox.xhtml">
         <ui:param name="title" value="#{msgs.menu_title}"/>
         <h:form id="menu">
-             <a href="index.xhtml">Startseite</a>
+             <!--<a href="index.xhtml">Startseite</a>-->
             <h:panelGrid columns="3">
-                <h:commandButton value="#{msgs.menu_control_halter_patienten_adressen}" action="/index.xhtml}"/>
+                <h:commandButton value="#{msgs.menu_control_halter_patienten_adressen}" action="index.xhtml"/>
                 <h:commandButton value="#{msgs.menu_control_auftrag}" action="/controlAuftrag.xhtml"/>
                 <h:commandButton value="#{msgs.menu_control_untersuchungstypen}" action="/controlUTyp.xhtml"/>
             </h:panelGrid>
