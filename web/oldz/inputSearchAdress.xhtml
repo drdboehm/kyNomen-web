@@ -25,7 +25,7 @@
 
                     <h:outputText  value="#{msgs.adress_adresstyp}"/>
                     <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
-                        <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                        <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                         <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
                     </h:selectOneMenu>
 

@@ -68,7 +68,7 @@
 
                 <h:outputText  value="#{msgs.patient_spezies}"/>
                 <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
-                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                     <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
                     <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
                             render="inRasse"/>
@@ -77,7 +77,7 @@
 
                 <h:outputText  value="#{msgs.patient_rasse}"/>
                 <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" >
-                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                     <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
                     <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
                             render="inSpezies"/>

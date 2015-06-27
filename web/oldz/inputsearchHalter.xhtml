@@ -39,7 +39,7 @@
 
                 <h:outputText  value="#{msgs.halter_haltertyp}"/>
                 <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
-                    <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                     <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
                 </h:selectOneMenu>
 

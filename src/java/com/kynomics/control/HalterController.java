@@ -24,10 +24,8 @@ import com.kynomics.lib.TransmitterSessionBeanRemote;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -349,16 +347,16 @@ public class HalterController implements Serializable {
             /*
              Call to .size() here should resolve the lazy loaded relationship, thus avoiding the NullpointerException
              */
-            if (h.getPatientCollection() != null) {
-                System.out.println(ht.toString() + " - Size PatientList: " + h.getPatientCollection().size());
-                patientList.addAll(h.getPatientCollection());
-            }
-
-            if (h.getHalteradresseCollection() != null) {
-                System.out.println(ht.toString() + " - Size AdressList: "
-                        + h.getHalteradresseCollection().size());
-                halteradresseList.addAll(h.getHalteradresseCollection());
-            }
+//            if (h.getPatientCollection() != null) {
+//                System.out.println(ht.toString() + " - Size PatientList: " + h.getPatientCollection().size());
+//                patientList.addAll(h.getPatientCollection());
+//            }
+//
+//            if (h.getHalteradresseCollection() != null) {
+//                System.out.println(ht.toString() + " - Size AdressList: "
+//                        + h.getHalteradresseCollection().size());
+//                halteradresseList.addAll(h.getHalteradresseCollection());
+//            }
         }
         return null;
     }
@@ -383,10 +381,10 @@ public class HalterController implements Serializable {
         for (Patiententreffer pt : patientenTrefferList) {
             Patient p = this.details(pt);
             patientList.add(p);
-            Halter h = p.getHalterHalterId();
-            halterList.add(h);
-            Collection<Halteradresse> halteradresseCollection = p.getHalterHalterId().getHalteradresseCollection();
-            halteradresseList.addAll(halteradresseCollection);
+//            Halter h = p.getHalterHalterId();
+//            halterList.add(h);
+//            Collection<Halteradresse> halteradresseCollection = p.getHalterHalterId().getHalteradresseCollection();
+//            halteradresseList.addAll(halteradresseCollection);
         }
         return null;
     }
@@ -411,9 +409,9 @@ public class HalterController implements Serializable {
         for (HalteradresseTreffer hat : halteradresseTrefferList) {
             Halteradresse ha = this.details(hat);
             halteradresseList.add(ha);
-            halterList.add(ha.getHalterId());
-            Collection<Patient> patientCollection = ha.getHalterId().getPatientCollection();
-            patientList.addAll(patientCollection);
+//            halterList.add(ha.getHalterId());
+//            Collection<Patient> patientCollection = ha.getHalterId().getPatientCollection();
+//            patientList.addAll(patientCollection);
         }
         return null;
     }
@@ -625,10 +623,10 @@ public class HalterController implements Serializable {
 
     /**
      * create and returns a Map with String of all Halter -Objects to show in
-     * the <h:selectOneMenu ...>
+     * the h:selectOneMenu ...
      * and the HaltertypId as key
      *
-     * @return Map<String, Integer>
+     * @return Map
      */
     public Map<String, Integer> getAlleHalterTypenMap() {
         List<Haltertyp> tempList = transmitterSessionBeanRemote.initializeHalterTypen();

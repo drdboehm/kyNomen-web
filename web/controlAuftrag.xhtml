@@ -7,200 +7,328 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ky="http://com.kynomics/kynomen"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:pf="http://primefaces.org/ui">
 
     <ui:define name="bodyContent">
-        <h:panelGrid columns="2" styleClass="table-valign">
-            <h:outputText id="selectedHalterId" value="für ausgewählten Halter:"/>
-            <h:outputText  value="#{halterController.currentHalter.halterId}"/>
-            <h:outputText id="selectedPatientId" value="für ausgewählten Patienten:"/>
-            <h:outputText  value="#{halterController.currentPatient.patientId}"/>
-            <h:form id="auftragForm">
-                <h:messages styleClass="errorMsg"></h:messages>
-                <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
-                    <f:facet name="header">Auftrag-Formular</f:facet> 
-                    <h:outputLabel for="inAuftragId" value="*#{msgs.auftrag_id}" />   
-                    <h:inputText label="#{msgs.auftrag_id}" 
-                                 id="inAuftragId" 
-                                 value="#{auftragController.currentAuftrag.auftragId}" 
-                                 p:placeholder="Auftrag-Id">
-                    </h:inputText>
-                    <h:outputLabel for="inAuftragText" value="*#{msgs.auftrag_text}" />   
-                    <h:inputText label="#{msgs.auftrag_text}" 
-                                 id="inAuftragText" 
-                                 value="#{auftragController.currentAuftrag.auftragText}" 
-                                 p:placeholder="Auftrag-Text">
-                    </h:inputText>
-                    <h:outputLabel for="inAuftragsTypId" value="*#{msgs.auftrag_typ_id}" />   
-                    <h:inputText label="#{msgs.auftrag_typ_id}" 
-                                 id="inAuftragsTypId" 
-                                 value="#{auftragController.currentAuftrag.auftragstypId}" 
-                                 p:placeholder="Auftrags-Typ">
-                    </h:inputText>
-                    <h:outputLabel for="inAuftragStart" value="*#{msgs.auftrag_start}" />   
-                    <h:inputText label="#{msgs.auftrag_start}" 
-                                 id="inAuftragStart" 
-                                 value="#{auftragController.currentAuftrag.auftragStart}" 
-                                 p:placeholder="Auftrag-Start">
-                    </h:inputText>
-                    <h:outputLabel for="inAuftragEnde" value="*#{msgs.auftrag_ende}" />   
-                    <h:inputText label="#{msgs.auftrag_ende}" 
-                                 id="inAuftragEnde" 
-                                 value="#{auftragController.currentAuftrag.auftragEnde}" 
-                                 p:placeholder="Auftrag-Ende">
-                    </h:inputText>
 
-                </h:panelGrid>
+
+        <h:panelGrid columns="2" styleClass="table-valign">
+            <h:form id="showOrSelectSummeryForm"> 
+                <h:outputText id="selectedHalterId" value="ausgewählter Halter: " rendered="#{halterController.currentHalter.selected}"/>
+                <h:outputText  value="#{halterController.currentHalter.halterName}" rendered="#{halterController.currentHalter.selected}"/><br/>
+                <h:outputText id="selectedPatientId" value="ausgewählter Patient: " rendered="#{halterController.currentPatient.selected}"/>
+                <h:outputText  value="#{halterController.currentPatient.patientName}" rendered="#{halterController.currentPatient.selected}"/><br/>
+                <h:outputText id="selectedAdressId" value="ausgewählte Adresse: " rendered="#{halterController.currentHalteradresse.selected}"/>
+                <h:outputText  value="#{halterController.currentHalteradresse.halteradresseId}" rendered="#{halterController.currentHalteradresse.selected}"/>
+            </h:form>
+            <h:form>
+                <h:commandButton value="#{msgs.button_select_halter}" action="index.xhtml" rendered="#{not halterController.currentHalter.selected}"/>
+                <h:commandButton value="#{msgs.button_change_halter}" action="index.xhtml" rendered="#{halterController.currentHalter.selected}"/><br/>
+                <h:commandButton value="#{msgs.button_select_patient}" action="index.xhtml" rendered="#{not halterController.currentPatient.selected}"/>
+                <h:commandButton value="#{msgs.button_change_patient}" action="index.xhtml" rendered="#{halterController.currentPatient.selected}"/><br/>
+                <h:commandButton value="#{msgs.button_select_halteradresse}" action="index.xhtml" rendered="#{not halterController.currentHalteradresse.selected}"/>
+                <h:commandButton value="#{msgs.button_change_halteradresse}" action="index.xhtml" rendered="#{halterController.currentHalteradresse.selected}"/>
+            </h:form>
+            <h:form id="auftragForm">
+                <pf:panel header="#{msgs.header_form_auftrag}" style="width: 350px;">
+                    <h:messages styleClass="errorMsg"></h:messages>
+                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                        <h:panelGroup></h:panelGroup>
+                        <h:commandButton value="#{msgs.menu_reset}" action="#{auftragController.resetLists()}"/>
+                        <h:outputText  value="#{msgs.auftrag_typ_id}"/>
+                        <h:selectOneMenu id="inAuftragTyp" value="#{auftragController.auftragTyp.auftragtypId}" >
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
+                            <f:selectItems value="#{auftragController.alleAuftragTypenMap}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="inAuftragId" value="*#{msgs.auftrag_id}" />   
+                        <h:inputText label="#{msgs.auftrag_id}" 
+                                     id="inAuftragId" 
+                                     value="#{auftragController.currentAuftrag.auftragId}" 
+                                     p:placeholder="Auftrag-Id">
+                        </h:inputText>
+                        <h:outputLabel for="inAuftragText" value="*#{msgs.auftrag_text}" />   
+                        <h:inputText label="#{msgs.auftrag_text}" 
+                                     id="inAuftragText" 
+                                     value="#{auftragController.currentAuftrag.auftragText}" 
+                                     p:placeholder="Auftrag-Text">
+                        </h:inputText>
+
+                        <h:outputLabel for="inAuftragStart" value="*#{msgs.auftrag_start}" />   
+                        <h:inputText label="#{msgs.auftrag_start}" 
+                                     id="inAuftragStart" 
+                                     value="#{auftragController.currentAuftrag.auftragStart}" 
+                                     p:placeholder="dd.MM.yyyy">
+                            <f:convertDateTime pattern="dd.MM.yyyy" />
+                            <ky:validateAge isActual="true"/>   
+                        </h:inputText>
+
+                        <h:outputLabel for="inAuftragEnde" value="*#{msgs.auftrag_ende}" />   
+                        <h:inputText label="#{msgs.auftrag_ende}" 
+                                     id="inAuftragEnde" 
+                                     value="#{auftragController.currentAuftrag.auftragEnde}" 
+                                     p:placeholder="dd.MM.yyyy">
+                            <f:convertDateTime pattern="dd.MM.yyyy" />
+                            <ky:validateAge maxTimeToNeed="21"/>   
+                        </h:inputText>
+                        <h:outputLabel for="inHalterName" value="*#{msgs.halter_name}" />   
+                        <h:outputText id="inHalterName" 
+                                      value="#{halterController.currentHalter.halterName}" 
+                                      p:placeholder="#{halterController.currentHalter.halterName}">
+                        </h:outputText>
+
+                        <h:commandButton id="saveAuftragButton" action="#{auftragController.saveAuftrag()}" 
+                                         value="#{msgs.button_save}"/>
+                        <h:commandButton id="sucheAuftragButton" value="#{msgs.button_search}" 
+                                         action="#{auftragController.sucheAuftrag()}"/>
+                    </h:panelGrid>
+                </pf:panel>
             </h:form>
             <h:form id="auftragSelect">
+                <pf:panel header="#{msgs.header_list_auftraege}" footer="#{msgs.footer_anzahl_auftraege} #{fn:length(auftragController.auftragList)}">
+                    <h:dataTable style="width: 900px;" value="#{auftragController.auftragList}" 
+                                 var="auftrag" > 
+                        <h:column>
+                            <f:facet name="header">#{msgs.header_list_de_select} </f:facet>
+                            <h:commandButton value="#{auftrag.auftragId}" action="#{auftragController.selectAuftrag(auftrag)}" rendered="#{not auftrag.selected}" />
+                            <h:commandButton value="De-#{auftrag.auftragId}" action="#{auftragController.deSelectAuftrag(auftrag)}" rendered="#{auftrag.selected}" />
+                            <f:facet name="footer">
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftrag_text}
+                            </f:facet>
+                            <h:outputText value="#{auftrag.auftragText}" style="font-weight: bold" rendered="#{not auftrag.edited and auftrag.selected}" />
+                            <h:outputText value="#{auftrag.auftragText}" rendered="#{not auftrag.edited and not auftrag.selected}"> </h:outputText>
+                            <h:inputText value="#{auftrag.auftragText}" size="20" rendered="#{auftrag.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftrag_start}
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                            <h:outputText value="#{auftrag.auftragStart}" style="font-weight: bold" rendered="#{not auftrag.edited and auftrag.selected}" />
+                            <h:outputText value="#{auftrag.auftragStart}" rendered="#{not auftrag.edited and not auftrag.selected}"> </h:outputText>
+                            <h:inputText value="#{auftrag.auftragStart}" size="20" rendered="#{auftrag.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftrag_ende}
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                            <h:outputText value="#{auftrag.auftragEnde}" style="font-weight: bold" rendered="#{not auftrag.edited and auftrag.selected}" />
+                            <h:outputText value="#{auftrag.auftragEnde}" rendered="#{not auftrag.edited and not auftrag.selected}"> </h:outputText>
+                            <h:inputText value="#{auftrag.auftragEnde}" size="20" rendered="#{auftrag.edited}"></h:inputText>
+                            <f:facet name="footer">
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftrag_typ_id}</f:facet>
+                            <h:outputText value="#{auftrag.auftragstypId.auftragtypName}" style="font-weight: bold" rendered="#{not auftrag.edited and auftrag.selected}" />
+                            <h:outputText value="#{auftrag.auftragstypId.auftragtypName}" rendered="#{not auftrag.edited and not auftrag.selected}"> </h:outputText>
+                            <h:selectOneMenu id="inAuftragTyp" label="#{auftrag.auftragstypId.auftragtypName}" value="#{auftrag.auftragstypId.auftragtypName}" rendered="#{auftrag.edited}">
+                                <f:selectItems value="#{auftragController.alleAuftragTypenMap}" />
+                            </h:selectOneMenu>
+                        </h:column>
 
-                <h:dataTable style="width: 900px;" value="#{auftragController.auftragList}" 
-                             var="auftrag" > 
-                    <f:facet name="header">Liste der Aufträge</f:facet> 
-                    <h:column>
-                        <f:facet name="header">
-                            #{msgs.auftrag_id} - 
-                            <h:commandButton id="auftragIdSort" value="Sort" action="#{AuftragController.sortAuftragByRanking()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungId}"></h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_name} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByName()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungName}" rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungName}" rendered="#{u.edited}"></h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_dauer} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByDauer()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungDauer}"  rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungDauer}"  rendered="#{u.edited}"> </h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_preis} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByPreis()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungPreis}"  rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungPreis}"  rendered="#{u.edited}"> </h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_untersuchungtyp}</f:facet>
-                        <h:outputText value="#{u.untersuchungstypUntersuchungtypId.untersuchungtypName}" rendered="#{not u.edited}"> </h:outputText>
-                        <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" rendered="#{u.edited}">
-                            <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}" />
-                        </h:selectOneMenu>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Ändern</f:facet>
-                        <h:commandButton value="Ändern" action="#{untersuchungenController.editUntersuchung(u)}" rendered="#{not u.edited}"/>
-                        <h:commandButton value="Speichern" action="#{untersuchungenController.saveUntersuchung(u)}" rendered="#{u.edited}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Löschen</f:facet>
-                        <h:commandButton value="Löschen" action="#{untersuchungenController.deleteUntersuchung(u.untersuchungId)}"/>
-                    </h:column>
-                    <f:facet name="footer">Anzahl Untersuchungen: #{fn:length(untersuchungenController.untersuchungenList)}</f:facet> 
-                </h:dataTable>
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_edit}</f:facet>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{auftragController.editAuftrag(auftrag)}" rendered="#{not auftrag.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{auftragController.saveAuftrag(auftrag)}" rendered="#{auftrag.edited}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{auftragController.deleteAuftrag(auftrag.auftragId)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </pf:panel>
             </h:form>
-            <h:form id="untersuchungenForm">
-                <h:messages styleClass="errorMsg"></h:messages>
-                <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
-                    <f:facet name="header">Untersuchungen-Formular</f:facet> 
-                    <h:commandButton value="#{msgs.menu_reset}" action="#{untersuchungenController.resetLists()}"/>
-                    <h:panelGroup></h:panelGroup>
-                    <h:outputLabel for="inUnteruchungId" value="*#{msgs.untersuchung_id}" />   
-                    <h:inputText label="#{msgs.untersuchung_id}" 
-                                 id="inUntersuchungId" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungId}" 
-                                 p:placeholder="Untersuchung-Id">
-                    </h:inputText>
 
-                    <h:outputLabel for="inUntersuchungName" value="*#{msgs.untersuchung_name}" />   
-                    <h:inputText label="#{msgs.untersuchung_name}" 
-                                 id="inUntersuchungName" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungName}" 
-                                 p:placeholder="Untersuchungs-Name">
-                    </h:inputText>
 
-                    <h:outputLabel for="inUntersuchungPreis" value="*#{msgs.untersuchung_preis}" />   
-                    <h:inputText label="#{msgs.untersuchung_preis}" 
-                                 id="inUntersuchungPreis" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungPreis}" 
-                                 p:placeholder="Preis">
-                    </h:inputText>
-                    <h:outputLabel for="inUntersuchungDauer" value="*#{msgs.untersuchung_dauer}" />   
-                    <h:inputText label="#{msgs.untersuchung_dauer}" 
-                                 id="inUntersuchungDauer" 
-                                 value="#{untersuchungenController.currentUntersuchung.untersuchungDauer}" 
-                                 p:placeholder="Dauer">
-                    </h:inputText>
+            <h:form id="untersuchungForm">
+                <pf:panel header="#{msgs.header_form_untersuchung}" style="width: 350px;">
+                    <h:messages styleClass="errorMsg"></h:messages>
+                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                        <h:panelGroup></h:panelGroup>
+                        <h:commandButton value="#{msgs.menu_reset}" action="#{auftragController.resetLists()}"/>
 
-                    <h:outputText  value="#{msgs.untersuchung_untersuchungtyp}"/>
-                    <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" >
-                        <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
-                        <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}"/>
-                    </h:selectOneMenu>
+                        <h:outputLabel for="inUntersuchungId" value="#{msgs.untersuchung_id}" />   
+                        <h:inputText label="#{msgs.untersuchung_id}" 
+                                     id="inUntersuchungId" 
+                                     value="#{auftragController.currentUntersuchung.untersuchungId}" 
+                                     p:placeholder="U.-Id">
+                        </h:inputText>
+                        <h:outputLabel for="inUntersuchungName" value="#{msgs.untersuchung_name}" />   
+                        <h:inputText label="#{msgs.untersuchung_name}" 
+                                     id="inUntersuchungName" 
+                                     value="#{auftragController.currentUntersuchung.untersuchungName}" 
+                                     p:placeholder="U.-Name">
+                        </h:inputText>
 
-                    <h:commandButton id="sucheUntersuchungButton" value="Suche Untersuchung" 
-                                     action="#{untersuchungenController.sucheUntersuchung()}"/>
-                    <h:commandButton id="saveUntersuchungButton" action="#{untersuchungenController.saveUntersuchung()}" 
-                                     value="Untersuchung speichern"/>
-                </h:panelGrid>
+                        <h:outputLabel for="inUntersuchungDauer" value="#{msgs.untersuchung_dauer}" />   
+                        <h:inputText label="#{msgs.untersuchung_dauer}" 
+                                     id="inUntersuchungDauer" 
+                                     value="#{auftragController.currentUntersuchung.untersuchungDauer}" 
+                                     p:placeholder="U.-Dauer">
+                        </h:inputText>
+
+                        <h:outputLabel for="inUntersuchungPreis" value="#{msgs.untersuchung_preis}" />   
+                        <h:inputText label="#{msgs.untersuchung_preis}" 
+                                     id="inUntersuchungPreis" 
+                                     value="#{auftragController.currentUntersuchung.untersuchungPreis}" 
+                                     p:placeholder="U.-Preis">
+                            <f:convertNumber pattern="#0.00" currencySymbol="€"/>
+                        </h:inputText>
+
+                        <h:commandButton id="saveUntersuchungButton" action="#{auftragController.saveUntersuchung()}" 
+                                         value="#{msgs.button_save}"/>
+                        <h:commandButton id="sucheUntersuchungButton" value="#{msgs.button_search}" 
+                                         action="#{auftragController.sucheUntersuchung()}"/>
+                    </h:panelGrid>
+                </pf:panel>
             </h:form>
-            
-             <h:form id="untersuchungenSelect">
-                <h:dataTable style="width: 900px;" value="#{untersuchungenController.untersuchungenList}" 
-                             var="u" >
-                    <f:facet name="header">Liste aller Untersuchungen</f:facet> 
-                    <h:column>
-                        <f:facet name="header">
-                            #{msgs.untersuchung_id} - 
-                            <h:commandButton id="untersuchungIdSort" value="Sort" action="#{untersuchungenController.sortUntersuchungByRanking()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungId}"></h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_name} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByName()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungName}" rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungName}" rendered="#{u.edited}"></h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_dauer} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByDauer()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungDauer}"  rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungDauer}"  rendered="#{u.edited}"> </h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_preis} -
-                            <h:commandButton value="Sort" action="#{untersuchungenController.sortUntersuchungByPreis()}"/>
-                        </f:facet>
-                        <h:outputText value="#{u.untersuchungPreis}"  rendered="#{not u.edited}"> </h:outputText>
-                        <h:inputText value="#{u.untersuchungPreis}"  rendered="#{u.edited}"> </h:inputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.untersuchung_untersuchungtyp}</f:facet>
-                        <h:outputText value="#{u.untersuchungstypUntersuchungtypId.untersuchungtypName}" rendered="#{not u.edited}"> </h:outputText>
-                        <h:selectOneMenu id="inUntersuchungTyp" value="#{untersuchungenController.currentUntersuchungstyp.untersuchungtypId}" rendered="#{u.edited}">
-                            <f:selectItems value="#{untersuchungenController.alleUntersuchungsTypenMap}" />
-                        </h:selectOneMenu>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Ändern</f:facet>
-                        <h:commandButton value="Ändern" action="#{untersuchungenController.editUntersuchung(u)}" rendered="#{not u.edited}"/>
-                        <h:commandButton value="Speichern" action="#{untersuchungenController.saveUntersuchung(u)}" rendered="#{u.edited}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Löschen</f:facet>
-                        <h:commandButton value="Löschen" action="#{untersuchungenController.deleteUntersuchung(u.untersuchungId)}"/>
-                    </h:column>
-                    <f:facet name="footer">Anzahl Untersuchungen: #{fn:length(untersuchungenController.untersuchungenList)}</f:facet> 
-                </h:dataTable>
+            <h:form id="untersuchungSelect">
+                <pf:panel header="#{msgs.header_list_untersuchungen}" footer="#{msgs.footer_anzahl_untersuchungen} #{fn:length(auftragController.untersuchungList)}">
+                    <h:dataTable style="width: 900px;" value="#{auftragController.untersuchungList}" 
+                                 var="untersuchung" > 
+                        <h:column>
+                            <f:facet name="header">#{msgs.header_list_de_select} </f:facet>
+                            <h:commandButton value="#{untersuchung.untersuchungId}" action="#{auftragController.selectUntersuchung(untersuchung)}" rendered="#{not untersuchung.selected}"/>
+                            <h:commandButton value="De-#{untersuchung.untersuchungId}" action="#{auftragController.deSelectUntersuchung(untersuchung)}" rendered="#{untersuchung.selected}"/>
+                            <f:facet name="footer">
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.untersuchung_name}
+                            </f:facet>
+                            <h:outputText value="#{untersuchung.untersuchungName}" style="font-weight: bold" rendered="#{not untersuchung.edited and untersuchung.selected}"/>
+                            <h:outputText value="#{untersuchung.untersuchungName}" rendered="#{not untersuchung.edited and not untersuchung.selected}"> </h:outputText>
+                            <h:inputText value="#{untersuchung.untersuchungName}" size="20" rendered="#{untersuchung.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.untersuchung_dauer}
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                            <h:outputText value="#{untersuchung.untersuchungDauer}" style="font-weight: bold" rendered="#{not untersuchung.edited and untersuchung.selected}" />
+                            <h:outputText value="#{untersuchung.untersuchungDauer}" rendered="#{not untersuchung.edited and not untersuchung.selected}"> </h:outputText>
+                            <h:inputText value="#{untersuchung.untersuchungDauer}" size="20" rendered="#{untersuchung.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.untersuchung_preis}
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                            <h:outputText value="#{untersuchung.untersuchungPreis}" style="font-weight: bold" rendered="#{not untersuchung.edited and untersuchung.selected}" />
+                            <h:outputText value="#{untersuchung.untersuchungPreis}" rendered="#{not untersuchung.edited and not untersuchung.selected}"> </h:outputText>
+                            <h:inputText value="#{untersuchung.untersuchungPreis}" size="20" rendered="#{untersuchung.edited}"></h:inputText>
+                            <f:facet name="footer">
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_edit}</f:facet>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{auftragController.editUntersuchung(untersuchung)}" rendered="#{not untersuchung.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{auftragController.saveUntersuchung(untersuchung)}" rendered="#{untersuchung.edited}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{auftragController.deleteUntersuchung(untersuchung.untersuchungId)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </pf:panel>
             </h:form>
+
+
+
+            <h:form id="auftragpositionForm">
+                <pf:panel header="#{msgs.header_form_auftragposition}" style="width: 350px;">
+                    <h:messages styleClass="errorMsg"></h:messages>
+                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                        <h:panelGroup></h:panelGroup>
+                        <h:commandButton value="#{msgs.menu_reset}" action="#{auftragController.resetLists()}"/>
+                        <h:outputLabel for="inAuftragpositionId" value="*#{msgs.auftragposition_id}" />   
+                        <h:inputText label="#{msgs.auftragposition_id}" 
+                                     id="inAuftragpositionId" 
+                                     value="#{auftragController.currentAuftragposition.auftragpositionId}" 
+                                     p:placeholder="Auftragposition-Id">
+                        </h:inputText>
+                        <h:outputLabel for="inAuftragpositionNr" value="*#{msgs.auftragposition_nr}" />   
+                        <h:inputText label="#{msgs.auftragposition_nr}" 
+                                     id="inAuftragpositionNr" 
+                                     value="#{auftragController.currentAuftragposition.auftragpositionNr}" 
+                                     p:placeholder="Auftragposition-Nr.">
+                        </h:inputText>
+
+                        <h:outputLabel for="inUntersuchungId" value="*#{msgs.untersuchung_id}" />   
+                        <h:inputText label="#{msgs.untersuchung_id}" 
+                                     id="inUntersuchungId" 
+                                     value="#{auftragController.currentAuftragposition.untersuchungId}" 
+                                     p:placeholder="Untersuchung-Id">
+                        </h:inputText>
+                        <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
+                        <h:outputText id="inPatientName" 
+                                      value="#{halterController.currentPatient.patientName}" 
+                                      p:placeholder="#{halterController.currentPatient.patientName}">
+                        </h:outputText>
+
+                        <h:commandButton id="saveAuftragpositionButton" action="#{auftragController.saveAuftragposition()}" 
+                                         value="#{msgs.button_save}"/>
+                        <h:commandButton id="sucheAuftragpositionButton" value="#{msgs.button_search}" 
+                                         action="#{auftragController.sucheAuftragposition()}"/>
+                    </h:panelGrid>
+                </pf:panel>
+            </h:form>
+            <h:form id="auftragpositionSelect">
+                <pf:panel header="#{msgs.header_list_auftragpositionen}" footer="#{msgs.footer_anzahl_auftragpositionen} #{fn:length(auftragController.auftragpositionenList)}">
+                    <h:dataTable style="width: 900px;" value="#{auftragController.auftragpositionenList}" 
+                                 var="auftragpos" > 
+                        <h:column>
+                            <f:facet name="header">#{msgs.header_list_de_select} </f:facet>
+                            <h:commandButton value="#{auftragpos.auftragpositionId}" action="#{auftragController.selectAuftragposition(auftragpos)}" rendered="#{not auftragpos.selected}" />
+                            <h:commandButton value="De-#{auftragpos.auftragpositionId}" action="#{halterController.deSelectAuftragposition(auftragpos)}" rendered="#{auftragpos.selected}" />
+                            <f:facet name="footer">
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftragposition_nr}</f:facet>
+                            <h:outputText value="#{auftragpos.auftragpositionNr}" style="font-weight: bold" rendered="#{not auftragpos.edited and auftragpos.selected}" />
+                            <h:outputText value="#{auftragpos.auftragpositionNr}" rendered="#{not auftragpos.edited and not auftragpos.selected}"> </h:outputText>
+                            <h:inputText value="#{auftragpos.auftragpositionNr}" size="20" rendered="#{auftragpos.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftrag_typ_id}</f:facet>
+                            <h:outputText value="#{auftrag.auftragstypId.auftragtypName}" style="font-weight: bold" rendered="#{not auftrag.edited and auftrag.selected}" />
+                            <h:outputText value="#{auftrag.auftragstypId.auftragtypName}" rendered="#{not auftrag.edited and not auftrag.selected}"> </h:outputText>
+                            <h:selectOneMenu id="inAuftragTyp" label="#{auftrag.auftragstypId.auftragtypName}" value="#{auftrag.auftragstypId.auftragtypName}" rendered="#{auftrag.edited}">
+                                <f:selectItems value="#{auftragController.alleAuftragTypenMap}" />
+                            </h:selectOneMenu>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_edit}</f:facet>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{auftragController.editAuftrag(auftrag)}" rendered="#{not auftrag.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{auftragController.saveAuftrag(auftrag)}" rendered="#{auftrag.edited}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{auftragController.deleteAuftrag(auftrag.auftragId)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </pf:panel>
+            </h:form>
+
         </h:panelGrid>
     </ui:define>
 </ui:composition>

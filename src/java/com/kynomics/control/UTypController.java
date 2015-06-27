@@ -7,83 +7,165 @@ package com.kynomics.control;
 
 import com.kynomics.daten.Milestone;
 import com.kynomics.daten.Milestonetyp;
+import com.kynomics.daten.Untersuchung;
 import com.kynomics.daten.Untersuchungstyp;
+import com.kynomics.daten.UntersuchungstypMilestone;
+import com.kynomics.daten.UntersuchungstypMilestonePK;
 import com.kynomics.daten.finder.MilestoneTreffer;
 import com.kynomics.daten.finder.SuchkriterienMilestone;
 import com.kynomics.daten.finder.SuchkriterienUTyp;
 import com.kynomics.daten.finder.UTypTreffer;
 import com.kynomics.daten.wrapper.UTypMileStoneWrapper;
+import com.kynomics.daten.wrapper.UntersuchungWrapper;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
 /**
+ * UTypController is a Controller class following the MVC pattern. The
+ * UTypController class is performing updates an rendering of the corresponding
+ * view.
+ *
  *
  * @author dboehm
+ * @version 1.0 June 20, 2015
  */
 @Named(value = "uTypController")
 @SessionScoped
 public class UTypController implements Serializable {
 
+    /**
+     * Untersuchungstyp currentUTyp is always set to the actual selected or
+     * edited entity Untersuchungstyp which can be changed either in the
+     * insert-Form or selected and set from a corresponding List utypList
+     */
     private Untersuchungstyp currentUTyp;
-    private List<Untersuchungstyp> utypList;
-    private Milestone currentMilestone;
-    private List<Milestone> milestoneList;
-    private Milestonetyp milestonetyp;
-    private Boolean sortOrderDesc = false;
-    private List<Milestone> milestoneOrderedSOPList;
-    private Map<Integer, Milestone> milestoneOrderedSOPMap;
 
     /**
-     * the Suchkriterien are set private properties, which can be used to reload
-     * each list after persisting changes in order to keep the list updated all
-     * the time.
+     * List utypList hold all Untersuchungstyp entities which are shown in the
+     * h:datatable of the Frontend
+     */
+    private List<Untersuchungstyp> utypList;
+
+    /**
+     * Milestone currentMilestone is always set to the actual selected or edited
+     * entity Milestone which can be changed either in the insert-Form or
+     * selected and set from a corresponding List milestoneList
+     */
+    private Milestone currentMilestone;
+
+    /**
+     * List milestoneList hold all Milestone entities which are shown in the
+     * h:datatable of the Frontend
+     */
+    private List<Milestone> milestoneList;
+
+    /**
+     * Untersuchung currentUntersuchung is always set to the actual selected or
+     * edited entity Untersuchung which can be changed either in the insert-Form
+     * or selected and set from a corresponding List untersuchungList
+     */
+    private Untersuchung currentUntersuchung;
+
+    /**
+     * List untersuchungList hold all Untersuchung entities which are shown in
+     * the h:datatable of the Frontend
+     */
+    private List<Untersuchung> untersuchungList;
+
+    /**
+     * List milestoneOrderedSOPList is the List which has the natural order of
+     * Insertion and which correspond to the order of the Milestones in a SOP
+     * Standard-Operation-Procedure.
+     */
+    private List<Milestone> milestoneOrderedSOPList;
+
+    /**
+     * The Milestonetyp milestonetyp is an entity from the database and
+     * indicates which Milestonetyp the Mielstone belongs to
+     */
+    private Milestonetyp milestonetyp;
+
+    /**
+     * an order flag which indicates, whether the order in sorting is ascending
+     * or descending
+     */
+    private Boolean sortOrderDesc = false;
+
+    /**
+     * the SuchkriterienUTyp suchkriterienUTyp is set to a private property,
+     * which can be used to reload each List utypList after persisting changes
+     * in order to keep the list updated all the time.
      */
     private SuchkriterienUTyp suchkriterienUTyp = new SuchkriterienUTyp();
+
+    /**
+     * the SuchkriterienMilestone suchKrMilestone is set to a private property,
+     * which can be used to reload each List milestoneList after persisting
+     * changes in order to keep the list updated all the time.
+     */
     private SuchkriterienMilestone suchKrMilestone = new SuchkriterienMilestone();
 
     /**
-     * ALTERNATIVELY the TrefferLists can set as private properties, and can be
-     * used to reload each list to keep the list updated all the time.
+     * The List milestoneTrefferList is set as private property, and can be used
+     * to reload each List milestoneList after persisting changes in order to
+     * keep the list updated all the time.
      */
     private List<MilestoneTreffer> milestoneTrefferList = null;
+
+    /**
+     * The List uTypTrefferList is set as private property, and can be used to
+     * reload each List utypList after persisting changes in order to keep the
+     * list updated all the time.
+     */
     private List<UTypTreffer> uTypTrefferList = null;
 
+    /**
+     * The TransmitterSessionBeanRemote transmitterSessionBeanRemote is an EJB
+     * which is injected to perform the operation on the database-model which
+     * can be on another host
+     */
     @EJB
     private TransmitterSessionBeanRemote transmitterSessionBeanRemote;
 
-    /* 
-     the MilestoneTypen - Map for the  <h:selectOneMenu ... 
+    /**
+     * the MilestoneTypen - Map for the h:selectOneMenu ...
      */
     private Map<String, Integer> alleMilestoneTypenMap;
 
     /**
-     * Creates a new instance of UntersuchungsController
+     * The default constructor, creates an instance of UntersuchungsController
+     * and initializes the attributes Untersuchungstyp currentUTyp, Milestone 
+     * currentMilestone, Untersuchung currentUntersuchung, Milestonetyp
+     * milestonetyp, as well as List milestoneList, milestoneOrderedSOPList and 
+     * HashMap alleMilestoneTypenMap
      */
     public UTypController() {
         currentUTyp = new Untersuchungstyp();
         currentMilestone = new Milestone();
-        milestoneList = new ArrayList<>();
+        currentUntersuchung = new Untersuchung();
         milestonetyp = new Milestonetyp();
+        milestoneList = new ArrayList<>();
         currentMilestone.setMilestonetypId(milestonetyp);
-        milestoneOrderedSOPList = new LinkedList<>();
-        milestoneOrderedSOPMap = new TreeMap<>();
-
-        this.alleMilestoneTypenMap = new HashMap();
+        milestoneOrderedSOPList = new ArrayList<>();
+        alleMilestoneTypenMap = new HashMap();
     }
 
+    /**
+     * initializes List of Untersuchungstyp utypList and List of Milestone
+     * milestoneList following creation of the controller instance
+     */
     @PostConstruct
     public void init() {
 //        utypList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
@@ -92,17 +174,18 @@ public class UTypController implements Serializable {
         milestoneList = new ArrayList<>();
     }
 
+    /**
+     * The getter method of the Map of Milestypen filled by calling
+     * transmitterSessionBeanRemote.initializeMilestoneTypen();
+     *
+     * @return Map of Milestypen for selectOneMenu
+     */
     public Map<String, Integer> getAlleMilestoneTypenMap() {
         List<Milestonetyp> tempList = transmitterSessionBeanRemote.initializeMilestoneTypen();
         for (Milestonetyp mst : tempList) {
             alleMilestoneTypenMap.put(mst.getMilestonetypName(), mst.getMilestonetypId());
         }
         return alleMilestoneTypenMap;
-    }
-
-    public void setAlleMilestoneTypenMap(Map<String, Integer> alleMilestoneTypenMap) {
-
-        this.alleMilestoneTypenMap = alleMilestoneTypenMap;
     }
 
     public Untersuchungstyp getCurrentUTyp() {
@@ -161,12 +244,20 @@ public class UTypController implements Serializable {
         this.milestoneOrderedSOPList = milestoneOrderedSOPList;
     }
 
-    public Map<Integer, Milestone> getMilestoneOrderedSOPMap() {
-        return milestoneOrderedSOPMap;
+    public Untersuchung getCurrentUntersuchung() {
+        return currentUntersuchung;
     }
 
-    public void setMilestoneOrderedSOPMap(Map<Integer, Milestone> milestoneOrderedSOPMap) {
-        this.milestoneOrderedSOPMap = milestoneOrderedSOPMap;
+    public void setCurrentUntersuchung(Untersuchung currentUntersuchung) {
+        this.currentUntersuchung = currentUntersuchung;
+    }
+
+    public List<Untersuchung> getUntersuchungList() {
+        return untersuchungList;
+    }
+
+    public void setUntersuchungList(List<Untersuchung> untersuchungList) {
+        this.untersuchungList = untersuchungList;
     }
 
     public String saveUTyp() {
@@ -175,6 +266,41 @@ public class UTypController implements Serializable {
         boolean storeEjb = transmitterSessionBeanRemote.storeEjb(wrapper);
         if (storeEjb) {
             init();
+        }
+        return null;
+    }
+
+    public String saveUntersuchung() {
+        /*
+         * sets and persists the entity Untersuchung currentUntersuchung. The FrontEnd 
+         * has NOT set and changed the currentUTyp.getUntersuchungtypName() and just 
+         * transfers it to the object Untersuchung currentUntersuchung which will 
+         * we be persisted as it is.
+         */
+        currentUntersuchung.setUntersuchungName(currentUTyp.getUntersuchungtypName());
+        System.out.println("currentUntersuchung.getUntersuchungName()= "
+                + currentUntersuchung.getUntersuchungName());
+        /*
+         *  SAME is true for the currentUntersuchung.setUntersuchungstypUntersuchungtypId 
+         * which will be set by using the setter and the instance  currentUTyp
+         */
+        currentUntersuchung.setUntersuchungstypUntersuchungtypId(currentUTyp);
+        System.out.println("currentUntersuchung.getUntersuchungstypUntersuchungtypId()= "
+                + currentUntersuchung.getUntersuchungstypUntersuchungtypId());
+        /*
+         * currentUntersuchung.getUntersuchungDauer() and 
+         * currentUntersuchung.getUntersuchungPreis() are transferred from the Frontend 
+         * by user settings.
+         */
+        System.out.println("currentUntersuchung.getUntersuchungDauer()= "
+                + currentUntersuchung.getUntersuchungDauer());
+        System.out.println("currentUntersuchung.getUntersuchungPreis()= "
+                + currentUntersuchung.getUntersuchungPreis());
+
+        UntersuchungWrapper wrapper = new UntersuchungWrapper(currentUntersuchung);
+        boolean storeEjb = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (storeEjb) {
+//    init();
         }
         return null;
     }
@@ -345,13 +471,40 @@ public class UTypController implements Serializable {
         }
     }
 
+    public String saveSOPList(List<Milestone> list) {
+        /* To avoid traffic, create a selectedUtypList which consists of selected
+         Untersuchungstyp only
+         */
+        List<Untersuchungstyp> selectedUtypList = new ArrayList<>();
+        for (Untersuchungstyp ut : utypList) {
+            if (ut.isSelected()) {
+                selectedUtypList.add(ut);
+            }
+        }
+        System.out.println("selectedUtypList.size()=" + selectedUtypList.size());
+        System.out.println("List<Milestone> list.size()=" + list.size());
+        boolean success = false;
+        for (Untersuchungstyp ut : selectedUtypList) {
+            UntersuchungstypMilestone utms = null;
+            for (int i = 0; i < list.size(); i++) {
+                UntersuchungstypMilestonePK utmsPK = new UntersuchungstypMilestonePK(ut.getUntersuchungtypId(), list.get(i).getMilestoneId());
+                utms = new UntersuchungstypMilestone(utmsPK);
+                utms.setMilestoneorderpos(i + 1);
+                success = transmitterSessionBeanRemote.storeEjb(utms);
+                if (!success) {
+                    return "error.xhtml";
+                }
+            }
+        }
+        return null;
+    }
+
     public String deleteUTyp(Integer uTypId) {
         System.out.println("Delete entity  with Id " + uTypId);
         Untersuchungstyp deleteById = transmitterSessionBeanRemote.deleteById(Untersuchungstyp.class, uTypId);
         if (deleteById != null) {
             System.out.println("Entity Details deleted from database: " + deleteById);
         }
-
         /*
          here we need to adjust the halterList, patientList and halteradresseList
          first of all: we have a DELETE ON CASCADE in our DELETE query!
@@ -383,15 +536,48 @@ public class UTypController implements Serializable {
 
     public String selectUTyp(Untersuchungstyp utyp) {
         utyp.setSelected(true);
-        System.out.println("selected UTyp : " + utyp);
         currentUTyp = utyp;
+        System.out.println("selected UTyp : " + utyp);
+        /* now, do some more logic here
+         1. need to check, whether Untersuchungstyp utyp has
+         a Collection loaded already
+         */
+        List<UntersuchungstypMilestone> untersuchungstypMilestoneCollection
+                = (List<UntersuchungstypMilestone>) utyp.getUntersuchungstypMilestoneCollection();
+
+        /* To be sure that 
+         * Collection<UntersuchungstypMilestone> untersuchungstypMilestoneCollection 
+         * is sorted by utms.getMilestoneorderpos(), cast it to 
+         * List<UntersuchungstypMilestone> and sort by using a custom Comparator using the 
+         * 
+         */
+        Collections.sort(untersuchungstypMilestoneCollection, new Comparator<UntersuchungstypMilestone>() {
+
+            @Override
+            public int compare(UntersuchungstypMilestone o1, UntersuchungstypMilestone o2) {
+                return o1.getMilestoneorderpos().compareTo(o2.getMilestoneorderpos());
+            }
+        });
+
+        /* what is in the List and later on
+         1. build the private List<Milestone> milestoneOrderedSOPList which is displayed
+         in the JSF
+         */
+        for (UntersuchungstypMilestone utms : untersuchungstypMilestoneCollection) {
+            System.out.println("utms.getMilestone()=" + utms.getMilestone()
+                    + "utms.getUntersuchungstyp()=" + utms.getUntersuchungstyp()
+                    + "utms.getMilestoneorderpos()=" + utms.getMilestoneorderpos());
+            utms.getMilestone().setSelected(true);
+            milestoneOrderedSOPList.add(utms.getMilestone());
+            milestoneList.add(utms.getMilestone());
+        }
         return null;
     }
 
     public String selectMSOrdered(Milestone ms) {
+        currentMilestone = ms;
         ms.setSelected(true);
         milestoneOrderedSOPList.add(ms);
-        milestoneOrderedSOPMap.put(milestoneOrderedSOPList.size(), ms);
         return null;
     }
 
@@ -402,17 +588,50 @@ public class UTypController implements Serializable {
     }
 
     public String removeMSFromOrderedSOPList(Milestone ms) {
-        int indexOf = milestoneOrderedSOPList.indexOf(ms);
-        milestoneOrderedSOPList.remove(indexOf);
+        milestoneOrderedSOPList.remove(ms);
         // we need to set the ms in the milestoneList to selected=false
-        indexOf = milestoneList.indexOf(ms);
+        int indexOf = milestoneList.indexOf(ms);
+        System.out.println("Index in milestoneList=" + indexOf);
         milestoneList.get(indexOf).setSelected(false);
+        /* create the corresponding UntersuchungstypMilestoneCollection
+         * from Collection<Milestone> milestoneOrderedSOPList to later persist changes
+         * We could use the public String saveSOPList(List<Milestone> list) method,
+         * but this would cause network traffic every time we sitched the Select/Deselect 
+         * Button! Better would be to hold the Collections in memory and finally 
+         * save by calling saveSOPList(List<Milestone> list) method ONCE, when we really need/want 
+         * to save changes. For now, we will produce a small portion of redundant code, but we
+         * decide to do so and adapt later
+         */
+
+        saveSOPList(milestoneOrderedSOPList);
+        int milestoneorderposition = 1;
+        UntersuchungstypMilestone utms = null;
+        Collection<UntersuchungstypMilestone> untersuchungstypMilestoneCollection = new ArrayList<>();
+        for (Milestone temp : milestoneOrderedSOPList) {
+            UntersuchungstypMilestonePK utmsPK = new UntersuchungstypMilestonePK(currentUTyp.getUntersuchungtypId(), temp.getMilestoneId());
+            utms = new UntersuchungstypMilestone(utmsPK);
+            utms.setMilestoneorderpos(milestoneorderposition);
+            milestoneorderposition++;
+            untersuchungstypMilestoneCollection.add(utms);
+        }
+        currentUTyp.setUntersuchungstypMilestoneCollection(untersuchungstypMilestoneCollection);
+        System.out.println("Size of milestoneOrderedSOPList=" + milestoneOrderedSOPList.size());
+        /* last but not least :-) 
+         * take the utypList replace the currentUTyp in this list for later 
+         * persitence
+         */
+        System.out.println("utypList.contains(currentUTyp)=" + utypList.contains(currentUTyp));
+        if (utypList.contains(currentUTyp)) {
+            int indexOf1 = utypList.indexOf(currentUTyp);
+            System.out.println("utypList.indexOf(currentUTyp)=" + indexOf1);
+            utypList.remove(indexOf1);
+            utypList.add(indexOf1, currentUTyp);
+        }
         return null;
     }
 
     public String clearSOPList() {
         milestoneOrderedSOPList.clear();
-        milestoneOrderedSOPMap.clear();
         //deselect selected Milestones in milestoneList
         for (Milestone ms : milestoneList) {
             ms.setSelected(false);
@@ -421,20 +640,30 @@ public class UTypController implements Serializable {
     }
 
     public String deSelectUTyp(Untersuchungstyp utyp) {
+        // set utyo.setSelected(false);
+
+        int indexOf = utypList.indexOf(utyp);
+        utypList.remove(utyp);
         utyp.setSelected(false);
+        utypList.add(indexOf, utyp);
         /* 
-         * empty the and utypList as 
-         * well reset the currentUTyp 
+         * empty the and utypList as well reset the currentUTyp 
+         * also milestoneOrderedSOPList
+         * BETTER implementation would be just to replace the Untersuchungstyp
+         * utyp with utyp.setSelected(false); in uTypList
          */
-        utypList.clear();
+        milestoneOrderedSOPList.clear();
+        milestoneList.clear();
         currentUTyp = new Untersuchungstyp();
         /*
          * refill the uTypTrefferList to previous search
+         * NOT refill, better replace deselected Untersuchungstyp utyp in uTypList
          */
-        for (UTypTreffer utt : uTypTrefferList) {
-            Untersuchungstyp ut = details(utt);
-            utypList.add(ut);
-        }
+//        for (UTypTreffer utt : uTypTrefferList) {
+//            Untersuchungstyp ut = details(utt);
+//
+//            utypList.add(ut);
+//        }
         return null;
     }
 
@@ -444,44 +673,50 @@ public class UTypController implements Serializable {
         Long l = 0l;
         for (Milestone ms : milestoneOrderedSOPList) {
             Date milestoneAlltime = ms.getMilestoneAlltime();
-            l += (milestoneAlltime.getHours()* 60 + milestoneAlltime.getMinutes());
+            l += (milestoneAlltime.getHours() * 60 + milestoneAlltime.getMinutes());
         }
-        return s = String.valueOf(l); 
+        return s = String.valueOf(l);
     }
-    
+
     public String sumMsHandsonTimes() {
         // take the milestoneOrderedSOPList and summarize the fields
         String s = "";
         Long l = 0l;
         for (Milestone ms : milestoneOrderedSOPList) {
             Date milestoneHandsontime = ms.getMilestoneHandsontime();
-            l += (milestoneHandsontime.getHours()* 60 + milestoneHandsontime.getMinutes());
+            l += (milestoneHandsontime.getHours() * 60 + milestoneHandsontime.getMinutes());
         }
-        return s = String.valueOf(l); 
+        return s = String.valueOf(l);
     }
-    
-    public String  sumMsManHour() {
+
+    public String sumMsManHour() {
         // take the milestoneOrderedSOPList and summarize the fields
         String s = "";
         Long l = 0l;
         for (Milestone ms : milestoneOrderedSOPList) {
             Date milestoneHandsontime = ms.getMilestoneHandsontime();
-            l += (milestoneHandsontime.getHours()* 60 + milestoneHandsontime.getMinutes()) * ms.getMilestoneMannumber();
+            l += (milestoneHandsontime.getHours() * 60 + milestoneHandsontime.getMinutes()) * ms.getMilestoneMannumber();
         }
-        return s = String.valueOf(l); 
+        return s = String.valueOf(l);
     }
-   
-    public String  sumMsCost() {
+
+    public String sumMsCost() {
         // take the milestoneOrderedSOPList and summarize the fields
         Double d = 0.0;
         for (Milestone ms : milestoneOrderedSOPList) {
             String milestonecost = ms.getMilestonecost();
             d += Double.parseDouble(milestonecost);
         }
-        return String.format("%.2f €", d); 
+        return String.format("%.2f €", d);
     }
-    
-    
+
+    public String resetLists() {
+        currentUTyp = new Untersuchungstyp();
+        currentMilestone = new Milestone();
+
+        return null;
+    }
+
     private Untersuchungstyp details(UTypTreffer utt) {
         return transmitterSessionBeanRemote.findById(Untersuchungstyp.class, utt.getUntersuchungtypId());
     }

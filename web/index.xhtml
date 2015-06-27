@@ -13,7 +13,7 @@
     <ui:define name="bodyContent">
         <h:panelGrid columns="2" styleClass="table-valign">
             <h:form id="halterForm">
-                <pf:panel header="Halter-Formular" style="width: 350px;">
+                <pf:panel header="#{msgs.header_form_halter}" style="width: 350px;">
                     <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:panelGroup></h:panelGroup>
@@ -43,26 +43,26 @@
 
                         <h:outputText  value="#{msgs.halter_haltertyp}"/>
                         <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
-                            <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
                         </h:selectOneMenu>
                         <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" 
-                                         value="Speichern"/>
-                        <h:commandButton id="sucheHalterButton" value="Suche" 
+                                         value="#{msgs.button_save}"/>
+                        <h:commandButton id="sucheHalterButton" value="#{msgs.button_search}" 
                                          action="#{halterController.sucheHalter()}"/>
                     </h:panelGrid>
                 </pf:panel>
             </h:form>
             <h:form id="halterSelect">
-                <pf:panel header="Liste der Halter" footer="Anzahl Halter: #{fn:length(halterController.halterList)}">
+                <pf:panel header="#{msgs.header_list_halter}" footer="#{msgs.footer_anzahl_halter} #{fn:length(halterController.halterList)}">
                     <h:dataTable style="width: 900px;" value="#{halterController.halterList}" 
                                  var="halter" >
                         <h:column>
-                            <f:facet name="header">(De)Select-Id</f:facet>
+                            <f:facet name="header">#{msgs.header_list_de_select}</f:facet>
                             <h:commandButton value="#{halter.halterId}" action="#{halterController.selectHalter(halter)}" rendered="#{not halter.selected}" />
                             <h:commandButton value="De-#{halter.halterId}" action="#{halterController.deSelectHalter(halter)}" rendered="#{halter.selected}" />
                             <f:facet name="footer">
-                                <h:commandButton id="halterIdSort" value="Sort" action="#{halterController.sortHalterById()}"/> 
+                                <h:commandButton id="halterIdSort" value="#{msgs.button_sort}" action="#{halterController.sortHalterById()}"/> 
                             </f:facet>
                         </h:column>
                         <h:column>
@@ -70,9 +70,9 @@
                             </f:facet>
                             <h:outputText value="#{halter.halterName}" style="font-weight: bold" rendered="#{not halter.edited and halter.selected}" />
                             <h:outputText value="#{halter.halterName}" rendered="#{not halter.edited and not halter.selected}"> </h:outputText>
-                            <h:inputText value="#{halter.halterName}" rendered="#{halter.edited}"></h:inputText>
+                            <h:inputText value="#{halter.halterName}" size="20" rendered="#{halter.edited}"></h:inputText>
                             <f:facet name="footer">
-                                <h:commandButton value="Sort" action="#{halterController.sortHalterByName()}"/>
+                                <h:commandButton value="#{msgs.button_sort}" action="#{halterController.sortHalterByName()}"/>
                             </f:facet>
                         </h:column>
                         <h:column>
@@ -80,9 +80,9 @@
                             </f:facet>
                             <h:outputText value="#{halter.halterBemerkung}" style="font-weight: bold" rendered="#{not halter.edited and halter.selected}" />
                             <h:outputText value="#{halter.halterBemerkung}"  rendered="#{not halter.edited and not halter.selected}"> </h:outputText>
-                            <h:inputText value="#{halter.halterBemerkung}"  rendered="#{halter.edited}"> </h:inputText>
+                            <h:inputText value="#{halter.halterBemerkung}"  size="30" rendered="#{halter.edited}"> </h:inputText>
                             <f:facet name="footer">
-                                <h:commandButton value="Sort" action="#{halterController.sortHalterByBemerkung()}"/>
+                                <h:commandButton value="#{msgs.button_sort}" action="#{halterController.sortHalterByBemerkung()}"/>
                             </f:facet>
                         </h:column>
                         <h:column>
@@ -94,19 +94,19 @@
                             </h:selectOneMenu>
                         </h:column>
                         <h:column>
-                            <f:facet name="header">Ändern</f:facet>
-                            <h:commandButton value="Ändern" action="#{halterController.editHalter(halter)}" rendered="#{not halter.edited}"/>
-                            <h:commandButton value="Speichern" action="#{halterController.saveHalter(halter)}" rendered="#{halter.edited}"/>
+                            <f:facet name="header">#{msgs.button_edit}</f:facet>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{halterController.editHalter(halter)}" rendered="#{not halter.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{halterController.saveHalter(halter)}" rendered="#{halter.edited}"/>
                         </h:column>
                         <h:column>
-                            <f:facet name="header">Löschen</f:facet>
-                            <h:commandButton value="Del" action="#{halterController.deleteHalter(halter.halterId)}" />
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{halterController.deleteHalter(halter.halterId)}" />
                         </h:column>
                     </h:dataTable>
                 </pf:panel>
             </h:form>
             <h:form id="patientForm">
-                <pf:panel header="Patienten-Formular" style="width: 350px;">
+                <pf:panel header="#{msgs.header_form_patient}" style="width: 350px;">
                     <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
@@ -161,7 +161,7 @@
 
                         <h:outputText  value="#{msgs.patient_spezies}"/>
                         <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
-                            <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
                             <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
                                     render="inRasse speziesButton"/>
@@ -179,7 +179,7 @@
 
                         <h:outputText  value="#{msgs.patient_rasse}"/>
                         <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" >
-                            <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
                             <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
                                     render="inSpezies rasseButton saveSpeziesGroup"/>
@@ -195,21 +195,21 @@
                         </h:panelGroup>
 
                         <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" 
-                                         value="Speichern"/>
+                                         value="#{msgs.button_save}"/>
                         <h:commandButton id="suchePatientButton" action="#{halterController.suchePatient()}" 
-                                         value="Suche"/>
+                                         value="#{msgs.button_search}"/>
                         <h:panelGroup id="saveSpeziesGroup">
                             <h:commandButton id="saveSpeziesButton" action="#{halterController.saveSpezies()}" 
-                                             rendered="#{halterController.spezies.speziesId == 0 || halterController.rasse.rasseId == 0}" value="Save"/>
+                                             rendered="#{halterController.spezies.speziesId == 0 || halterController.rasse.rasseId == 0}" value="#{msgs.button_save}"/>
                         </h:panelGroup>
                     </h:panelGrid>
                 </pf:panel>
             </h:form> 
             <h:form id="patientSelect">
-                <pf:panel header="Liste der Patienten" footer="Anzahl Patienten: #{fn:length(halterController.patientList)}">
+                <pf:panel header="#{msgs.header_list_patienten}" footer="#{msgs.footer_anzahl_patienten} #{fn:length(halterController.patientList)}">
                     <h:dataTable style="width: 900px;" value="#{halterController.patientList}" var="p">
                         <h:column>
-                            <f:facet name="header">(De)Select-Id</f:facet>
+                            <f:facet name="header">#{msgs.header_list_de_select}</f:facet>
                             <h:commandButton value="#{p.patientId}" action="#{halterController.selectPatient(p)}" rendered="#{not p.selected}" />
                             <h:commandButton value="De-#{p.patientId}" action="#{halterController.deSelectPatient(p)}" rendered="#{p.selected}" />
                         </h:column>
@@ -218,7 +218,7 @@
                                 #{msgs.patient_rufname}
                             </f:facet>
                             <h:outputText value="#{p.patientRuf}" rendered="#{not p.edited and not p.selected}"/>
-                            <h:inputText value="#{p.patientRuf}"  rendered="#{p.edited}"> </h:inputText>
+                            <h:inputText value="#{p.patientRuf}"  size="8" rendered="#{p.edited}"> </h:inputText>
                             <h:outputText value="#{p.patientRuf}" style="font-weight: bold" rendered="#{not p.edited and p.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -226,7 +226,7 @@
                                 #{msgs.patient_vollstaendiger_name}
                             </f:facet>
                             <h:outputText value="#{p.patientName}" rendered="#{not p.edited and not p.selected}"/>
-                            <h:inputText value="#{p.patientName}"  rendered="#{p.edited}"> </h:inputText>
+                            <h:inputText value="#{p.patientName}"  size="8" rendered="#{p.edited}"> </h:inputText>
                             <h:outputText value="#{p.patientName}" style="font-weight: bold" rendered="#{not p.edited and p.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -234,7 +234,7 @@
                                 #{msgs.patient_chipnr}
                             </f:facet> 
                             <h:outputText value="#{p.patientChip}" rendered="#{not p.edited and not p.selected}"/>
-                            <h:inputText value="#{p.patientChip}"  rendered="#{p.edited}"> </h:inputText>
+                            <h:inputText value="#{p.patientChip}"  size="8" rendered="#{p.edited}"> </h:inputText>
                             <h:outputText value="#{p.patientChip}" style="font-weight: bold" rendered="#{not p.edited and p.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -242,7 +242,7 @@
                                 #{msgs.patient_tatoonr}
                             </f:facet>
                             <h:outputText value="#{p.patientTatoonr}" rendered="#{not p.edited and not p.selected}"/>
-                            <h:inputText value="#{p.patientTatoonr}"  rendered="#{p.edited}"> </h:inputText>
+                            <h:inputText value="#{p.patientTatoonr}"  size="8" rendered="#{p.edited}"> </h:inputText>
                             <h:outputText value="#{p.patientTatoonr}" style="font-weight: bold" rendered="#{not p.edited and p.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -250,7 +250,7 @@
                                 #{msgs.patient_zuchtbuchnr}
                             </f:facet>
                             <h:outputText value="#{p.patientZuchtbuchnr}" rendered="#{not p.edited and not p.selected}"/>
-                            <h:inputText value="#{p.patientZuchtbuchnr}"  rendered="#{p.edited}"> </h:inputText>
+                            <h:inputText value="#{p.patientZuchtbuchnr}"  size="8" rendered="#{p.edited}"> </h:inputText>
                             <h:outputText value="#{p.patientZuchtbuchnr}" style="font-weight: bold" rendered="#{not p.edited and p.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -260,7 +260,7 @@
                             <h:outputText value="#{p.patientGeb}" rendered="#{not p.edited and not p.selected}">
                                 <f:convertDateTime pattern="dd. MMM yyyy" />
                             </h:outputText>
-                            <h:inputText value="#{p.patientGeb}"  rendered="#{p.edited}">
+                            <h:inputText value="#{p.patientGeb}"  size="8" rendered="#{p.edited}">
                                 <f:convertDateTime pattern="dd.MM.yyyy" />
                             </h:inputText>
                             <h:outputText value="#{p.patientGeb}" style="font-weight: bold" rendered="#{not p.edited and p.selected}">
@@ -287,18 +287,18 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">Ändern</f:facet>
-                            <h:commandButton value="Ändern" action="#{halterController.editPatient(p)}" rendered="#{not p.edited}"/>
-                            <h:commandButton value="Speichern" action="#{halterController.savePatient(p)}" rendered="#{p.edited}"/>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{halterController.editPatient(p)}" rendered="#{not p.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{halterController.savePatient(p)}" rendered="#{p.edited}"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">Löschen</f:facet>
-                            <h:commandButton value="Del" action="#{halterController.deletePatient(p.patientId)}"/>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{halterController.deletePatient(p.patientId)}"/>
                         </h:column>
                     </h:dataTable>
                 </pf:panel>
             </h:form>
             <h:form id="adressForm">
-                <pf:panel header="Adress-Formular" style="width: 350px;">
+                <pf:panel header="#{msgs.header_form_adress}" style="width: 350px;">
                     <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inHalterAdresseId" value="*#{msgs.adress_id}" />   
@@ -310,7 +310,7 @@
 
                         <h:outputText  value="#{msgs.adress_adresstyp}"/>
                         <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
-                            <f:selectItem itemValue="#{null}" itemLabel="-- select one --" />
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
                         </h:selectOneMenu>
 
@@ -354,17 +354,17 @@
                         </h:inputText>
 
                         <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" 
-                                         value="Speichern"/>
+                                         value="#{msgs.button_save}"/>
                         <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" 
-                                         value="Suche"/>
+                                         value="#{msgs.button_search}"/>
                     </h:panelGrid>
                 </pf:panel>
             </h:form>
             <h:form id="adressSelect">
-                <pf:panel header="Liste der Adressen" footer="Anzahl Adressen: #{fn:length(halterController.halteradresseList)}">
+                <pf:panel header="#{msgs.header_list_adressen}" footer="#{msgs.footer_anzahl_adressen} #{fn:length(halterController.halteradresseList)}">
                     <h:dataTable style="width: 900px;" value="#{halterController.halteradresseList}" var="ha">
                         <h:column>
-                            <f:facet name="header">(De)Select-Id</f:facet>
+                            <f:facet name="header">#{msgs.header_list_de_select}</f:facet>
                             <h:commandButton value="#{ha.halteradresseId}" action="#{halterController.selectHalteradresse(ha)}" rendered="#{not ha.selected}" />
                             <h:commandButton value="De-#{ha.halteradresseId}" action="#{halterController.deSelectHalteradresse(ha)}" rendered="#{ha.selected}" />
                         </h:column>
@@ -381,7 +381,7 @@
                                 #{msgs.adress_strasse_hausnr}
                             </f:facet>
                             <h:outputText value="#{ha.halterStrasse}" rendered="#{not ha.edited and not ha.selected}"/>
-                            <h:inputText value="#{ha.halterStrasse}"  rendered="#{ha.edited}"> </h:inputText>
+                            <h:inputText value="#{ha.halterStrasse}" size="10" rendered="#{ha.edited}"> </h:inputText>
                             <h:outputText value="#{ha.halterStrasse}" style="font-weight: bold" rendered="#{not ha.edited and ha.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -389,7 +389,7 @@
                                 #{msgs.adress_plz}
                             </f:facet>
                             <h:outputText value="#{ha.halterPlz}" rendered="#{not ha.edited and not ha.selected}"/>
-                            <h:inputText value="#{ha.halterPlz}"  rendered="#{ha.edited}"> </h:inputText>
+                            <h:inputText value="#{ha.halterPlz}"  size="5" rendered="#{ha.edited}"> </h:inputText>
                             <h:outputText value="#{ha.halterPlz}" style="font-weight: bold" rendered="#{not ha.edited and ha.selected}"> </h:outputText>
                         </h:column>
 
@@ -398,7 +398,7 @@
                                 #{msgs.adress_ort}
                             </f:facet>
                             <h:outputText value="#{ha.halterOrt}" rendered="#{not ha.edited and not ha.selected}"/>
-                            <h:inputText value="#{ha.halterOrt}"  rendered="#{ha.edited}"> </h:inputText>
+                            <h:inputText value="#{ha.halterOrt}"  size="8" rendered="#{ha.edited}"> </h:inputText>
                             <h:outputText value="#{ha.halterOrt}" style="font-weight: bold" rendered="#{not ha.edited and ha.selected}"> </h:outputText>
                         </h:column>
 
@@ -407,7 +407,7 @@
                                 #{msgs.adress_tel}
                             </f:facet>
                             <h:outputText value="#{ha.halterTel}" rendered="#{not ha.edited and not ha.selected}"/>
-                            <h:inputText value="#{ha.halterTel}"  rendered="#{ha.edited}"> </h:inputText>
+                            <h:inputText value="#{ha.halterTel}" size="8" rendered="#{ha.edited}"> </h:inputText>
                             <h:outputText value="#{ha.halterTel}" style="font-weight: bold" rendered="#{not ha.edited and ha.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
@@ -415,17 +415,17 @@
                                 #{msgs.adress_email}
                             </f:facet>
                             <h:outputText value="#{ha.email}" rendered="#{not ha.edited and not ha.selected}"/>
-                            <h:inputText value="#{ha.email}"  rendered="#{ha.edited}"> </h:inputText>
+                            <h:inputText value="#{ha.email}"  size="8" rendered="#{ha.edited}"> </h:inputText>
                             <h:outputText value="#{ha.email}" style="font-weight: bold" rendered="#{not ha.edited and ha.selected}"> </h:outputText>
                         </h:column>
                         <h:column>
                             <f:facet name="header">Ändern</f:facet>
-                            <h:commandButton value="Ändern" action="#{halterController.editHalteradresse(ha)}" rendered="#{not ha.edited}"/>
-                            <h:commandButton value="Speichern" action="#{halterController.saveHalteradresse(ha)}" rendered="#{ha.edited}"/>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{halterController.editHalteradresse(ha)}" rendered="#{not ha.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{halterController.saveHalteradresse(ha)}" rendered="#{ha.edited}"/>
                         </h:column>
                         <h:column>
-                            <f:facet name="header">Löschen</f:facet>
-                            <h:commandButton value="Del" action="#{halterController.deleteHalteradresse(ha.halteradresseId)}"/>
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{halterController.deleteHalteradresse(ha.halteradresseId)}"/>
                         </h:column>
                     </h:dataTable>
                 </pf:panel>

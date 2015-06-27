@@ -31,6 +31,7 @@ public class AgeValidator implements Validator, Serializable {
     private Integer maxAge;
     private Integer minAge;
 
+    @Override
     public void validate(FacesContext ctx, UIComponent comp, Object value)
             throws ValidatorException {
         if (value != null) {
