@@ -17,7 +17,14 @@
                     <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:panelGroup></h:panelGroup>
-                        <h:commandButton value="#{msgs.menu_reset}" action="#{halterController.resetLists()}"/>
+                        <h:commandButton value="#{msgs.menu_reset}" 
+                                         action="#{halterController.resetLists(halterController.halterList, 
+                                                   halterController.patientList, 
+                                                   halterController.halteradresseList)}" >
+                            <f:actionListener binding="#{halterController.resetCurrents(halterController.currentHalter, 
+                                                         halterController.currentPatient, 
+                                                         halterController.currentHalteradresse) }" />
+                        </h:commandButton>
                         <h:outputLabel for="inHalterId" value="*#{msgs.halter_id}" />   
                         <h:inputText label="#{msgs.halter_id}" 
                                      id="inHalterId" 
@@ -29,20 +36,18 @@
                         <h:inputText label="#{msgs.halter_name}" 
                                      id="inHalterName" 
                                      value="#{halterController.currentHalter.halterName}" 
-                                     p:placeholder="Halter-Name"
-                                     validator="#{halterController.validateAlpha}">
+                                     p:placeholder="Halter-Name">
                         </h:inputText>
 
                         <h:outputLabel for="inHalterBemerkung" value="*#{msgs.halter_bemerkung}" />   
                         <h:inputText label="#{msgs.halter_bemerkung}" 
                                      id="inHalterBemerkung" 
                                      value="#{halterController.currentHalter.halterBemerkung}" 
-                                     p:placeholder="Bemerkung"
-                                     validator="#{halterController.validateAlphaNumeric}">
+                                     p:placeholder="Bemerkung">
                         </h:inputText>
 
                         <h:outputText  value="#{msgs.halter_haltertyp}"/>
-                        <h:selectOneMenu id="inHalterTyp" value="#{halterController.haltertyp.haltertypId}" >
+                        <h:selectOneMenu id="inHalterTyp" value="#{halterController.currentHalter.haltertypId.haltertypId}" >
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
                         </h:selectOneMenu>
@@ -309,7 +314,7 @@
                         </h:inputText>
 
                         <h:outputText  value="#{msgs.adress_adresstyp}"/>
-                        <h:selectOneMenu id="inAdressTyp" value="#{halterController.adressTyp.adresstypId}" >
+                        <h:selectOneMenu id="inAdressTyp" value="#{halterController.currentHalteradresse.adresstypId.adresstypId}" >
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
                         </h:selectOneMenu>

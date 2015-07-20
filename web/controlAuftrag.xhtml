@@ -11,8 +11,6 @@
                 xmlns:pf="http://primefaces.org/ui">
 
     <ui:define name="bodyContent">
-
-
         <h:panelGrid columns="2" styleClass="table-valign">
             <h:form id="showOrSelectSummeryForm"> 
                 <h:outputText id="selectedHalterId" value="ausgewählter Halter: " rendered="#{halterController.currentHalter.selected}"/>
@@ -149,7 +147,106 @@
                 </pf:panel>
             </h:form>
 
+            <h:form id="auftragpositionForm">
+                <pf:panel header="#{msgs.header_form_auftragposition}" style="width: 350px;">
+                    <h:messages styleClass="errorMsg"></h:messages>
+                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
+                        <h:panelGroup></h:panelGroup>
+                        <h:commandButton value="#{msgs.menu_reset}" action="#{auftragController.resetLists()}"/>
+                        <h:outputLabel for="inAuftragId" value="*#{msgs.auftrag_id}" />   
+                        <h:outputText id="inAuftragId" 
+                                      value="#{auftragController.currentAuftrag.auftragId}">
+                        </h:outputText>
+                        <h:outputLabel for="inAuftragpositionId" value="*#{msgs.auftragposition_id}" />   
+                        <h:inputText label="#{msgs.auftragposition_id}" 
+                                     id="inAuftragpositionId" 
+                                     value="#{auftragController.currentAuftragposition.auftragpositionId}" 
+                                     p:placeholder="Auftragposition-Id">
+                        </h:inputText>
+                        <h:outputLabel for="inAuftragpositionNr" value="*#{msgs.auftragposition_nr}" />   
+                        <h:inputText label="#{msgs.auftragposition_nr}" 
+                                     id="inAuftragpositionNr" 
+                                     value="#{auftragController.currentAuftragposition.auftragpositionNr}" 
+                                     p:placeholder="Auftragposition-Nr.">
+                        </h:inputText>
 
+                        <h:outputLabel for="inUntersuchungId" value="*#{msgs.untersuchung_id}" />   
+                        <h:outputText id="inUntersuchungId" 
+                                      value="#{auftragController.currentUntersuchung.untersuchungId}">
+                        </h:outputText>
+                        <h:outputText  value="#{msgs.patient_vollstaendiger_name}"/>
+                        <h:selectOneMenu id="inPatientName" value="#{auftragController.currentAuftragposition.patientId.patientId}" >
+                            <f:selectItem itemValue="#{halterController.currentPatient.patientId}" itemLabel="#{halterController.currentPatient.patientName}"/>
+                            <f:selectItems value="#{auftragController.allePatientenVonHalterTypenMap}"/>
+                        </h:selectOneMenu>
+
+
+                        <h:commandButton id="saveAuftragpositionButton" action="#{auftragController.addAuftragposition()}" 
+                                         value="#{msgs.button_add}"/>
+                        <h:commandButton id="sucheAuftragpositionButton" value="#{msgs.button_search}" 
+                                         action="#{auftragController.sucheAuftragposition()}"/>
+                    </h:panelGrid>
+                </pf:panel>
+            </h:form>
+            <h:form id="auftragpositionSelect">
+                <pf:panel header="#{msgs.header_list_auftragpositionen}" footer="#{msgs.footer_anzahl_auftragpositionen} #{fn:length(auftragController.auftragpositionenList)}">
+                    <h:dataTable style="width: 900px;" value="#{auftragController.auftragpositionenList}" 
+                                 var="auftragpos" > 
+                        <h:column>
+                            <f:facet name="header">#{msgs.header_list_de_select} </f:facet>
+                            <h:commandButton value="#{auftragpos.auftragpositionId}" action="#{auftragController.selectAuftragposition(auftragpos)}" rendered="#{not auftragpos.selected}" />
+                            <h:commandButton value="De-#{auftragpos.auftragpositionId}" action="#{halterController.deSelectAuftragposition(auftragpos)}" rendered="#{auftragpos.selected}" />
+                            <f:facet name="footer">
+                                <!-- sort Routine removed -->
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftrag_id}</f:facet>
+                            <h:outputText value="#{auftragpos.auftragId.auftragId}" style="font-weight: bold" rendered="#{not auftragpos.edited and auftragpos.selected}" />
+                            <h:outputText value="#{auftragpos.auftragId.auftragId}" rendered="#{not auftragpos.edited and not auftragpos.selected}"> </h:outputText>
+                            <h:inputText value="#{auftragpos.auftragId.auftragId}" size="20" rendered="#{auftragpos.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.auftragposition_nr}</f:facet>
+                            <h:outputText value="#{auftragpos.auftragpositionNr}" style="font-weight: bold" rendered="#{not auftragpos.edited and auftragpos.selected}" />
+                            <h:outputText value="#{auftragpos.auftragpositionNr}" rendered="#{not auftragpos.edited and not auftragpos.selected}"> </h:outputText>
+                            <h:inputText value="#{auftragpos.auftragpositionNr}" size="20" rendered="#{auftragpos.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.patient_vollstaendiger_name}</f:facet>
+                            <h:outputText value="#{auftragpos.patientId.patientName}" style="font-weight: bold" rendered="#{not auftragpos.edited and auftragpos.selected}" />
+                            <h:outputText value="#{auftragpos.patientId.patientName}" rendered="#{not auftragpos.edited and not auftragpos.selected}"> </h:outputText>
+                            <h:inputText value="#{auftragpos.patientId.patientName}" size="20" rendered="#{auftragpos.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">#{msgs.untersuchung_name}</f:facet>
+                            <h:outputText value="#{auftragpos.untersuchungId.untersuchungName}" style="font-weight: bold" rendered="#{not auftragpos.edited and auftragpos.selected}" />
+                            <h:outputText value="#{auftragpos.untersuchungId.untersuchungName}" rendered="#{not auftragpos.edited and not auftragpos.selected}"> </h:outputText>
+                            <h:inputText value="#{auftragpos.untersuchungId.untersuchungName}" size="20" rendered="#{auftragpos.edited}"></h:inputText>
+                            <f:facet name="footer">
+                            </f:facet>
+                        </h:column>
+
+
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_edit}</f:facet>
+                            <h:commandButton value="#{msgs.button_edit}" action="#{auftragController.editAuftrag(auftrag)}" rendered="#{not auftrag.edited}"/>
+                            <h:commandButton value="#{msgs.button_save}" action="#{auftragController.saveAuftrag(auftrag)}" rendered="#{auftrag.edited}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{auftragController.deleteAuftrag(auftrag.auftragId)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </pf:panel>
+            </h:form>
             <h:form id="untersuchungForm">
                 <pf:panel header="#{msgs.header_form_untersuchung}" style="width: 350px;">
                     <h:messages styleClass="errorMsg"></h:messages>
@@ -246,89 +343,6 @@
                     </h:dataTable>
                 </pf:panel>
             </h:form>
-
-
-
-            <h:form id="auftragpositionForm">
-                <pf:panel header="#{msgs.header_form_auftragposition}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
-                    <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
-                        <h:panelGroup></h:panelGroup>
-                        <h:commandButton value="#{msgs.menu_reset}" action="#{auftragController.resetLists()}"/>
-                        <h:outputLabel for="inAuftragpositionId" value="*#{msgs.auftragposition_id}" />   
-                        <h:inputText label="#{msgs.auftragposition_id}" 
-                                     id="inAuftragpositionId" 
-                                     value="#{auftragController.currentAuftragposition.auftragpositionId}" 
-                                     p:placeholder="Auftragposition-Id">
-                        </h:inputText>
-                        <h:outputLabel for="inAuftragpositionNr" value="*#{msgs.auftragposition_nr}" />   
-                        <h:inputText label="#{msgs.auftragposition_nr}" 
-                                     id="inAuftragpositionNr" 
-                                     value="#{auftragController.currentAuftragposition.auftragpositionNr}" 
-                                     p:placeholder="Auftragposition-Nr.">
-                        </h:inputText>
-
-                        <h:outputLabel for="inUntersuchungId" value="*#{msgs.untersuchung_id}" />   
-                        <h:inputText label="#{msgs.untersuchung_id}" 
-                                     id="inUntersuchungId" 
-                                     value="#{auftragController.currentAuftragposition.untersuchungId}" 
-                                     p:placeholder="Untersuchung-Id">
-                        </h:inputText>
-                        <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
-                        <h:outputText id="inPatientName" 
-                                      value="#{halterController.currentPatient.patientName}" 
-                                      p:placeholder="#{halterController.currentPatient.patientName}">
-                        </h:outputText>
-
-                        <h:commandButton id="saveAuftragpositionButton" action="#{auftragController.saveAuftragposition()}" 
-                                         value="#{msgs.button_save}"/>
-                        <h:commandButton id="sucheAuftragpositionButton" value="#{msgs.button_search}" 
-                                         action="#{auftragController.sucheAuftragposition()}"/>
-                    </h:panelGrid>
-                </pf:panel>
-            </h:form>
-            <h:form id="auftragpositionSelect">
-                <pf:panel header="#{msgs.header_list_auftragpositionen}" footer="#{msgs.footer_anzahl_auftragpositionen} #{fn:length(auftragController.auftragpositionenList)}">
-                    <h:dataTable style="width: 900px;" value="#{auftragController.auftragpositionenList}" 
-                                 var="auftragpos" > 
-                        <h:column>
-                            <f:facet name="header">#{msgs.header_list_de_select} </f:facet>
-                            <h:commandButton value="#{auftragpos.auftragpositionId}" action="#{auftragController.selectAuftragposition(auftragpos)}" rendered="#{not auftragpos.selected}" />
-                            <h:commandButton value="De-#{auftragpos.auftragpositionId}" action="#{halterController.deSelectAuftragposition(auftragpos)}" rendered="#{auftragpos.selected}" />
-                            <f:facet name="footer">
-                                <!-- sort Routine removed -->
-                            </f:facet>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">#{msgs.auftragposition_nr}</f:facet>
-                            <h:outputText value="#{auftragpos.auftragpositionNr}" style="font-weight: bold" rendered="#{not auftragpos.edited and auftragpos.selected}" />
-                            <h:outputText value="#{auftragpos.auftragpositionNr}" rendered="#{not auftragpos.edited and not auftragpos.selected}"> </h:outputText>
-                            <h:inputText value="#{auftragpos.auftragpositionNr}" size="20" rendered="#{auftragpos.edited}"></h:inputText>
-                            <f:facet name="footer">
-                            </f:facet>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">#{msgs.auftrag_typ_id}</f:facet>
-                            <h:outputText value="#{auftrag.auftragstypId.auftragtypName}" style="font-weight: bold" rendered="#{not auftrag.edited and auftrag.selected}" />
-                            <h:outputText value="#{auftrag.auftragstypId.auftragtypName}" rendered="#{not auftrag.edited and not auftrag.selected}"> </h:outputText>
-                            <h:selectOneMenu id="inAuftragTyp" label="#{auftrag.auftragstypId.auftragtypName}" value="#{auftrag.auftragstypId.auftragtypName}" rendered="#{auftrag.edited}">
-                                <f:selectItems value="#{auftragController.alleAuftragTypenMap}" />
-                            </h:selectOneMenu>
-                        </h:column>
-
-                        <h:column>
-                            <f:facet name="header">#{msgs.button_edit}</f:facet>
-                            <h:commandButton value="#{msgs.button_edit}" action="#{auftragController.editAuftrag(auftrag)}" rendered="#{not auftrag.edited}"/>
-                            <h:commandButton value="#{msgs.button_save}" action="#{auftragController.saveAuftrag(auftrag)}" rendered="#{auftrag.edited}"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">#{msgs.button_delete}</f:facet>
-                            <h:commandButton value="#{msgs.button_delete}" action="#{auftragController.deleteAuftrag(auftrag.auftragId)}"/>
-                        </h:column>
-                    </h:dataTable>
-                </pf:panel>
-            </h:form>
-
         </h:panelGrid>
     </ui:define>
 </ui:composition>
