@@ -37,6 +37,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
@@ -104,7 +105,7 @@ public class HalterController implements Serializable {
 
     @PostConstruct
     public void init() {
-        halterList = transmitterSessionBeanRemote.halterGet();
+//        halterList = transmitterSessionBeanRemote.halterGet();
     }
 
     /* 
@@ -229,14 +230,147 @@ public class HalterController implements Serializable {
     /*
      Own Logic
      */
+    public void validateHalter(FacesContext facesContext, UIComponent uIComponent,
+            Object value) throws ValidatorException {
+        /**
+         * FIRST Check, if you arrive from a Save-Button. relying on the Howto
+         * from:
+         * http://stackoverflow.com/questions/10428899/how-can-a-custom-validator-know-which-commandbutton-was-clicked
+         */
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        /*
+         * validate only in case of saveButton-Type
+         */
+        if (params.containsKey("halterForm:saveHalterButton")) {
+            /* first check, what type the uiComponent is, before casting will be done
+             * there will be a better solution, but here hard code the Id of the SelectOneMenu to decide,
+             whether cast shoud be done to HtmlSelectOneMenu or HtmlInputText
+             */
+
+            if (uIComponent.getClientId().equals("halterForm:inHalterTyp") & value == null) {
+
+                HtmlSelectOneMenu htmlSelectOneMenu = (HtmlSelectOneMenu) uIComponent;
+                FacesMessage facesMessage = new FacesMessage(htmlSelectOneMenu.getLabel() + " auswählen");
+                throw new ValidatorException(facesMessage);
+            }
+            if (uIComponent.getClientId().equals("halterForm:inHalterName")) {
+                String s = (String) value;
+                if (s.length() == 0) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " eingeben");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.length() < 3) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " ist zu kurz");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.split("\\s").length < 2) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " mit Vor- und Zuname");
+                    throw new ValidatorException(facesMessage);
+                }
+            }
+        }
+    }
+
+    public void validatePatient(FacesContext facesContext, UIComponent uIComponent,
+            Object value) throws ValidatorException {
+        /**
+         * FIRST Check, if you arrive from a Save-Button. relying on the Howto
+         * from:
+         * http://stackoverflow.com/questions/10428899/how-can-a-custom-validator-know-which-commandbutton-was-clicked
+         */
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        /*
+         * validate only in case of saveButton-Type
+         */
+        if (params.containsKey("patientForm:savePatientButton")) {
+            /* first check, what type the uiComponent is, before casting will be done
+             * there will be a better solution, but here the Id of the SelectOneMenu 
+             * is hard coded to decide, whether cast shoud be done to HtmlSelectOneMenu or HtmlInputText
+             */
+            if (uIComponent.getClientId().equals("patientForm:inRasse") & value == null) {
+                HtmlSelectOneMenu htmlSelectOneMenu = (HtmlSelectOneMenu) uIComponent;
+                FacesMessage facesMessage = new FacesMessage(htmlSelectOneMenu.getLabel() + " auswählen");
+                throw new ValidatorException(facesMessage);
+            }
+            if (uIComponent.getClientId().equals("patientForm:inSpezies") & value == null) {
+                HtmlSelectOneMenu htmlSelectOneMenu = (HtmlSelectOneMenu) uIComponent;
+                FacesMessage facesMessage = new FacesMessage(htmlSelectOneMenu.getLabel() + " auswählen");
+                throw new ValidatorException(facesMessage);
+            }
+            if (uIComponent.getClientId().contains("patientForm:inPatient")) {
+                String s = (String) value;
+                if (s.length() == 0) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " eingeben");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.length() < 3) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " ist zu kurz");
+                    throw new ValidatorException(facesMessage);
+                }
+            }
+        }
+    }
+
+    public void validateHalteradresse(FacesContext facesContext, UIComponent uIComponent,
+            Object value) throws ValidatorException {
+        /**
+         * FIRST Check, if you arrive from a Save-Button. relying on the Howto
+         * from:
+         * http://stackoverflow.com/questions/10428899/how-can-a-custom-validator-know-which-commandbutton-was-clicked
+         */
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        /*
+         * validate only in case of saveButton-Type
+         */
+        if (params.containsKey("adressForm:saveAdressButton")) {
+            /* first check, what type the uiComponent is, before casting will be done
+             * there will be a better solution, but here the Id of the SelectOneMenu 
+             * is hard coded to decide, whether cast shoud be done to HtmlSelectOneMenu or HtmlInputText
+             */
+            if (uIComponent.getClientId().equals("adressForm:inAdressTyp") & value == null) {
+                HtmlSelectOneMenu htmlSelectOneMenu = (HtmlSelectOneMenu) uIComponent;
+                FacesMessage facesMessage = new FacesMessage(htmlSelectOneMenu.getLabel() + " auswählen");
+                throw new ValidatorException(facesMessage);
+            }
+            if (uIComponent.getClientId().contains("adressForm:inHalterAdresse")) {
+                String s = (String) value;
+                if (s.length() == 0) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " eingeben");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.length() < 3) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " ist zu kurz");
+                    throw new ValidatorException(facesMessage);
+                }
+            }
+        }
+    }
+
     public String saveHalter() {
+        System.out.println("Save Halter " + currentHalter);
+        /*
+         * we need to get the Haltertyp-object from the haltertypList by Id which is 
+         * transmitted as Integer to currentHalter.haltertypId.haltertypId by JSF 
+         * and set it to currentHalter before persisting it.
+         */
+        for (Haltertyp ht : haltertypList) {
+            int temp = currentHalter.getHaltertypId().getHaltertypId();
+            if (ht.getHaltertypId() == temp) {
+                currentHalter.setHaltertypId(ht);
+                break;
+            }
+        }
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(currentHalter, null, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
-        sucheHalter();
+        //        sucheHalter();
         return null;
     }
 
-    public String savePatient() {
+    public String
+            savePatient() {
         /*
          * get the selected Halter- and Rasse- Object by Id
          */
@@ -248,21 +382,26 @@ public class HalterController implements Serializable {
          * storeEjb
          */
         currentPatient.setRasseRasseId(r);
+
         currentPatient.setHalterHalterId(halter);
 
         /*
-         * get the former PatienCollection from the halter-Object and manually 
+         * get the former PatientCollection from the halter-Object and manually 
          * add the new Patient currentPatient to the collection and set the collection in Halter again
          */
         Collection<Patient> formerPatientCollection = halter.getPatientCollection();
+
         if (formerPatientCollection.add(currentPatient)) {
             halter.setPatientCollection(formerPatientCollection);
         }
 
         HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(halter, null, currentPatient);
+
         transmitterSessionBeanRemote.storeEjb(wrapper);
-        System.out.println("Patient: " + currentPatient);
-        logAttributes();
+
+        System.out.println(
+                "Patient: " + currentPatient);
+//        logAttributes();
 
         return null;
     }
@@ -288,7 +427,9 @@ public class HalterController implements Serializable {
             // foreign key in the corresponding Rasse entity
             rasse.setSpeziesSpeziesId(s);
         }
-        if (rasse.getRasseName().length() > 0 && s.getSpeziesName().length() > 0) {
+
+        if (rasse.getRasseName()
+                .length() > 0 && s.getSpeziesName().length() > 0) {
             // we had rasse.rasseId set to 0 for so before saving set to null
             rasse.setSpeziesSpeziesId(s);
             System.out.println("Spezies: " + s);
@@ -302,14 +443,24 @@ public class HalterController implements Serializable {
             }
 
         }
+
         return null; //default
     }
 
     public String saveAdresse() {
+        /*
+         * set the halter to the currentHalterAdress
+         */
         currentHalteradresse.setHalterId(currentHalter);
-        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(null, currentHalteradresse, null);
+        /*
+         * add the currentHalteradresse to the existing HalteradresseCollection 
+         * of the currentHalter object
+         */
+        currentHalter.getHalteradresseCollection().add(currentHalteradresse);
+
+        HalterAdresssenPatientWrapper wrapper = new HalterAdresssenPatientWrapper(currentHalter, currentHalteradresse, null);
         transmitterSessionBeanRemote.storeEjb(wrapper);
-        sucheAdresse();
+//        sucheAdresse();
         return null;
     }
 
@@ -371,7 +522,7 @@ public class HalterController implements Serializable {
         resetLists(halterList, patientList, halteradresseList);
         for (Haltertreffer ht : halterTrefferList) {
             Halter h = this.details(ht);
-            System.out.println("Haltertyp-Details  in Halter before adding to halterList : " + h.getHaltertypId().getHaltertypName());
+//            System.out.println("Haltertyp-Details  in Halter before adding to halterList : " + h.getHaltertypId().getHaltertypName());
             halterList.add(h);
         }
         return null;
@@ -440,7 +591,8 @@ public class HalterController implements Serializable {
     public String deleteHalter(Integer halterId) {
         System.out.println("Delete halter with Id " + halterId);
         Halter deleteById = transmitterSessionBeanRemote.deleteById(Halter.class, halterId);
-        if (deleteById != null) {
+        if (deleteById
+                != null) {
             System.out.println("Halter Details deleted from database: " + deleteById);
         }
 
@@ -457,6 +609,7 @@ public class HalterController implements Serializable {
             System.out.println("Halter Details deleted from halterList: " + deleteById);
 
         }
+
         return null;
     }
 
@@ -466,13 +619,35 @@ public class HalterController implements Serializable {
 
     public String deletePatient(Integer patientId) {
         System.out.println("Delete patient with Id " + patientId);
+        /*
+         * delete entity in persistence
+         */
         Patient deleteById = transmitterSessionBeanRemote.deleteById(Patient.class, patientId);
-        if (deleteById != null) {
+        if (deleteById
+                != null) {
             System.out.println("Patient Details deleted from database: " + deleteById);
         }
+
+        /*
+         * delete entity from currentList
+         */
         if (patientList.remove(deleteById)) {
             System.out.println("Patient Details deleted from patientList: " + deleteById);
         }
+
+        /*
+         * delete patient entity from the corresponding halterCollection 
+         */
+        if (deleteById.getHalterHalterId()
+                .getPatientCollection().remove(deleteById)) {
+            System.out.println("Patient " + patientId + " deleted from HalterCollection");
+        }
+        /*
+         * and persist the halter to database
+         */
+        HalterAdresssenPatientWrapper hapw = new HalterAdresssenPatientWrapper(deleteById.getHalterHalterId(), null, null);
+        boolean storeEjb = transmitterSessionBeanRemote.storeEjb(hapw);
+
         return null;
     }
 
@@ -486,13 +661,36 @@ public class HalterController implements Serializable {
 
     public String deleteHalteradresse(Integer halteradresseId) {
         System.out.println("Delete halteradresse with Id " + halteradresseId);
+        /*
+         * delete entity in persistence
+         */
         Halteradresse deleteById = transmitterSessionBeanRemote.deleteById(Halteradresse.class, halteradresseId);
-        if (deleteById != null) {
+        if (deleteById
+                != null) {
             System.out.println("Halteradresse Details deleted from database: " + deleteById);
         }
+        /*
+         * delete entity from currentList
+         */
+
         if (halteradresseList.remove(deleteById)) {
             System.out.println("Halteradresse Details deleted from halteradresseList: " + deleteById);
         }
+
+        /*
+         * delete halteradresse from the corresponding halterAdressCollection 
+         */
+        if (deleteById.getHalterId()
+                .getHalteradresseCollection().remove(deleteById)) {
+            System.out.println("Halteradresse " + halteradresseId + " deleted from halterAdressCollection");
+        }
+        /*
+         * and persist the halter to database
+         */
+
+        HalterAdresssenPatientWrapper hapw = new HalterAdresssenPatientWrapper(deleteById.getHalterId(), null, null);
+        boolean storeEjb = transmitterSessionBeanRemote.storeEjb(hapw);
+
         return null;
     }
 
@@ -532,26 +730,42 @@ public class HalterController implements Serializable {
         }
     }
 
-    public Halter details(Haltertreffer halterTreffer) {
+    public Halter
+            details(Haltertreffer halterTreffer) {
         return transmitterSessionBeanRemote.findById(Halter.class, halterTreffer.halterId);
     }
 
-    public Patient details(Patiententreffer patientenTreffer) {
+    public Patient
+            details(Patiententreffer patientenTreffer) {
         return transmitterSessionBeanRemote.findById(Patient.class, patientenTreffer.getPatientId());
     }
 
-    public Halteradresse details(HalteradresseTreffer halteradresseTreffer) {
+    public Halteradresse
+            details(HalteradresseTreffer halteradresseTreffer) {
         return transmitterSessionBeanRemote.findById(Halteradresse.class, halteradresseTreffer.getHalteradresseId());
     }
 
     public void selectHalter(Halter halter) {
+        /*
+         * set the selected flag to TRUE, halter references the halter object from the 
+         * halterList, because this is used in JSF-datatable
+         */
         halter.setSelected(true);
+        // log
         System.out.println("selected Halter : " + halter);
+        /*
+         * set selected halter as currentHalter
+         */
         currentHalter = halter;
+        /* 
+         clear the patientlist and halteradresseList - if not already
+         */
         patientList.clear();
         halteradresseList.clear();
+        /*
+         * iterate through halterList to fill corresponding lists
+         */
         for (Halter h : halterList) {
-            System.out.println("Halter: " + h);
             if (h.isSelected()) {
                 fillOtherListsBySelected(h);
             }

@@ -14,7 +14,6 @@
         <h:panelGrid columns="2" styleClass="table-valign">
             <h:form id="halterForm">
                 <pf:panel header="#{msgs.header_form_halter}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:panelGroup></h:panelGroup>
                         <h:commandButton value="#{msgs.menu_reset}" 
@@ -36,8 +35,11 @@
                         <h:inputText label="#{msgs.halter_name}" 
                                      id="inHalterName" 
                                      value="#{halterController.currentHalter.halterName}" 
-                                     p:placeholder="Halter-Name">
+                                     p:placeholder="Halter-Name"
+                                     validator="#{halterController.validateHalter}">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterName" styleClass="errorMsg"/>
 
                         <h:outputLabel for="inHalterBemerkung" value="*#{msgs.halter_bemerkung}" />   
                         <h:inputText label="#{msgs.halter_bemerkung}" 
@@ -47,10 +49,13 @@
                         </h:inputText>
 
                         <h:outputText  value="#{msgs.halter_haltertyp}"/>
-                        <h:selectOneMenu id="inHalterTyp" value="#{halterController.currentHalter.haltertypId.haltertypId}" >
+                        <h:selectOneMenu label="#{msgs.haltertyp_select_one}" id="inHalterTyp" value="#{halterController.currentHalter.haltertypId.haltertypId}" 
+                                         validator="#{halterController.validateHalter}">
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleHalterTypenMap}"/>
                         </h:selectOneMenu>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterTyp" styleClass="errorMsg"/>
                         <h:commandButton id="saveHalterButton" action="#{halterController.saveHalter()}" 
                                          value="#{msgs.button_save}"/>
                         <h:commandButton id="sucheHalterButton" value="#{msgs.button_search}" 
@@ -105,14 +110,15 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">#{msgs.button_delete}</f:facet>
-                            <h:commandButton value="#{msgs.button_delete}" action="#{halterController.deleteHalter(halter.halterId)}" />
+                            <h:commandButton onclick="if (!confirm('#{msgs.halter_confirm_message}'))
+                                        return false" value="#{msgs.button_delete}" action="#{halterController.deleteHalter(halter.halterId)}" />
                         </h:column>
                     </h:dataTable>
                 </pf:panel>
             </h:form>
             <h:form id="patientForm">
                 <pf:panel header="#{msgs.header_form_patient}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
+                    <!--<h:messages styleClass="errorMsg"></h:messages>-->
                     <h:panelGrid columns="3" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inPatientId" value="*#{msgs.patient_id}" />   
                         <h:inputText label="#{msgs.patient_id}" 
@@ -124,37 +130,52 @@
                         <h:inputText label="#{msgs.patient_rufname}" 
                                      id="inPatientRufName" 
                                      value="#{halterController.currentPatient.patientRuf}" 
-                                     p:placeholder="Patienten-Rufname">
+                                     p:placeholder="Patienten-Rufname"
+                                     validator="#{halterController.validatePatient}">
                         </h:inputText> <h:panelGroup></h:panelGroup>
-
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inPatientRufName" styleClass="errorMsg"/>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientName" value="*#{msgs.patient_vollstaendiger_name}" />   
                         <h:inputText label="#{msgs.patient_vollstaendiger_name}" 
                                      id="inPatientName" 
                                      value="#{halterController.currentPatient.patientName}" 
-                                     p:placeholder="vollständiger Name">
+                                     p:placeholder="vollständiger Name"
+                                     validator="#{halterController.validatePatient}">
                         </h:inputText> <h:panelGroup></h:panelGroup>
-
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inPatientName" styleClass="errorMsg"/>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientChipNr" value="*#{msgs.patient_chipnr}" />   
                         <h:inputText label="#{msgs.patient_chipnr}" 
                                      id="inPatientChipNr" 
                                      value="#{halterController.currentPatient.patientChip}" 
-                                     p:placeholder="Chip-Nr.">
+                                     p:placeholder="Chip-Nr."
+                                     validator="#{halterController.validatePatient}">
                         </h:inputText> <h:panelGroup></h:panelGroup>
-
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inPatientChipNr" styleClass="errorMsg"/>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientTatooNr" value="*#{msgs.patient_tatoonr}" />   
                         <h:inputText label="#{msgs.patient_tatoonr}" 
                                      id="inPatientTatooNr" 
                                      value="#{halterController.currentPatient.patientTatoonr}" 
-                                     p:placeholder="Tatoo-Nr.">
+                                     p:placeholder="Tatoo-Nr."
+                                     validator="#{halterController.validatePatient}">
                         </h:inputText> <h:panelGroup></h:panelGroup>
-
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inPatientTatooNr" styleClass="errorMsg"/>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientZuchtBuchNr" value="*#{msgs.patient_zuchtbuchnr}" />   
                         <h:inputText label="#{msgs.patient_zuchtbuchnr}" 
                                      id="inPatientZuchtBuchNr" 
                                      value="#{halterController.currentPatient.patientZuchtbuchnr}" 
-                                     p:placeholder="Zuchtbuch-Nr.">
+                                     p:placeholder="Zuchtbuch-Nr."
+                                     validator="#{halterController.validatePatient}">
                         </h:inputText> <h:panelGroup></h:panelGroup>
-
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inPatientZuchtBuchNr" styleClass="errorMsg"/>
+                        <h:panelGroup></h:panelGroup>
                         <h:outputLabel for="inPatientGebDat" value="#{msgs.patient_geburtstag}" />   
                         <h:inputText label="#{msgs.patient_geburtstag}" 
                                      id="inPatientGebDat" 
@@ -165,7 +186,8 @@
                         </h:inputText> <h:panelGroup></h:panelGroup>
 
                         <h:outputText  value="#{msgs.patient_spezies}"/>
-                        <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  >
+                        <h:selectOneMenu id="inSpezies" value="#{halterController.spezies.speziesId}"  
+                                         label="#{msgs.patient_spezies_select_one}">
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleSpeziesTypenMap}"/>
                             <f:ajax listener="#{halterController.getAlleRasseTypenMap()}" 
@@ -183,7 +205,8 @@
 
 
                         <h:outputText  value="#{msgs.patient_rasse}"/>
-                        <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" >
+                        <h:selectOneMenu id="inRasse" value="#{halterController.rasse.rasseId}" validator="#{halterController.validatePatient}"
+                                         label="#{msgs.patient_spezies_rasse_select_one}">
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleRasseTypenMap}"/>
                             <f:ajax listener="#{halterController.getAlleSpeziesTypenMap()}" 
@@ -198,6 +221,9 @@
                             </h:inputText>
                             <h:panelGroup rendered="#{halterController.rasse.rasseId != 0}"/>    
                         </h:panelGroup>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inRasse" styleClass="errorMsg"/>
+                        <h:panelGroup></h:panelGroup>
 
                         <h:commandButton id="savePatientButton" action="#{halterController.savePatient()}" 
                                          value="#{msgs.button_save}"/>
@@ -297,14 +323,14 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">Löschen</f:facet>
-                            <h:commandButton value="#{msgs.button_delete}" action="#{halterController.deletePatient(p.patientId)}"/>
+                            <h:commandButton onclick="if (!confirm('#{msgs.patient_confirm_message}'))
+                                        return false" value="#{msgs.button_delete}" action="#{halterController.deletePatient(p.patientId)}"/>
                         </h:column>
                     </h:dataTable>
                 </pf:panel>
             </h:form>
             <h:form id="adressForm">
                 <pf:panel header="#{msgs.header_form_adress}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inHalterAdresseId" value="*#{msgs.adress_id}" />   
                         <h:inputText label="#{msgs.adress_strasse_hausnr}" 
@@ -314,52 +340,70 @@
                         </h:inputText>
 
                         <h:outputText  value="#{msgs.adress_adresstyp}"/>
-                        <h:selectOneMenu id="inAdressTyp" value="#{halterController.currentHalteradresse.adresstypId.adresstypId}" >
+                        <h:selectOneMenu id="inAdressTyp" label="#{msgs.adress_select_one}" value="#{halterController.currentHalteradresse.adresstypId.adresstypId}" 
+                                         validator="#{halterController.validateHalteradresse}" >
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{halterController.alleAdressTypenMap}"/>
                         </h:selectOneMenu>
-
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inAdressTyp" styleClass="errorMsg"/>
                         <h:outputLabel for="inHalterAdresseStrasse" value="*#{msgs.adress_strasse_hausnr}" />   
                         <h:inputText label="#{msgs.adress_strasse_hausnr}" 
                                      id="inHalterAdresseStrasse" 
                                      value="#{halterController.currentHalteradresse.halterStrasse}" 
-                                     p:placeholder="Strasse + Haus-Nr">
+                                     p:placeholder="Strasse + Haus-Nr"
+                                     validator="#{halterController.validateHalteradresse}" >
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterAdresseStrasse" styleClass="errorMsg"/>
 
                         <h:outputLabel for="inHalterAdressePlz" value="*#{msgs.adress_plz}" />   
                         <h:inputText label="#{msgs.adress_plz}" 
                                      id="inHalterAdressePlz" 
                                      value="#{halterController.currentHalteradresse.halterPlz}" 
-                                     p:placeholder="Postleitzahl">
+                                     p:placeholder="Postleitzahl"
+                                     validator="#{halterController.validateHalteradresse}" >
                             <!--<ky:convertZipCode/>-->
                             <!--<f:converter converterId="com.kynomics.ZipCodeConverter"/>-->
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterAdressePlz" styleClass="errorMsg"/>
 
                         <h:outputLabel for="inHalterAdresseOrt" value="*#{msgs.adress_ort}" />   
                         <h:inputText label="#{msgs.adress_ort}" 
                                      id="inHalterAdresseOrt" 
                                      value="#{halterController.currentHalteradresse.halterOrt}" 
-                                     p:placeholder="Ort">
+                                     p:placeholder="Ort"
+                                     validator="#{halterController.validateHalteradresse}" >
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterAdresseOrt" styleClass="errorMsg"/>
 
                         <h:outputLabel for="inHalterAdresseTel" value="*#{msgs.adress_tel}" />   
                         <h:inputText label="#{msgs.adress_tel}" 
                                      id="inHalterAdresseTel" 
                                      value="#{halterController.currentHalteradresse.halterTel}" 
-                                     p:placeholder="Vorwahl / Telefon-Nr.">
+                                     p:placeholder="Vorwahl / Telefon-Nr."
+                                     validator="#{halterController.validateHalteradresse}" >
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterAdresseTel" styleClass="errorMsg"/>
 
                         <h:outputLabel for="inHalterAdresseEMail" value="*#{msgs.adress_email}" />   
                         <h:inputText label="#{msgs.adress_email}" 
                                      id="inHalterAdresseEMail" 
                                      value="#{halterController.currentHalteradresse.email}" 
-                                     p:placeholder="EMail-Adresse" >
-                            <!--                    <f:validateLength minimum="2" maximum="30"/>
-                                                <f:validator validatorId="emailValidator" />-->
+                                     p:placeholder="EMail-Adresse" 
+                                     validator="#{halterController.validateHalteradresse}" >
+                            <f:validator validatorId="emailValidator" />
+                            <!--<f:validateLength minimum="2" maximum="30"/>-->
                         </h:inputText>
-
-                        <h:commandButton id="saveAdressrButton" action="#{halterController.saveAdresse()}" 
-                                         value="#{msgs.button_save}"/>
+                        <h:panelGroup></h:panelGroup>
+                        <h:message for="inHalterAdresseEMail" styleClass="errorMsg"/>
+                        
+                        <h:commandButton id="saveAdressButton" action="#{halterController.saveAdresse()}" 
+                                         value="#{msgs.button_save}">
+                        </h:commandButton>
                         <h:commandButton id="sucheAdressButton" action="#{halterController.sucheAdresse()}" 
                                          value="#{msgs.button_search}"/>
                     </h:panelGrid>
@@ -430,7 +474,8 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">#{msgs.button_delete}</f:facet>
-                            <h:commandButton value="#{msgs.button_delete}" action="#{halterController.deleteHalteradresse(ha.halteradresseId)}"/>
+                            <h:commandButton onclick="if (!confirm('#{msgs.adress_confirm_message}'))
+                                        return false" value="#{msgs.button_delete}" action="#{halterController.deleteHalteradresse(ha.halteradresseId)}"/>
                         </h:column>
                     </h:dataTable>
                 </pf:panel>

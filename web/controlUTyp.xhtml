@@ -93,7 +93,8 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">#{msgs.button_delete}</f:facet>
-                            <h:commandButton value="#{msgs.button_delete}" action="#{uTypController.deleteUTyp(utyp.untersuchungtypId)}"/>
+                            <h:commandButton onclick="if (!confirm('#{msgs.uTyp_confirm_message}'))
+                                        return false" value="#{msgs.button_delete}" action="#{uTypController.deleteUTyp(utyp.untersuchungtypId)}"/>
                         </h:column>
                     </h:dataTable>
                 </pf:panel>
@@ -134,8 +135,8 @@
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inUntersuchungName" value="#{msgs.untersuchung_name}"/>   
                         <h:outputText id="inUntersuchungName" 
-                                     style="width: 200px"
-                                     value="#{uTypController.currentUTyp.untersuchungtypName}" >
+                                      style="width: 200px"
+                                      value="#{uTypController.currentUTyp.untersuchungtypName}" >
                         </h:outputText>
                         <h:outputLabel for="inUTypMinDauer" value="#{msgs.untersuchung_min_dauer}"/>   
                         <h:outputText id="inUTypMinDauer" 
@@ -171,8 +172,8 @@
                                        value="#{uTypController.currentUntersuchung.untersuchungPreis}"> 
                             <f:convertNumber pattern="#0.00" currencySymbol="€"/>
                         </h:inputText>
-                         <h:panelGroup></h:panelGroup> 
-                         <h:commandButton value="#{msgs.button_untersuchung_save}" action="#{uTypController.saveUntersuchung()}"/>
+                        <h:panelGroup></h:panelGroup> 
+                        <h:commandButton value="#{msgs.button_untersuchung_save}" action="#{uTypController.saveUntersuchung()}"/>
                     </h:panelGrid>
                 </pf:panel> 
             </h:form>
@@ -384,7 +385,8 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">#{msgs.button_delete}</f:facet>
-                            <h:commandButton value="#{msgs.button_delete}" action="#{uTypController.deleteMS(ms.milestoneId)}"/>
+                            <h:commandButton onclick="if (!confirm('#{msgs.milestone_confirm_message}'))
+                                        return false" value="#{msgs.button_delete}" action="#{uTypController.deleteMS(ms.milestoneId)}"/>
                         </h:column>
                     </h:dataTable>
                 </pf:panel>

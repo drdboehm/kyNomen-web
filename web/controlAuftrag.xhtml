@@ -57,8 +57,8 @@
                         <h:inputText label="#{msgs.auftrag_start}" 
                                      id="inAuftragStart" 
                                      value="#{auftragController.currentAuftrag.auftragStart}" 
-                                     p:placeholder="dd.MM.yyyy">
-                            <f:convertDateTime pattern="dd.MM.yyyy" />
+                                     p:placeholder="#{now}">
+                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
                             <ky:validateAge isActual="true"/>   
                         </h:inputText>
 

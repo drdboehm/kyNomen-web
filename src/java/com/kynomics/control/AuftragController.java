@@ -22,6 +22,7 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.commons.lang3.time.DateUtils;
 
 /**
  *
@@ -42,11 +44,11 @@ import javax.naming.NamingException;
 @Named(value = "auftragController")
 @SessionScoped
 public class AuftragController implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @EJB
     private TransmitterSessionBeanRemote transmitterSessionBeanRemote;
-    
+
     private Auftrag currentAuftrag;
     private Auftragposition currentAuftragposition;
     private Auftragtyp auftragTyp;
@@ -56,7 +58,7 @@ public class AuftragController implements Serializable {
     private List<Untersuchung> untersuchungList;
     private List<Auftragtyp> auftragTypList;
     private List<Patient> patientList;
-    
+
     private HalterController halterController;
 
     /**
@@ -80,7 +82,7 @@ public class AuftragController implements Serializable {
      */
     private SuchkriterienUntersuchung suchkriterienUntersuchung
             = new SuchkriterienUntersuchung();
-    
+
     private SuchkriterienAuftrag suchkriterienAuftrag
             = new SuchkriterienAuftrag();
 
@@ -100,8 +102,14 @@ public class AuftragController implements Serializable {
         this.alleAuftragTypenMap = new HashMap<>();
         this.auftragTyp = new Auftragtyp();
         this.currentUntersuchung = new Untersuchung();
+        /*
+        create a new Auftrag, create Halter, setStartDate and Enddate with 
+        * org.apache.commons.lang3.time.DateUtils to add to weeks per default
+        */
         this.currentAuftrag = new Auftrag();
         this.currentAuftrag.setHalterId(new Halter());
+        this.currentAuftrag.setAuftragStart(new Date());
+        this.currentAuftrag.setAuftragEnde(DateUtils.addWeeks(this.currentAuftrag.getAuftragStart(), 2));
         this.untersuchungList = new ArrayList<>();
         this.currentAuftragposition = new Auftragposition();
         this.auftragpositionenList = new ArrayList<>();
@@ -110,7 +118,7 @@ public class AuftragController implements Serializable {
         this.patientList = new ArrayList<>();
         this.allePatientenVonHalterTypenMap = new HashMap<>();
     }
-    
+
     @PostConstruct
     public void init() {
         BeanManager bm = null;
@@ -135,55 +143,55 @@ public class AuftragController implements Serializable {
             throw new EJBException(e);
         }
     }
-    
+
     public Auftrag getCurrentAuftrag() {
         return currentAuftrag;
     }
-    
+
     public void setCurrentAuftrag(Auftrag currentAuftrag) {
         this.currentAuftrag = currentAuftrag;
     }
-    
+
     public List<Auftrag> getAuftragList() {
         return auftragList;
     }
-    
+
     public void setAuftragList(List<Auftrag> auftragList) {
         this.auftragList = auftragList;
     }
-    
+
     public List<Auftragposition> getAuftragpositionenList() {
         return auftragpositionenList;
     }
-    
+
     public void setAuftragpositionenList(List<Auftragposition> auftragpositionenList) {
         this.auftragpositionenList = auftragpositionenList;
     }
-    
+
     public Auftragtyp getAuftragTyp() {
         return auftragTyp;
     }
-    
+
     public void setAuftragTyp(Auftragtyp auftragTyp) {
         this.auftragTyp = auftragTyp;
     }
-    
+
     public Auftragposition getCurrentAuftragposition() {
         return currentAuftragposition;
     }
-    
+
     public void setCurrentAuftragposition(Auftragposition currentAuftragposition) {
         this.currentAuftragposition = currentAuftragposition;
     }
-    
+
     public Untersuchung getCurrentUntersuchung() {
         return currentUntersuchung;
     }
-    
+
     public void setCurrentUntersuchung(Untersuchung currentUntersuchung) {
         this.currentUntersuchung = currentUntersuchung;
     }
-    
+
     public Map<String, Integer> getAlleUntersuchungsTypenMap() {
         List<Untersuchungstyp> tempList = transmitterSessionBeanRemote.initializeUntersuchungstypen();
         for (Untersuchungstyp next : tempList) {
@@ -191,7 +199,7 @@ public class AuftragController implements Serializable {
         }
         return alleUntersuchungsTypenMap;
     }
-    
+
     public Map<String, Integer> getAlleAuftragTypenMap() {
         auftragTypList = transmitterSessionBeanRemote.initializeAuftragtypen();
         for (Auftragtyp next : auftragTypList) {
@@ -199,46 +207,46 @@ public class AuftragController implements Serializable {
         }
         return alleAuftragTypenMap;
     }
-    
+
     public List<Untersuchung> getUntersuchungList() {
         return untersuchungList;
     }
-    
+
     public void setUntersuchungList(List<Untersuchung> untersuchungList) {
         this.untersuchungList = untersuchungList;
     }
-    
+
     public List<Patient> getPatientList() {
         return patientList;
     }
-    
+
     public void setPatientList(List<Patient> patientList) {
         this.patientList = patientList;
     }
-    
+
     public Map<String, Integer> getAllePatientenVonHalterTypenMap() {
         patientList = transmitterSessionBeanRemote.patientGet();
-        
+
         for (Patient p : patientList) {
             System.out.println("Patients = " + p);
             if (Objects.equals(p.getHalterHalterId().getHalterId(), currentAuftrag.getHalterId().getHalterId())) {
                 this.allePatientenVonHalterTypenMap.put(p.getPatientName(), p.getPatientId());
             }
         }
-        
+
         return allePatientenVonHalterTypenMap;
     }
-    
+
     public void setAllePatientenVonHalterTypenMap(Map<String, Integer> allePatientenVonHalterTypenMap) {
         this.allePatientenVonHalterTypenMap = allePatientenVonHalterTypenMap;
     }
-    
+
     public String sucheUntersuchung() {
         /*
          check the attributes first
          */
         System.out.println("currentUTyp.toString() = " + currentUntersuchung.toString());
-        
+
         suchkriterienUntersuchung.setUntersuchungId(currentUntersuchung.getUntersuchungId());
         suchkriterienUntersuchung.setUntersuchungName(currentUntersuchung.getUntersuchungName());
         suchkriterienUntersuchung.setUntersuchungDauer(currentUntersuchung.getUntersuchungDauer());
@@ -254,10 +262,10 @@ public class AuftragController implements Serializable {
             Untersuchung untersuchung = details(ut);
             untersuchungList.add(untersuchung);
         }
-        
+
         return null;
     }
-    
+
     public String sucheAuftrag() {
         /*
          check the attributes first
@@ -269,7 +277,7 @@ public class AuftragController implements Serializable {
         suchkriterienAuftrag.setAuftragStart(currentAuftrag.getAuftragStart());
         suchkriterienAuftrag.setAuftragEnde(currentAuftrag.getAuftragEnde());
         suchkriterienAuftrag.setHalterId(currentAuftrag.getHalterId());
-        
+
         if (suchkriterienAuftrag.toString().length() == 0) {
             System.out.println("WhereClause is empty: '" + suchkriterienAuftrag + "'");
         } else {
@@ -281,18 +289,18 @@ public class AuftragController implements Serializable {
             Auftrag auftrag = details(at);
             auftragList.add(auftrag);
         }
-        
+
         return null;
     }
-    
+
     private Untersuchung details(Untersuchungtreffer ut) {
         return transmitterSessionBeanRemote.findById(Untersuchung.class, ut.getUntersuchungId());
     }
-    
+
     private Auftrag details(Auftragtreffer at) {
         return transmitterSessionBeanRemote.findById(Auftrag.class, at.getAuftragId());
     }
-    
+
     public String selectUntersuchung(Untersuchung untersuchung) {
         int indexOf = untersuchungList.indexOf(untersuchung);
         untersuchung.setSelected(true);
@@ -302,7 +310,7 @@ public class AuftragController implements Serializable {
         untersuchungList.add(indexOf, untersuchung);
         return null;
     }
-    
+
     public String selectAuftrag(Auftrag auftrag) {
         /* 
          * System.out.println(auftrag.getHalterId());
@@ -315,7 +323,7 @@ public class AuftragController implements Serializable {
          * find the Auftrag in List, store index temporally before we change it
          */
         int indexOf = auftragList.indexOf(auftrag);
-        
+
         auftrag.setSelected(true);
         auftrag.getHalterId().setSelected(true);
         /*
@@ -335,7 +343,7 @@ public class AuftragController implements Serializable {
         currentAuftrag = auftrag;
         return null;
     }
-    
+
     public String deSelectUntersuchung(Untersuchung untersuchung) {
         int indexOf = untersuchungList.indexOf(untersuchung);
         untersuchung.setSelected(false);
@@ -345,7 +353,7 @@ public class AuftragController implements Serializable {
         untersuchungList.add(indexOf, untersuchung);
         return null;
     }
-    
+
     public String deSelectAuftrag(Auftrag auftrag) {
         int indexOf = auftragList.indexOf(auftrag);
         auftrag.setSelected(false);
@@ -354,7 +362,7 @@ public class AuftragController implements Serializable {
         auftragList.add(indexOf, auftrag);
         return null;
     }
-    
+
     public String saveAuftrag() {
         /*
          * log currentAuftrag as far as ist exists 
@@ -371,7 +379,7 @@ public class AuftragController implements Serializable {
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return null;
     }
-    
+
     public String addAuftragposition() {
         currentAuftragposition.setAuftragpositionNr(auftragpositionenList.size() + 1);
         /*
@@ -398,7 +406,7 @@ public class AuftragController implements Serializable {
         // empty the currentAuftragposition before next transmission
         currentAuftragposition = new Auftragposition();
         return null;
-        
+
     }
-    
+
 }
