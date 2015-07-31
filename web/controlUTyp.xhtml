@@ -14,10 +14,13 @@
         <h:panelGrid columns="2" styleClass="table-valign">
             <h:form id="uTypForm">
                 <pf:panel header="#{msgs.header_form_utyp}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:panelGroup></h:panelGroup> 
-                        <h:commandButton value="#{msgs.menu_reset}" action="#{uTypController.resetLists()}"/>
+                        <h:commandButton value="#{msgs.menu_reset}" 
+                                         action="#{uTypController.resetLists(uTypController.utypList, uTypController.milestoneList)}">
+                            <f:actionListener binding="#{uTypController.resetCurrents(uTypController.currentUTyp, uTypController.currentMilestone)}"/>
+
+                        </h:commandButton>
                         <h:outputLabel for="inUntersuchungsTypId" value="*#{msgs.uTyp_id}" />   
                         <h:inputText label="#{msgs.uTyp_id}" 
                                      id="inUntersuchungsTypId" 
@@ -28,21 +31,29 @@
                         <h:inputText label="#{msgs.uTyp_name}" 
                                      id="inUntersuchungsTypName" 
                                      value="#{uTypController.currentUTyp.untersuchungtypName}" 
-                                     p:placeholder="Bezeichnung">
+                                     p:placeholder="Bezeichnung"
+                                     validator="#{uTypController.validateUTyp}"  >
                         </h:inputText>
-                        <h:outputLabel for="inUntersuchungTypGen" value="*#{msgs.uTyp_gen}" />   
+                        <h:panelGroup></h:panelGroup> 
+                        <h:message for="inUntersuchungsTypName" styleClass="errorMsg"/>
+                        <h:outputLabel for="inUntersuchungsTypGen" value="*#{msgs.uTyp_gen}" />   
                         <h:inputText label="#{msgs.uTyp_gen}" 
-                                     id="inUntersuchungTypGen" 
+                                     id="inUntersuchungsTypGen" 
                                      value="#{uTypController.currentUTyp.untersuchungtypGen}" 
-                                     p:placeholder="Genname">
+                                     p:placeholder="Genname"
+                                     validator="#{uTypController.validateUTyp}"  >
                         </h:inputText>
-                        <h:outputLabel for="inUntersuchungTypMut" value="*#{msgs.uTyp_mut}" />   
+                        <h:panelGroup></h:panelGroup> 
+                        <h:message for="inUntersuchungsTypGen" styleClass="errorMsg"/>
+                        <h:outputLabel for="inUntersuchungsTypMut" value="*#{msgs.uTyp_mut}" />   
                         <h:inputText label="#{msgs.uTyp_mut}" 
-                                     id="inUntersuchungTypMut" 
+                                     id="inUntersuchungsTypMut" 
                                      value="#{uTypController.currentUTyp.untersuchungtypMut}" 
-                                     p:placeholder="Mutation">
+                                     p:placeholder="Mutation" 
+                                     validator="#{uTypController.validateUTyp}">
                         </h:inputText>
-
+                        <h:panelGroup></h:panelGroup> 
+                        <h:message for="inUntersuchungsTypMut" styleClass="errorMsg"/>
                         <h:commandButton id="saveUTypButton" action="#{uTypController.saveUTyp()}" 
                                          value="#{msgs.button_save}"/>
                         <h:commandButton id="sucheUTypButton" value="#{msgs.button_search}" 
@@ -52,57 +63,57 @@
             </h:form>
             <h:form id="uTypSelect">
                 <pf:panel header="#{msgs.header_list_utypen}" footer="#{msgs.footer_anzahl_utypen} #{fn:length(uTypController.utypList)}">
-                    <h:dataTable style="width: 900px;" value="#{uTypController.utypList}" var="utyp" >
-                        <h:column>
+                    <pf:dataTable stickyHeader="true" scrollable="true" scrollHeight="200"  
+                                   style="width: 900px;" value="#{uTypController.utypList}" var="utyp" >
+                        <pf:column style="width: 6%">
                             <f:facet name="header">#{msgs.header_list_de_select}</f:facet>
                             <h:commandButton value="#{utyp.untersuchungtypId}" action="#{uTypController.selectUTyp(utyp)}" rendered="#{not utyp.selected}" />
-                            <h:commandButton value="De-#{utyp.untersuchungtypId}" action="#{uTypController.deSelectUTyp(utyp)}" rendered="#{utyp.selected}" />
+                            <h:commandButton value="#{msgs.mark_selected}#{utyp.untersuchungtypId}" action="#{uTypController.deSelectUTyp(utyp)}" rendered="#{utyp.selected}" />
                             <f:facet name="footer">
                                 <h:commandButton id="uTypIdSort" value="#{msgs.button_sort}" action="#{uTypController.sortUTypById()}"/>
                             </f:facet>
-                        </h:column>
+                        </pf:column>
 
-                        <h:column>
+                        <pf:column  style="width: 24%">
                             <f:facet name="header">#{msgs.uTyp_name}</f:facet>
                             <f:facet name="footer">
                                 <h:commandButton value="#{msgs.button_sort}" action="#{uTypController.sortUTypByName()}"/>
                             </f:facet>
                             <h:outputText value="#{utyp.untersuchungtypName}" rendered="#{not utyp.edited}"> </h:outputText>
                             <h:inputText value="#{utyp.untersuchungtypName}" rendered="#{utyp.edited}"></h:inputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.uTyp_gen}</f:facet>
                             <f:facet name="footer">
                                 <h:commandButton value="#{msgs.button_sort}" action="#{uTypController.sortUTypByGen()}"/>
                             </f:facet>
                             <h:outputText value="#{utyp.untersuchungtypGen}"  rendered="#{not utyp.edited}"> </h:outputText>
                             <h:inputText value="#{utyp.untersuchungtypGen}"  rendered="#{utyp.edited}"> </h:inputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 20%">
                             <f:facet name="header">#{msgs.uTyp_mut}</f:facet>
                             <f:facet name="footer">
                                 <h:commandButton value="#{msgs.button_sort}" action="#{uTypController.sortUTypByMut()}"/>
                             </f:facet>
                             <h:outputText value="#{utyp.untersuchungtypMut}"  rendered="#{not utyp.edited}"> </h:outputText>
                             <h:inputText value="#{utyp.untersuchungtypMut}"  rendered="#{utyp.edited}"> </h:inputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 6%">
                             <f:facet name="header">#{msgs.button_edit}</f:facet>
                             <h:commandButton value="#{msgs.button_edit}" action="#{uTypController.editUTyp(utyp)}" rendered="#{not utyp.edited}"/>
                             <h:commandButton value="#{msgs.button_save}" action="#{uTypController.saveUTyp(utyp)}" rendered="#{utyp.edited}"/>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 6%">
                             <f:facet name="header">#{msgs.button_delete}</f:facet>
                             <h:commandButton onclick="if (!confirm('#{msgs.uTyp_confirm_message}'))
                                         return false" value="#{msgs.button_delete}" action="#{uTypController.deleteUTyp(utyp.untersuchungtypId)}"/>
-                        </h:column>
-                    </h:dataTable>
+                        </pf:column>
+                    </pf:dataTable>
                 </pf:panel>
             </h:form>
 
             <h:form id="uSOPForm">
                 <pf:panel header="#{msgs.header_form_SOP}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:panelGroup></h:panelGroup> 
                         <h:commandButton value="#{msgs.SOPList_clear}" action="#{uTypController.clearSOPList()}"/>
@@ -130,8 +141,8 @@
                         </h:column>
                     </h:dataTable>
                 </pf:panel>
+
                 <pf:panel  header="#{msgs.header_form_untersuchung}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inUntersuchungName" value="#{msgs.untersuchung_name}"/>   
                         <h:outputText id="inUntersuchungName" 
@@ -179,61 +190,61 @@
             </h:form>
             <h:form id="uSOPSelectedOrderedList">
                 <pf:panel header="#{msgs.header_list_SOPs}" footer="#{msgs.footer_anzahl_SOPsteps} #{fn:length(uTypController.milestoneOrderedSOPList)}">
-                    <h:messages styleClass="errorMsg"></h:messages>
-                    <h:dataTable style="width: 900px;" value="#{uTypController.milestoneOrderedSOPList}" var="ms" >
-                        <h:column>
+                    <pf:dataTable stickyHeader="true"  scrollable="true" scrollHeight="200" 
+                                  draggableRows="true" 
+                                  style="width: 900px;" value="#{uTypController.milestoneOrderedSOPList}" var="ms" >
+                        <pf:column  style="width: 6%">
                             <f:facet name="header">Id</f:facet>
                             <h:outputText value="#{ms.milestoneId}" />
                             <f:facet name="footer">
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 14%">
                             <f:facet name="header">#{msgs.milestone_name}</f:facet>
                             <f:facet name="footer">
                             </f:facet>
                             <h:outputText value="#{ms.milestoneName}"> </h:outputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_alltime}</f:facet>
                             <f:facet name="footer">#{uTypController.sumMsAllTimes()}</f:facet>
                             <h:outputText value="#{ms.milestoneAlltime}">
                                 <f:convertDateTime pattern="HH:mm" timeZone="GMT+1"/>
                             </h:outputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_handsontime}</f:facet>
                             <f:facet name="footer">#{uTypController.sumMsHandsonTimes()}</f:facet>
                             <h:outputText value="#{ms.milestoneAlltime}">
                                 <f:convertDateTime pattern="HH:mm" timeZone="GMT+1"/>
                             </h:outputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_manhour}</f:facet>
                             <f:facet name="footer">#{uTypController.sumMsManHour()}</f:facet>
                             <h:outputText value="#{ms.milestoneManhour}">
                                 <f:convertDateTime pattern="HH:mm" timeZone="GMT+1"/>
                             </h:outputText>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_cost}</f:facet>
                             <f:facet name="footer">#{uTypController.sumMsCost()}</f:facet>
                             <h:outputText value="#{ms.milestonecost}">
                                 <!--conversion do not work here, because ms.milestonecost is a String property -->
                                 <!--<f:convertNumber pattern="#0.00" currencySymbol="€"/>-->
                             </h:outputText>
-                        </h:column>
+                        </pf:column>
 
-                        <h:column>
-                            <f:facet name="header">Aus Liste</f:facet>
-                            <h:commandButton value="entf" action="#{uTypController.removeMSFromOrderedSOPList(ms)}"/>
-                        </h:column>
+                        <pf:column style="width: 6%">
+                            <f:facet name="header">#{msgs.button_delete}</f:facet>
+                            <h:commandButton value="#{msgs.button_delete}" action="#{uTypController.removeMSFromOrderedSOPList(ms)}"/>
+                        </pf:column>
 
-                    </h:dataTable>
+                    </pf:dataTable>
                 </pf:panel>
             </h:form>
             <h:form id="milestoneForm">
                 <pf:panel header="#{msgs.header_form_milestone}" style="width: 350px;">
-                    <h:messages styleClass="errorMsg"></h:messages>
                     <h:panelGrid columns="2" columnClasses="rightAlign, leftAlign">
                         <h:outputLabel for="inMilestoneId" value="*#{msgs.milestone_id}"/>   
                         <h:inputText label="#{msgs.milestone_id}" 
@@ -246,8 +257,11 @@
                                      id="inMilestoneName" 
                                      value="#{uTypController.currentMilestone.milestoneName}" 
                                      p:placeholder="Milestone-Name"
-                                     validator="#{halterController.validateAlpha}">
+                                     validator="#{uTypController.validateMilestone}">
                         </h:inputText>
+                        <h:panelGroup></h:panelGroup> 
+                        <h:message for="inMilestoneName" styleClass="errorMsg"/>
+
                         <h:outputLabel for="inMilestoneAlltime" value="#{msgs.milestone_alltime}" />   
                         <h:inputText label="#{msgs.milestone_alltime}" 
                                      id="inMilestoneAlltime" 
@@ -287,10 +301,14 @@
                         </h:inputText>
 
                         <h:outputText  value="#{msgs.milestonetyp}"/>
-                        <h:selectOneMenu id="inMilestoneTyp" value="#{uTypController.milestonetyp.milestonetypId}" >
+                        <h:selectOneMenu label="#{msgs.milestonetyp_select_one}" id="inMilestoneTyp" 
+                                         value="#{uTypController.milestonetyp.milestonetypId}"  
+                                         validator="#{uTypController.validateMilestone}">
                             <f:selectItem itemValue="#{null}" itemLabel="#{msgs.menu_select_one}"/>
                             <f:selectItems value="#{uTypController.alleMilestoneTypenMap}"/>
                         </h:selectOneMenu>
+                        <h:panelGroup></h:panelGroup> 
+                        <h:message for="inMilestoneTyp" styleClass="errorMsg"/>
 
                         <h:commandButton id="saveMSButton" action="#{uTypController.saveMS()}" 
                                          value="#{msgs.button_save}"/>
@@ -301,24 +319,27 @@
             </h:form>
             <h:form id="milestoneSelect">
                 <pf:panel header="#{msgs.header_list_milestones}" footer="#{msgs.footer_anzahl_milestones}  #{fn:length(uTypController.milestoneList)}">
-                    <h:dataTable style="width: 900px;" value="#{uTypController.milestoneList}" var="ms" >
-                        <h:column>
+                    <pf:dataTable stickyHeader="true"  scrollable="true" scrollHeight="200" 
+                                  sortBy="#{ms.milestonetypId.milestonetypId}" sortOrder="ascending"
+                                  draggableRows="true" 
+                                  style="width: 900px;" value="#{uTypController.milestoneList}" var="ms" >
+                        <pf:column  style="width: 6%">
                             <f:facet name="header">#{msgs.header_list_de_select}</f:facet>
                             <h:commandButton value="#{ms.milestoneId}" action="#{uTypController.selectMSOrdered(ms)}" rendered="#{not ms.selected}" />
-                            <h:commandButton value="De-#{ms.milestoneId}" action="#{uTypController.deSelectMSOrdered(ms)}" rendered="#{ms.selected}" />
+                            <h:commandButton value="#{msgs.mark_selected}#{ms.milestoneId}" action="#{uTypController.deSelectMSOrdered(ms)}" rendered="#{ms.selected}" />
                             <f:facet name="footer">
                                 <!-- sort Routine removed -->
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 14%">
                             <f:facet name="header">#{msgs.milestone_name}</f:facet>
                             <h:outputText value="#{ms.milestoneName}" rendered="#{not ms.edited}"> </h:outputText>
                             <h:inputText value="#{ms.milestoneName}" size="15" rendered="#{ms.edited}"></h:inputText>
                             <f:facet name="footer">
                                 <!-- sort Routine removed -->
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_alltime}</f:facet>
                             <h:outputText value="#{ms.milestoneAlltime}"  rendered="#{not ms.edited}">
                                 <f:convertDateTime pattern="HH:mm" timeZone="GMT+1"/>
@@ -330,8 +351,8 @@
                                 <!-- sort Routine removed -->
                             </f:facet>
 
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_handsontime}</f:facet>
                             <h:outputText value="#{ms.milestoneHandsontime}"  rendered="#{not ms.edited}">
                                 <f:convertDateTime pattern="HH:mm" timeZone="GMT+1"/>
@@ -342,16 +363,16 @@
                             <f:facet name="footer">
                                 <!-- sort Routine removed -->
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_mannumber}</f:facet>
                             <h:outputText value="#{ms.milestoneMannumber}"  rendered="#{not ms.edited}"> </h:outputText>
                             <h:inputText value="#{ms.milestoneMannumber}" size="3" rendered="#{ms.edited}"> </h:inputText>
                             <f:facet name="footer">
                                 <!-- sort Routine removed -->
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_manhour}</f:facet>
                             <h:outputText value="#{ms.milestoneManhour}"  rendered="#{not ms.edited}">
                                 <f:convertDateTime pattern="HH:mm" timeZone="GMT+1"/>
@@ -362,33 +383,33 @@
                             <f:facet name="footer">
                                 <!-- sort Routine removed -->
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 10%">
                             <f:facet name="header">#{msgs.milestone_cost}</f:facet>
                             <h:outputText value="#{ms.milestonecost}"  rendered="#{not ms.edited}"> </h:outputText>
                             <h:inputText value="#{ms.milestonecost}" size="5" rendered="#{ms.edited}"> </h:inputText>
                             <f:facet name="footer">
                                 <!-- sort Routine removed -->
                             </f:facet>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 20%">
                             <f:facet name="header">#{msgs.milestone_milestonetypId_milestonetypName}</f:facet>
                             <h:outputText value="#{ms.milestonetypId.milestonetypName}" rendered="#{not ms.edited}"> </h:outputText>
                             <h:selectOneMenu id="inMSTyp" value="#{ms.milestonetypId.milestonetypId}" rendered="#{ms.edited}">
                                 <f:selectItems value="#{uTypController.alleMilestoneTypenMap}" />
                             </h:selectOneMenu>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 6%">
                             <f:facet name="header">#{msgs.button_edit}</f:facet>
                             <h:commandButton value="#{msgs.button_edit}" action="#{uTypController.editMS(ms)}" rendered="#{not ms.edited}"/>
                             <h:commandButton value="#{msgs.button_save}" action="#{uTypController.saveMS(ms)}" rendered="#{ms.edited}"/>
-                        </h:column>
-                        <h:column>
+                        </pf:column>
+                        <pf:column style="width: 6%">
                             <f:facet name="header">#{msgs.button_delete}</f:facet>
                             <h:commandButton onclick="if (!confirm('#{msgs.milestone_confirm_message}'))
                                         return false" value="#{msgs.button_delete}" action="#{uTypController.deleteMS(ms.milestoneId)}"/>
-                        </h:column>
-                    </h:dataTable>
+                        </pf:column>
+                    </pf:dataTable>
                 </pf:panel>
             </h:form>
         </h:panelGrid>

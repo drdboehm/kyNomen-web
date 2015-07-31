@@ -12,11 +12,14 @@ import com.kynomics.daten.Halter;
 import com.kynomics.daten.Patient;
 import com.kynomics.daten.Untersuchung;
 import com.kynomics.daten.Untersuchungstyp;
+import com.kynomics.daten.finder.AuftragpositionTreffer;
 import com.kynomics.daten.finder.Auftragtreffer;
 import com.kynomics.daten.finder.SuchkriterienAuftrag;
+import com.kynomics.daten.finder.SuchkriterienAuftragposition;
 import com.kynomics.daten.finder.SuchkriterienUntersuchung;
 import com.kynomics.daten.finder.Untersuchungtreffer;
 import com.kynomics.daten.wrapper.AuftragAuftragPositionenWrapper;
+import com.kynomics.daten.wrapper.UntersuchungWrapper;
 import com.kynomics.lib.TransmitterSessionBeanRemote;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -73,7 +76,7 @@ public class AuftragController implements Serializable {
     /**
      * the Patienten - Map for the h:selectOneMenu ...
      */
-    private Map<String, Integer> allePatientenVonHalterTypenMap;
+    private Map<String, Integer> allePatientenVonHalterMap;
 
     /**
      * the SuchkriterienUTyp suchkriterienUTyp is set to a private property,
@@ -86,6 +89,9 @@ public class AuftragController implements Serializable {
     private SuchkriterienAuftrag suchkriterienAuftrag
             = new SuchkriterienAuftrag();
 
+    private SuchkriterienAuftragposition suchkriterienAuftragposition
+            = new SuchkriterienAuftragposition();
+
     /**
      * The List milestoneTrefferList is set as private property, and can be used
      * to reload each List milestoneList after persisting changes in order to
@@ -93,9 +99,12 @@ public class AuftragController implements Serializable {
      */
     private List<Untersuchungtreffer> untersuchungTrefferList = null;
     private List<Auftragtreffer> auftragTrefferList = null;
+    private List<AuftragpositionTreffer> auftragpositionTrefferList = null;
 
     /**
      * Creates a new instance of AuftragController
+     *
+     * @throws javax.naming.NamingException
      */
     public AuftragController() throws NamingException {
         this.alleUntersuchungsTypenMap = new HashMap();
@@ -103,20 +112,21 @@ public class AuftragController implements Serializable {
         this.auftragTyp = new Auftragtyp();
         this.currentUntersuchung = new Untersuchung();
         /*
-        create a new Auftrag, create Halter, setStartDate and Enddate with 
-        * org.apache.commons.lang3.time.DateUtils to add to weeks per default
-        */
+         create a new Auftrag, create Halter, setStartDate and Enddate with 
+         * org.apache.commons.lang3.time.DateUtils to add to weeks per default
+         */
         this.currentAuftrag = new Auftrag();
         this.currentAuftrag.setHalterId(new Halter());
         this.currentAuftrag.setAuftragStart(new Date());
         this.currentAuftrag.setAuftragEnde(DateUtils.addWeeks(this.currentAuftrag.getAuftragStart(), 2));
+        this.currentAuftrag.setAuftragstypId(new Auftragtyp());
         this.untersuchungList = new ArrayList<>();
         this.currentAuftragposition = new Auftragposition();
         this.auftragpositionenList = new ArrayList<>();
         this.auftragList = new ArrayList<>();
         this.auftragTypList = new ArrayList<>();
         this.patientList = new ArrayList<>();
-        this.allePatientenVonHalterTypenMap = new HashMap<>();
+        this.allePatientenVonHalterMap = new HashMap<>();
     }
 
     @PostConstruct
@@ -145,6 +155,14 @@ public class AuftragController implements Serializable {
     }
 
     public Auftrag getCurrentAuftrag() {
+        /*
+         * set current Date to currentAuftrag.setAuftragStart
+         */
+        currentAuftrag.setAuftragStart(new Date());
+        /*
+         * add to weeks to extrapolate AuftragEnde and set in currentAuftrag
+         */
+        currentAuftrag.setAuftragEnde(DateUtils.addWeeks(this.currentAuftrag.getAuftragStart(), 2));
         return currentAuftrag;
     }
 
@@ -224,21 +242,31 @@ public class AuftragController implements Serializable {
         this.patientList = patientList;
     }
 
-    public Map<String, Integer> getAllePatientenVonHalterTypenMap() {
+    public Map<String, Integer> getAllePatientenVonHalterMap() {
         patientList = transmitterSessionBeanRemote.patientGet();
-
+        /*
+         * get selected Halter from halterController and set in auftrag
+         */
+        if (currentAuftrag.getHalterId() == null) {
+            currentAuftrag.setHalterId(halterController.getCurrentHalter());
+        }
         for (Patient p : patientList) {
-            System.out.println("Patients = " + p);
-            if (Objects.equals(p.getHalterHalterId().getHalterId(), currentAuftrag.getHalterId().getHalterId())) {
-                this.allePatientenVonHalterTypenMap.put(p.getPatientName(), p.getPatientId());
+            /*
+             * if no Halter is selected so far 
+             */
+//            System.out.println("halterController.getCurrentHalter() = " + halterController.getCurrentHalter());
+//            System.out.println("Patients = " + p + " currentAuftrag.getHalterId() = " + currentAuftrag.getHalterId());
+//            if (Objects.equals(p.getHalterHalterId().getHalterId(), currentAuftrag.getHalterId().getHalterId())) {
+            if (Objects.equals(p.getHalterHalterId().getHalterId(), halterController.getCurrentHalter().getHalterId())) {
+                this.allePatientenVonHalterMap.put(p.getPatientName(), p.getPatientId());
             }
         }
 
-        return allePatientenVonHalterTypenMap;
+        return allePatientenVonHalterMap;
     }
 
-    public void setAllePatientenVonHalterTypenMap(Map<String, Integer> allePatientenVonHalterTypenMap) {
-        this.allePatientenVonHalterTypenMap = allePatientenVonHalterTypenMap;
+    public void setAllePatientenVonHalterMap(Map<String, Integer> allePatientenVonHalterMap) {
+        this.allePatientenVonHalterMap = allePatientenVonHalterMap;
     }
 
     public String sucheUntersuchung() {
@@ -266,6 +294,29 @@ public class AuftragController implements Serializable {
         return null;
     }
 
+    public String sucheAuftragposition() {
+        /*
+         check the attributes first
+         */
+        System.out.println("currentAuftragposition.toString() = " + currentAuftragposition.toString());
+
+        suchkriterienAuftragposition.setAuftragpositionId(currentAuftragposition.getAuftragpositionId());
+        suchkriterienAuftragposition.setAuftragpositionNr(currentAuftragposition.getAuftragpositionNr());
+        if (suchkriterienAuftragposition.toString().length() == 0) {
+            System.out.println("WhereClause is empty: '" + suchkriterienAuftragposition + "'");
+        } else {
+            System.out.println("WhereClause: '" + suchkriterienAuftragposition + "'");
+        }
+        auftragpositionTrefferList = transmitterSessionBeanRemote.sucheAuftragposition(suchkriterienAuftragposition);
+        auftragpositionenList.clear();
+        for (AuftragpositionTreffer at : auftragpositionTrefferList) {
+            Auftragposition auftragposition = details(at);
+            auftragpositionenList.add(auftragposition);
+        }
+
+        return null;
+    }
+
     public String sucheAuftrag() {
         /*
          check the attributes first
@@ -284,7 +335,10 @@ public class AuftragController implements Serializable {
             System.out.println("WhereClause: '" + suchkriterienAuftrag + "'");
         }
         auftragTrefferList = transmitterSessionBeanRemote.sucheAuftrag(suchkriterienAuftrag);
-        auftragList.clear();
+        /*
+         * reset the Lists as needed
+         */
+        resetLists(auftragList, auftragpositionenList, untersuchungList);
         for (Auftragtreffer at : auftragTrefferList) {
             Auftrag auftrag = details(at);
             auftragList.add(auftrag);
@@ -295,6 +349,10 @@ public class AuftragController implements Serializable {
 
     private Untersuchung details(Untersuchungtreffer ut) {
         return transmitterSessionBeanRemote.findById(Untersuchung.class, ut.getUntersuchungId());
+    }
+
+    private Auftragposition details(AuftragpositionTreffer at) {
+        return transmitterSessionBeanRemote.findById(Auftragposition.class, at.getAuftragpositionId());
     }
 
     private Auftrag details(Auftragtreffer at) {
@@ -311,36 +369,57 @@ public class AuftragController implements Serializable {
         return null;
     }
 
+    public String selectAuftragposition(Auftragposition auftragposition) {
+        auftragposition.setSelected(true);
+        currentAuftragposition = auftragposition;
+        currentUntersuchung = auftragposition.getUntersuchungId();
+        untersuchungList.add(currentUntersuchung);
+
+        return null;
+    }
+
+    public String deSelectAuftragposition(Auftragposition auftragposition) {
+        resetCurrents(null, currentAuftragposition, null);
+        boolean remove = untersuchungList.remove(auftragposition.getUntersuchungId());
+        auftragposition.setSelected(!remove);
+
+        return null;
+    }
+
     public String selectAuftrag(Auftrag auftrag) {
         /* 
-         * System.out.println(auftrag.getHalterId());
-         * gives access to a full named Halter, but selected attribure is not set to true, 
+         * System.out.println(auftrag.getHalterId())
+         * gives access to a full named Halter, but "selected" attribute is not set to true, 
          * it is transient and need to be set true to have it rendered in the 
          * <h:form id = "showOrSelectSummeryForm" > of controlAuftrag.xhtml
          */
-//        System.out.println("auftrag.getHalterId() = " + auftrag.getHalterId());
-        /* 
-         * find the Auftrag in List, store index temporally before we change it
-         */
-        int indexOf = auftragList.indexOf(auftrag);
 
-        auftrag.setSelected(true);
+        /*
+         * We want to set the Auftrag - corresponding Halter as selected
+         */
+//        System.out.println("auftrag.getHalterId() = " + auftrag.getHalterId());
         auftrag.getHalterId().setSelected(true);
-        /*
-         * now check if the Halter is selected
-         */
+        // check that
 //        System.out.println("auftrag.getHalterId() = " + auftrag.getHalterId());
-
         /*
-         * remove the old auftrag and add the new auftrag by index
+         * We want to set the Auftrag as selected
          */
-        auftragList.remove(indexOf);
-        auftragList.add(indexOf, auftrag);
+//        System.out.println("auftrag = " + auftrag);
+        auftrag.setSelected(true);
+        // check that
+//        System.out.println("auftrag = " + auftrag);
+
         /*
          * Also we need to set the currentHalter in halterController-Bean
          */
         halterController.setCurrentHalter(auftrag.getHalterId());
         currentAuftrag = auftrag;
+//        System.out.println("currentAuftrag = " + currentAuftrag);
+        /*
+         * the currentAuftrag has a collection of auftragpositionen, we are interested in
+         */
+        auftragpositionenList.addAll(currentAuftrag.getAuftragpositionCollection());
+//        System.out.println("auftragpositionenList = " + auftragpositionenList);
         return null;
     }
 
@@ -357,9 +436,16 @@ public class AuftragController implements Serializable {
     public String deSelectAuftrag(Auftrag auftrag) {
         int indexOf = auftragList.indexOf(auftrag);
         auftrag.setSelected(false);
-        currentAuftrag = new Auftrag();
-        auftragList.remove(indexOf);
-        auftragList.add(indexOf, auftrag);
+
+        /*
+         * reset the currentEntities as needed
+         */
+        resetCurrents(currentAuftrag, currentAuftragposition, currentUntersuchung);
+        /*
+         * clear the auftragpositionenList
+         */
+        resetLists(null, auftragpositionenList, untersuchungList);
+
         return null;
     }
 
@@ -367,15 +453,25 @@ public class AuftragController implements Serializable {
         /*
          * log currentAuftrag as far as ist exists 
          */
-        /* AuftragTyp auftragTyp is an emty object with an Id only, 
-         * get the real object to set in currentAuftrag by the index from 
-         * auftragTypList
+        /* AuftragTyp is set to currentAuftrag already by using JSF 
+         * value="#{auftragController.currentAuftrag.auftragstypId.auftragtypId}
+         * set the Halter in currentAuftrag from halterController.getCurrentHalter()
          */
-        currentAuftrag.setAuftragstypId(auftragTypList.get(auftragTyp.getAuftragtypId() - 1));
+
         currentAuftrag.setHalterId(halterController.getCurrentHalter());
-        System.out.println("halterController.getCurrentHalter()= " + halterController.getCurrentHalter());
         System.out.println("currentAuftrag= " + currentAuftrag);
-        AuftragAuftragPositionenWrapper wrapper = new AuftragAuftragPositionenWrapper(currentAuftrag, null);
+        /*
+         * Now check the content if the auftragpositionenList
+         */
+        for (Auftragposition auftragposition : auftragpositionenList) {
+            System.out.println("auftragposition = " + auftragposition);
+        }
+        /*
+         * set the auftragpositionencollection in currentAuftrag
+         */
+        currentAuftrag.setAuftragpositionCollection(auftragpositionenList);
+        System.out.println("currentAuftrag FINAL = " + currentAuftrag);
+        AuftragAuftragPositionenWrapper wrapper = new AuftragAuftragPositionenWrapper(currentAuftrag, auftragpositionenList);
         transmitterSessionBeanRemote.storeEjb(wrapper);
         return null;
     }
@@ -407,6 +503,143 @@ public class AuftragController implements Serializable {
         currentAuftragposition = new Auftragposition();
         return null;
 
+    }
+
+    public void resetLists(List<Auftrag> auftragList, List<Auftragposition> auftragpositionenList, List<Untersuchung> untersuchungList) {
+        if (auftragList != null) {
+            this.auftragList.clear();
+        }
+        if (auftragpositionenList != null) {
+            this.auftragpositionenList.clear();
+        }
+        if (untersuchungList != null) {
+            this.untersuchungList.clear();
+        }
+    }
+
+    public void resetCurrents(Auftrag currentAuftrag, Auftragposition currentAuftragposition, Untersuchung currentUntersuchung) {
+        if (currentAuftrag != null) {
+            this.currentAuftrag = new Auftrag();
+            this.currentAuftrag.setAuftragstypId(new Auftragtyp());
+            this.currentAuftrag.setHalterId(new Halter());
+        }
+        if (currentAuftragposition != null) {
+            this.currentAuftragposition = new Auftragposition();
+
+        }
+        if (currentUntersuchung != null) {
+            this.currentUntersuchung = new Untersuchung();
+
+        }
+    }
+
+    public String deleteAuftrag(Integer auftragId) {
+        System.out.println("Delete Auftrag with Id " + auftragId);
+        Auftrag deleteById = transmitterSessionBeanRemote.deleteById(Auftrag.class, auftragId);
+        if (deleteById
+                != null) {
+            System.out.println("Auftrag Details deleted from database: " + deleteById);
+        }
+
+        /*
+         here we need to adjust the halterList, patientList and halteradresseList
+         first of all: we have a DELETE ON CASCADE in our DELETE query!
+         We need to decide, whether this should be like this!?
+         If so, we have to possibilities to update the other lists.
+         1. the search can be repeated at ALL, then all will be updated, BUT there will be traffic to the EJB and back! 
+         2. we remove the CASCADED entries by hand here !
+         3. third, we do not want to delete patienten and halteradresses !?
+         */
+        if (auftragList.remove(deleteById)) {
+            System.out.println("Auftrag Details  deleted from auftragList: " + deleteById);
+
+        }
+
+        return null;
+    }
+
+    public String deleteAuftragposition(Auftragposition auftragposition) {
+        System.out.println("Delete Auftragposition with Id " + auftragposition);
+        /*
+         * We should NOT delete the entity MANUALLY because it is a member of a collection 
+         * of another entity, BUT we need to get the auftragposition reference 
+         */
+//        Auftragposition deleteById = transmitterSessionBeanRemote.deleteById(Auftragposition.class, auftragpositionId);
+//        if (deleteById
+//                != null) {
+//            System.out.println("Auftragposition Details deleted from database: " + deleteById);
+//        }
+        System.out.println("SIZE of List BEFORE DELETION = " + auftragpositionenList.size());
+        if (auftragpositionenList.remove(auftragposition)) {
+            System.out.println("Auftragposition Details  deleted from auftragpositionenList: " + auftragposition);
+        }
+        System.out.println("SIZE of List AFTER DELETION = " + auftragpositionenList.size());
+        /*
+         * we have sucessfully deleted the auftragposition, but we have to delete it from the 
+         * auftragpositioncollection in the auftrag entity AND persist it
+         */
+        /*
+         * show the size of the list of the currentauftrag
+         */
+        System.out.println("SIZE of List in currentauftrag BEFORE SETTING = " + currentAuftrag.getAuftragpositionCollection().size());
+        currentAuftrag.setAuftragpositionCollection(auftragpositionenList);
+        System.out.println("SIZE of List in currentauftrag AFTER SETTING = " + currentAuftrag.getAuftragpositionCollection().size());
+        AuftragAuftragPositionenWrapper wrapper = new AuftragAuftragPositionenWrapper(currentAuftrag, auftragpositionenList);
+        transmitterSessionBeanRemote.storeEjb(wrapper);
+
+        return null;
+    }
+
+    public void editAuftrag(Auftrag auftrag) {
+        auftrag.setEdited(true);
+    }
+
+    public void editAuftragposition(Auftragposition auftragposition) {
+        auftragposition.setEdited(true);
+    }
+
+     public void editUntersuchung(Untersuchung untersuchung) {
+        untersuchung.setEdited(true);
+    }
+    
+    
+    public void saveAuftrag(Auftrag auftrag) {
+        System.out.println("Auftrag : " + auftrag);
+        AuftragAuftragPositionenWrapper wrapper = new AuftragAuftragPositionenWrapper(auftrag, null);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            auftrag.setEdited(false);
+            sucheAuftrag();
+        } else {
+            // send a message
+        }
+    }
+
+     public void saveUntersuchung(Untersuchung untersuchung) {
+        System.out.println("Untersuchung : " + untersuchung);
+        UntersuchungWrapper wrapper = new UntersuchungWrapper(untersuchung);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            untersuchung.setEdited(false);
+            sucheUntersuchung();
+        } else {
+            // send a message
+        }
+    }
+     
+    public void saveAuftragposition(Auftragposition auftragposition) {
+        System.out.println("Auftragposition : " + auftragposition);
+        /*
+         * the wrapper saves the auftragpositionenList only
+         */
+        AuftragAuftragPositionenWrapper wrapper = new AuftragAuftragPositionenWrapper(null, auftragpositionenList);
+        boolean success = transmitterSessionBeanRemote.storeEjb(wrapper);
+        if (success) {
+            auftragposition.setEdited(false);
+//            sucheAuftragpostion(); // not implemented so far 
+        } else {
+            // send a message
+        }
     }
 
 }

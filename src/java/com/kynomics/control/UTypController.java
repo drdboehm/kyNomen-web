@@ -31,6 +31,12 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectOneMenu;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 
 /**
  * UTypController is a Controller class following the MVC pattern. The
@@ -146,9 +152,9 @@ public class UTypController implements Serializable {
 
     /**
      * The default constructor, creates an instance of UntersuchungsController
-     * and initializes the attributes Untersuchungstyp currentUTyp, Milestone 
+     * and initializes the attributes Untersuchungstyp currentUTyp, Milestone
      * currentMilestone, Untersuchung currentUntersuchung, Milestonetyp
-     * milestonetyp, as well as List milestoneList, milestoneOrderedSOPList and 
+     * milestonetyp, as well as List milestoneList, milestoneOrderedSOPList and
      * HashMap alleMilestoneTypenMap
      */
     public UTypController() {
@@ -258,6 +264,114 @@ public class UTypController implements Serializable {
 
     public void setUntersuchungList(List<Untersuchung> untersuchungList) {
         this.untersuchungList = untersuchungList;
+    }
+
+    /*
+     * Own logic
+     */
+    public void validateUTyp(FacesContext facesContext, UIComponent uIComponent,
+            Object value) throws ValidatorException {
+        /**
+         * FIRST Check, if you arrive from a Save-Button. relying on the Howto
+         * from:
+         * http://stackoverflow.com/questions/10428899/how-can-a-custom-validator-know-which-commandbutton-was-clicked
+         */
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        /*
+         * validate only in case of saveButton-Type
+         */
+        if (params.containsKey("uTypForm:saveUTypButton")) {
+            /* first check, what type the uiComponent is, before casting will be done
+             * there will be a better solution, but here hard code the Id of the SelectOneMenu to decide,
+             whether cast shoud be done to HtmlSelectOneMenu or HtmlInputText
+             */
+            if (uIComponent.getClientId().contains("uTypForm:inUntersuchungsTyp")) {
+                String s = (String) value;
+                if (s.length() == 0) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " eingeben");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.length() < 3) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " ist zu kurz");
+                    throw new ValidatorException(facesMessage);
+                }
+            }
+        }
+    }
+
+    public void validateMilestone(FacesContext facesContext, UIComponent uIComponent,
+            Object value) throws ValidatorException {
+        /**
+         * FIRST Check, if you arrive from a Save-Button. relying on the Howto
+         * from:
+         * http://stackoverflow.com/questions/10428899/how-can-a-custom-validator-know-which-commandbutton-was-clicked
+         */
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        /*
+         * validate only in case of saveButton-Type
+         */
+        if (params.containsKey("milestoneForm:saveMSButton")) {
+            /* first check, what type the uiComponent is, before casting will be done
+             * there will be a better solution, but here hard code the Id of the SelectOneMenu to decide,
+             whether cast shoud be done to HtmlSelectOneMenu or HtmlInputText
+             */
+            System.out.println("SAVE Button prssed from " + uIComponent.getClientId() + " Value = " + value);
+            if (uIComponent.getClientId().equals("milestoneForm:inMilestoneTyp") & value == null) {
+
+                HtmlSelectOneMenu htmlSelectOneMenu = (HtmlSelectOneMenu) uIComponent;
+                FacesMessage facesMessage = new FacesMessage(htmlSelectOneMenu.getLabel() + " auswählen");
+                throw new ValidatorException(facesMessage);
+            } else if (uIComponent.getClientId().contains("milestoneForm:inMilestone")) {
+                String s = (String) value;
+                if (s.length() == 0) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " eingeben");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.length() < 3) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " ist zu kurz");
+                    throw new ValidatorException(facesMessage);
+                }
+            }
+        }
+    }
+
+    public void validateUntersuchung(FacesContext facesContext, UIComponent uIComponent,
+            Object value) throws ValidatorException {
+        /**
+         * FIRST Check, if you arrive from a Save-Button. relying on the Howto
+         * from:
+         * http://stackoverflow.com/questions/10428899/how-can-a-custom-validator-know-which-commandbutton-was-clicked
+         */
+        Map<String, String> params = facesContext.getExternalContext().getRequestParameterMap();
+        /*
+         * validate only in case of saveButton-Type
+         */
+        if (params.containsKey("uSOPForm:saveMSButton")) {
+            /* first check, what type the uiComponent is, before casting will be done
+             * there will be a better solution, but here hard code the Id of the SelectOneMenu to decide,
+             whether cast shoud be done to HtmlSelectOneMenu or HtmlInputText
+             */
+            System.out.println("SAVE Button prssed from " + uIComponent.getClientId() + " Value = " + value);
+            if (uIComponent.getClientId().equals("uSOPForm:inMilestoneTyp") & value == null) {
+
+                HtmlSelectOneMenu htmlSelectOneMenu = (HtmlSelectOneMenu) uIComponent;
+                FacesMessage facesMessage = new FacesMessage(htmlSelectOneMenu.getLabel() + " auswählen");
+                throw new ValidatorException(facesMessage);
+            } else if (uIComponent.getClientId().contains("uSOPForm:inMilestone")) {
+                String s = (String) value;
+                if (s.length() == 0) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " eingeben");
+                    throw new ValidatorException(facesMessage);
+                } else if (s.length() < 3) {
+                    HtmlInputText htmlInputText = (HtmlInputText) uIComponent;
+                    FacesMessage facesMessage = new FacesMessage(htmlInputText.getLabel() + " ist zu kurz");
+                    throw new ValidatorException(facesMessage);
+                }
+            }
+        }
     }
 
     public String saveUTyp() {
@@ -473,7 +587,7 @@ public class UTypController implements Serializable {
 
     public String saveSOPList(List<Milestone> list) {
         /* To avoid traffic, create a selectedUtypList which consists of selected
-         Untersuchungstyp only
+         * Untersuchungstyp only
          */
         List<Untersuchungstyp> selectedUtypList = new ArrayList<>();
         for (Untersuchungstyp ut : utypList) {
@@ -588,8 +702,13 @@ public class UTypController implements Serializable {
     }
 
     public String removeMSFromOrderedSOPList(Milestone ms) {
+       /*
+        * remove the ms from milestoneOrderedSOPList
+        */
         milestoneOrderedSOPList.remove(ms);
-        // we need to set the ms in the milestoneList to selected=false
+        /*
+         * we need to set the ms in the milestoneList to selected=false
+         */
         int indexOf = milestoneList.indexOf(ms);
         System.out.println("Index in milestoneList=" + indexOf);
         milestoneList.get(indexOf).setSelected(false);
@@ -715,6 +834,28 @@ public class UTypController implements Serializable {
         currentMilestone = new Milestone();
 
         return null;
+    }
+
+    public void resetLists(List<Untersuchungstyp> utypList, List<Milestone> milestoneList) {
+        if (utypList != null) {
+            this.utypList.clear();
+        }
+        if (milestoneList != null) {
+            this.milestoneList.clear();
+        }
+        milestoneOrderedSOPList.clear();
+    }
+
+    public void resetCurrents(Untersuchungstyp currentUTyp, Milestone currentMilestone) {
+        if (currentUTyp != null) {
+            this.currentUTyp = new Untersuchungstyp();
+//            this.currentUTyp.s;
+        }
+        if (currentMilestone != null) {
+            this.currentMilestone = new Milestone();
+            this.currentMilestone.setMilestonetypId(new Milestonetyp());
+
+        }
     }
 
     private Untersuchungstyp details(UTypTreffer utt) {

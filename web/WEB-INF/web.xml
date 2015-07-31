@@ -17,6 +17,15 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
+     <servlet>
+        <servlet-name>rechnungPdf</servlet-name>
+        <servlet-class>com.kynomics.servlet.PdfServlet</servlet-class>
+    </servlet>
+     <servlet-mapping>
+        <servlet-name>rechnungPdf</servlet-name>
+        <url-pattern>/pdfdokumente/Auftrag.pdf</url-pattern>
+    </servlet-mapping>
+    
     <session-config>
         <session-timeout>
             30
